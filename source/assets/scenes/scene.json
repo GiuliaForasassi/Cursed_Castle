@@ -1,0 +1,13 @@
+{
+	"models": [
+		{"id": "floor", "VD": "VDposUV", "model": "assets/models/Plane.gltf",  "format":"GLTF"}
+	],
+	"textures": [
+		{"id": "tex", "texture": "assets/textures/toChange.jpg", "format": "C"}
+	],
+	"instances": [
+		{"technique": "BlinnPos", "elements": [
+			{"id": "floor", "model": "floor",   "texture": ["tex"], "scale": [100.0, 100.0, 100.0]}
+		]}
+	]
+}
