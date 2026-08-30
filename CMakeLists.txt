@@ -104,9 +104,19 @@ add_dependencies(${PROJECT_NAME} shaders)
 set(ASSET_SRC_DIR "${CMAKE_SOURCE_DIR}/source/assets")
 set(ASSET_DST_DIR "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets")
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${ASSET_SRC_DIR}"
-    "${ASSET_DST_DIR}"
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     "${ASSET_SRC_DIR}"
+#     "${ASSET_DST_DIR}"
+#   COMMENT "Copio asset in: ${ASSET_DST_DIR}"
+# )
+
+find_program(RSYNC_EXECUTABLE rsync REQUIRED)
+
+add_custom_target(assets ALL
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${ASSET_DST_DIR}"
+  COMMAND ${RSYNC_EXECUTABLE} -a --delete "${ASSET_SRC_DIR}/" "${ASSET_DST_DIR}/"
   COMMENT "Copio asset in: ${ASSET_DST_DIR}"
+  VERBATIM
 )
+add_dependencies(${PROJECT_NAME} assets)

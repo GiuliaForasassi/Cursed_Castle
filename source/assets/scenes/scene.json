@@ -1,13 +1,39 @@
 {
 	"models": [
-		{"id": "floor", "VD": "VDposUV", "model": "assets/models/Plane.gltf",  "format":"GLTF"}
+		{"id": "floor", "VD": "VDposUV", "model": "assets/models/SPW_Terrain_Grass_Flat.mgcg",  "format":"MGCG"},
+		{"id": "wall01",  "VD": "VDposUV", "model": "assets/models/SPW_Medieval_Castle_Wall_01.mgcg", "format":"MGCG"}
 	],
 	"textures": [
-		{"id": "tex", "texture": "assets/textures/toChange.jpg", "format": "C"}
+		{"id": "natureTex", "texture": "assets/textures/SPW_Natures_01.png", "format": "C"},
+		{"id": "medievalTex", "texture": "assets/textures/SPW_Medieval.png", "format": "C"}
 	],
 	"instances": [
 		{"technique": "BlinnPos", "elements": [
-			{"id": "floor", "model": "floor",   "texture": ["tex"], "scale": [100.0, 100.0, 100.0]}
+			{"id": "terrain_00", "model": "floor",   "texture": ["natureTex"]},
+			{"id": "terrain_01", "model": "floor", "texture": ["natureTex"],  
+			"transform": [
+				1.0, 0.0, 0.0, 20.0,
+				0.0, -1.19209e-07, -1.0, 0.0,
+				0.0, 1.0, -1.19209e-07, 0.0,
+				0.0, 0.0, 0.0, 1.0
+				]},
+			{"id": "terrain_02", "model": "floor", "texture": ["natureTex"], 
+			"transform": [
+				1.0, 0.0, 0.0, 0.0,
+				0.0, -1.19209e-07, -1.0, 0.0,
+				0.0, 1.0, -1.19209e-07, 20.0,
+				0.0, 0.0, 0.0, 1.0
+				]},
+			{"id": "terrain_03", "model": "floor", "texture": ["natureTex"], 
+			"transform": [
+				1.0, 0.0, 0.0, -20.0,
+				0.0, -1.19209e-07, -1.0, 0.0,
+				0.0, 1.0, -1.19209e-07, -20.0,
+				0.0, 0.0, 0.0, 1.0
+				]},
+
+
+			{"id": "wall01", "model": "wall01", "texture": ["medievalTex"], "eulerAngles": [90.0, 0.0, 0.0], "scale": [1.0, 1.0, 1.0]}
 		]}
 	]
 }

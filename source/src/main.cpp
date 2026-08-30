@@ -9,6 +9,10 @@
 #include "modules/TextMaker.hpp"
 #include "modules/Scene.hpp"
 
+// ! Debugging
+#include <limits>
+#include <cstring>
+
 // Uniform buffer object for the local parameters (per object)
 struct UniformBufferObject {
 	alignas(16) glm::mat4 mvpMat; // Matrix model view-projection
@@ -22,10 +26,10 @@ struct GlobalUniformBufferObject {
 	alignas(16) glm::vec3 eyePos; // Position of the camera
 };
 
-// Vertex structure for the scene
+// Vertex structure for vertex of the 3D model
 struct Vertex {
-	glm::vec3 pos; // Position of the vertex in 3D space
-	glm::vec2 UV; // Texture coordinates for the vertex
+	glm::vec3 pos; // Position 3D (x, y, z)
+	glm::vec2 UV; // Texture coordinates (u, v)
 };
 
 // Camera structure to manage camera position and orientation
@@ -49,12 +53,12 @@ struct Camera {
 
 class Skeleton26ReplaceName : public BaseProject {
 	protected:
-	// Here you list all the Vulkan objects you need:
+	// Here you list all the Vulkan objects you need
 	
 	// Descriptor Layouts [define the structure of data that will be passed to the shaders]
 	DescriptorSetLayout DSLlocal, DSLglobal;
 
-	// Vertex formants, Pipelines [Shader couples] and Render passes
+	// Vertex formats, Pipelines [Shader couples] and Render passes
 	VertexDescriptor VD; // Vertex format for the scene
 	RenderPass RP; // Render pass for the scene
 	Pipeline P; // Pipeline for the scene
@@ -152,9 +156,9 @@ class Skeleton26ReplaceName : public BaseProject {
 
 
 		// Sets the size of the Descriptor Set Pool to allocate sufficient GPU space (it MUST be done before loading the scene)
-		DPSZs.uniformBlocksInPool = 2;
-		DPSZs.texturesInPool = 1;
-		DPSZs.setsInPool = 2;
+		DPSZs.uniformBlocksInPool = 3; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
+		DPSZs.texturesInPool = 2; // 1 for each object (in this case, we have 2 objects)
+		DPSZs.setsInPool = 3; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
 
 		// Configure the structures for automatic scene management
 		VDRs.resize(1);
@@ -176,6 +180,39 @@ class Skeleton26ReplaceName : public BaseProject {
 			std::cout << "ERROR LOADING THE SCENE\n";
 			exit(0);
 		}
+
+		// ! DEBUG
+		{
+			int mid = SC.MeshIds["floor"];
+			Model *model = SC.M[mid];
+
+			glm::vec3 minP( std::numeric_limits<float>::max());
+			glm::vec3 maxP(-std::numeric_limits<float>::max());
+
+			int stride = VD.Bindings[0].stride;
+
+			for(size_t off = 0; off + sizeof(Vertex) <= model->vertices.size(); off += stride) {
+				Vertex v{};
+				memcpy(&v, model->vertices.data() + off, sizeof(Vertex));
+
+				glm::vec3 p = glm::vec3(model->Wm * glm::vec4(v.pos, 1.0f));
+
+				minP = glm::min(minP, p);
+				maxP = glm::max(maxP, p);
+			}
+
+			glm::vec3 size = maxP - minP;
+
+			std::cout << "FLOOR bounds min: "
+					<< minP.x << ", " << minP.y << ", " << minP.z << "\n";
+
+			std::cout << "FLOOR bounds max: "
+					<< maxP.x << ", " << maxP.y << ", " << maxP.z << "\n";
+
+			std::cout << "FLOOR size: "
+					<< size.x << ", " << size.y << ", " << size.z << "\n";
+		}
+
 
 		// Initializes the textual output
 		txt.init(this, windowWidth, windowHeight);
