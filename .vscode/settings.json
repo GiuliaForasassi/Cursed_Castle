@@ -1,9 +1,15 @@
 {
     "better-comments.tags": [
+
+
+
+
+
+        
         
         {
             "tag": "!",
-            "color": "#FF2D00",
+            "color": "#B82B29",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -12,7 +18,7 @@
         },
         {
             "tag": "?",
-            "color": "#3498DB",
+            "color": "#054F6F",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -21,7 +27,7 @@
         },
         {
             "tag": "//",
-            "color": "#474747",
+            "color": "#90878C",
             "strikethrough": true,
             "underline": false,
             "backgroundColor": "transparent",
@@ -30,7 +36,7 @@
         },
         {
             "tag": "todo",
-            "color": "#FF8C00",
+            "color": "#EB7830",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -39,12 +45,32 @@
         },
         {
             "tag": "*",
-            "color": "#98C379",
+            "color": "#CE4257",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
             "bold": false,
             "italic": false
+        }, 
+        {
+            "tag": "debug",
+            "color": "#FDE74C",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "-",
+            "color": "#00E5FF",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
         }
-    ]
+        
+    ],
+    "better-comments.highlightPlainText": true
 }

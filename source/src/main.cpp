@@ -9,7 +9,6 @@
 #include "modules/TextMaker.hpp"
 #include "modules/Scene.hpp"
 
-// ! Debugging
 #include <limits>
 #include <cstring>
 
@@ -83,6 +82,9 @@ class Skeleton26ReplaceName : public BaseProject {
 
 	// Camera FPS instance
 	Camera cam;
+	double lastMouseX = 0.0;
+	double lastMouseY = 0.0; // Last mouse positions for camera control
+	bool firstMouse = true; // Flag to check if it's the first mouse movement
 	
 	// ----------- WINDOW CONFIGURATION AND CALLBACKS ----------------
 	// Initializes the window parameters (size, title, resizable)
@@ -113,6 +115,7 @@ class Skeleton26ReplaceName : public BaseProject {
 	// Here you load and setup all your Vulkan Models and Texutures.
 	// Here you also create your Descriptor set layouts and load the shaders for the pipelines
 	void localInit() {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		// Descriptor Layouts [what will be passed to the shaders]
 		// Initializes the local descriptor set layout (per object)
 		DSLlocal.init(this, {
@@ -181,37 +184,41 @@ class Skeleton26ReplaceName : public BaseProject {
 			exit(0);
 		}
 
-		// ! DEBUG
+		// DEBUG
 		{
-			int mid = SC.MeshIds["floor"];
-			Model *model = SC.M[mid];
+			std::vector<std::string> meshesToMeasure = {
+			"floor", "wall01", "wall02", "tower", "castle01", "castle02", "steps", "concrete", "road01", "light"
+			};
 
-			glm::vec3 minP( std::numeric_limits<float>::max());
-			glm::vec3 maxP(-std::numeric_limits<float>::max());
+    		int stride = VD.Bindings[0].stride;
 
-			int stride = VD.Bindings[0].stride;
+    		for (const auto& meshName : meshesToMeasure) {
+				auto it = SC.MeshIds.find(meshName);
+				if (it == SC.MeshIds.end()) {
+					std::cout << "[MEASURE] mesh '" << meshName << "' NOT declared in scene.json\n";
+					continue;
+				}
+       			 Model *model = SC.M[it->second];
 
-			for(size_t off = 0; off + sizeof(Vertex) <= model->vertices.size(); off += stride) {
-				Vertex v{};
-				memcpy(&v, model->vertices.data() + off, sizeof(Vertex));
+				glm::vec3 minP( std::numeric_limits<float>::max());
+				glm::vec3 maxP(-std::numeric_limits<float>::max());
 
-				glm::vec3 p = glm::vec3(model->Wm * glm::vec4(v.pos, 1.0f));
+				for (size_t off = 0; off + sizeof(Vertex) <= model->vertices.size(); off += stride) {
+					Vertex v{};
+					memcpy(&v, model->vertices.data() + off, sizeof(Vertex));
+					glm::vec3 p = glm::vec3(model->Wm * glm::vec4(v.pos, 1.0f));
+					minP = glm::min(minP, p);
+					maxP = glm::max(maxP, p);
+				}
 
-				minP = glm::min(minP, p);
-				maxP = glm::max(maxP, p);
+				glm::vec3 size = maxP - minP;
+				std::cout << "[MEASURE] " << meshName
+						<< " | min(" << minP.x << ", " << minP.y << ", " << minP.z << ")"
+						<< " | max(" << maxP.x << ", " << maxP.y << ", " << maxP.z << ")"
+						<< " | size(" << size.x << ", " << size.y << ", " << size.z << ")\n";
 			}
-
-			glm::vec3 size = maxP - minP;
-
-			std::cout << "FLOOR bounds min: "
-					<< minP.x << ", " << minP.y << ", " << minP.z << "\n";
-
-			std::cout << "FLOOR bounds max: "
-					<< maxP.x << ", " << maxP.y << ", " << maxP.z << "\n";
-
-			std::cout << "FLOOR size: "
-					<< size.x << ", " << size.y << ", " << size.z << "\n";
 		}
+		// DEBUG END
 
 
 		// Initializes the textual output
@@ -394,23 +401,54 @@ class Skeleton26ReplaceName : public BaseProject {
 		cam.up = glm::normalize(glm::cross(cam.right, cam.front));
 	}
 
-	// Update the camera position based on keyboard input (WASD keys)
+	// Update the camera position based on keyboard input (WASD keys) and collision detection with the scene
 	void updateKeyboardInput(Camera& cam, float deltaT, GLFWwindow* window){
 		float movementSpeed = cam.moveSpeed * deltaT; // Calculate movement speed based on delta time to ensure consistent movement regardless of frame rate
+		const float playerRadius = 1.0f; // Radius of the player for collision detection
 
+		glm::vec3 movement(0.0f); // Initialize movement vector: it accumulates the movement direction based on key presses
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			cam.cameraPos += cam.front * movementSpeed; // Move forward
+			movement += cam.front; // Move forward
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			cam.cameraPos -= cam.front * movementSpeed; // Move backward
+			movement -= cam.front; // Move backward
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			cam.cameraPos -= cam.right * movementSpeed; // Move left
+			movement -= cam.right; // Move left
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			cam.cameraPos += cam.right * movementSpeed; // Move right
+			movement += cam.right; // Move right
 		}
+		movement.y = 0.0f; // Prevent vertical movement (Y-axis) to keep the player on the ground
+		if (glm::length(movement) > 0.0001f) {
+			movement = glm::normalize(movement) * movementSpeed; // Normalize the movement vector and scale it by the movement speed
+		}
+		glm::vec3 tryPosX = cam.cameraPos + glm::vec3(movement.x, 0.0f, 0.0f); // Try moving in the X direction
+		if (!collidesWithScene(tryPosX, playerRadius)) {
+			cam.cameraPos.x = tryPosX.x; // Update camera position if no collision
+		}
+		glm::vec3 tryPosZ = cam.cameraPos + glm::vec3(0.0f, 0.0f, movement.z); // Try moving in the Z direction
+		if (!collidesWithScene(tryPosZ, playerRadius)) {
+			cam.cameraPos.z = tryPosZ.z; // Update camera position if no collision
+		}
+	}
 
+	// ------------------ COLLISION DETECTION -------------------
+	// Check if the player (sphere) collides with any object in the scene
+	// This function uses a sphere collision detection method
+	bool collidesWithScene(glm::vec3 pos, float radius) {
+		Collider playerCol; // Temporary collider that represents the player
+		playerCol.initSphere(0.0f, 0.0f, 0.0f, radius); // Initialize the player collider as a sphere with the given radius at the origin
+		playerCol.setWorldMatrix(glm::translate(glm::mat4(1.0f), pos)); // Set the world matrix for the player collider based on its position
+
+		for (int i = 0; i < SC.InstanceCount; i++) { // Iterate through all instances in the scene
+			Collider *c = SC.I[i]->C; // Get the collider for the current instance
+			if (c == nullptr) 
+				continue; // Skip if the instance does not have a collider
+			if (playerCol.collidesWith(*c)) 
+				return true; // Return true if a collision is detected between the player and the instance's collider
+		}
+		return false;
 	}
 	
 	// ------------------ GAME LOGIC -------------------
@@ -418,17 +456,28 @@ class Skeleton26ReplaceName : public BaseProject {
 		// Camera FOV-y, Near Plane and Far Plane
 		const float FOVy = glm::radians(45.0f); // Field of view in the y direction (in radians)
 		const float nearPlane = 0.1f; // 
-		const float farPlane = 100.f;
+		const float farPlane = 400.f; // 
 
 		// Retrieve the system input and the current frame time delta to update the camera position and orientation
 		float deltaT; // Time elapsed since the last frame (in seconds)
 		glm::vec3 m = glm::vec3(0.0f), r = glm::vec3(0.0f); // m = motion input, r = rotation input
 		bool fire = false; // fire = action input 
 		getSixAxis(deltaT, m, r, fire); // Retrieve input from a six-axis controller
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		if (firstMouse) { 
+			lastMouseX = xpos; 
+			lastMouseY = ypos; 
+			firstMouse = false; 
+		}
+		double dx = xpos - lastMouseX;
+		double dy = ypos - lastMouseY;
+		lastMouseX = xpos; 
+		lastMouseY = ypos;
 
 		// Update camera orientation based on mouse movement
 		// r.y = horizontal (yaw) input, r.x = vertical (pitch) input
-		updateMouseInput(cam, r.y, r.x);
+		updateMouseInput(cam, -(float)dx / 10.0f, -(float)dy / 10.0f);
 
 		// Update camera position based on keyboard input
 		updateKeyboardInput(cam, deltaT, window);
