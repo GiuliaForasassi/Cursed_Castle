@@ -1,5 +1,11 @@
 
+#pragma once
+#ifndef SCENE_HPP_GUARD
+#define SCENE_HPP_GUARD
+#include "modules/Scene.hpp"
+#endif
 // Camera structure to manage camera position and orientation
+
 class Camera {
 	// Initial position
 	glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 3.0f); 
@@ -22,6 +28,7 @@ class Camera {
 
     // Update the camera's orientation based on mouse movement (deltaX and deltaY represent the change in mouse position)
     public:
+
         void updateOrientation(float deltaX, float deltaY) {
             // Update the yaw based on horizontal mouse movement
             yaw += deltaX * mouseSensitivity;
@@ -68,8 +75,7 @@ class Camera {
         }
 
         // Update the camera position based on keyboard input (WASD keys) and collision detection with the scene
-        void processKeyboardInput(GLFWwindow* window, float deltaT,
-                                const std::function<bool(glm::vec3, float)>& collidesWithScene) {
+        void processKeyboardInput(GLFWwindow* window, float deltaT, Scene& scene) {
             // Calculate movement speed based on delta time to ensure consistent movement regardless of frame rate
             float movementSpeed = moveSpeed * deltaT;
             // Radius of the player for collision detection
@@ -91,14 +97,33 @@ class Camera {
 
             // Attempt to move the camera along the X and Z axes separately, checking for collisions with the scene
             glm::vec3 tryPosX = cameraPos + glm::vec3(movement.x, 0.0f, 0.0f);
-            if (!collidesWithScene(tryPosX, playerRadius)) 
-                cameraPos.x = tryPosX.x;
+            if (!collidesWithScene(tryPosX, playerRadius, scene))
+                cameraPos.x = tryPosX.x;;
 
             glm::vec3 tryPosZ = cameraPos + glm::vec3(0.0f, 0.0f, movement.z);
-            if (!collidesWithScene(tryPosZ, playerRadius)) 
+            if (!collidesWithScene(tryPosZ, playerRadius, scene)) 
                 cameraPos.z = tryPosZ.z;
         }
 
+    // ------------------ Collision detection -------------------
+	// Check if the player (sphere) collides with any object in the scene
+	// This function uses a sphere collision detection method
+	bool collidesWithScene(glm::vec3 pos, float radius, Scene& scene) {
+		Collider playerCol; // Temporary collider that represents the player
+		playerCol.initSphere(0.0f, 0.0f, 0.0f, radius); // Initialize the player collider as a sphere with the given radius at the origin
+		playerCol.setWorldMatrix(glm::translate(glm::mat4(1.0f), pos)); // Set the world matrix for the player collider based on its position
+
+		for (int i = 0; i < scene.InstanceCount; i++) { // Iterate through all instances in the scene
+			Collider *c = scene.I[i]->C; // Get the collider for the current instance
+			if (c == nullptr) 
+				continue; // Skip if the instance does not have a collider
+			if (playerCol.collidesWith(*c)) 
+				return true; // Return true if a collision is detected between the player and the instance's collider
+		}
+		return false;
+	}
+
+    // ------------------ Getters for camera parameters -------------------
         const glm::vec3& getCameraPosition() const {
             return cameraPos;
         }

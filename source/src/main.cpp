@@ -7,8 +7,14 @@
 
 #include "modules/Starter.hpp"
 #include "modules/TextMaker.hpp"
+#ifndef SCENE_HPP_GUARD
+#define SCENE_HPP_GUARD
 #include "modules/Scene.hpp"
+#endif
 #include "camera.h"
+#include "interactions.h"
+#include "utils.h"
+
 
 #include <limits>
 #include <cstring>
@@ -32,20 +38,6 @@ struct Vertex {
 	glm::vec2 UV; // Texture coordinates (u, v)
 };
 
-// Interaction effects that can be applied to interactable objects in the scene
-enum InteractionEffects {EFFECT_INFO, EFFECT_OPEN_SECRET_DOOR, EFFECT_TOGGLE_CANDLE, EFFECT_PICKUP};
-
-// Structure to define an interactable object in the scene
-struct Interactable {
-	std::string instanceId; // object you interact with 
-	std::string targetId; // object on which the effect will be applied (if empty, it matches the instanceId)
-	InteractionEffects effect; // Effect to apply when interacted with
-	std::string prompt; // Prompt message to display when the player is near: "Press E for..."
-	std::string infoText; // Text to display when the player interacts with the object (if effect is EFFECT_INFO)
-
-	bool active = true; // Whether the interactable is active
-};
-
 class Skeleton26ReplaceName : public BaseProject {
 	protected:
 	// Here you list all the Vulkan objects you need
@@ -62,7 +54,7 @@ class Skeleton26ReplaceName : public BaseProject {
 	DescriptorSet DSglobal; // Descriptor set for global parameters
 
 	// To support loading assets from a scene.json file
-	Scene SC;
+	Scene scene;
 	std::vector<VertexDescriptorRef>  VDRs; // References to vertex descriptors
 	std::vector<TechniqueRef> PRs; // References to techniques (pipelines)
 
@@ -78,17 +70,14 @@ class Skeleton26ReplaceName : public BaseProject {
 
 	// Camera FPS instance
 	Camera cam;
-	
-	// Interactables objects
-	std::vector<Interactable> interactables; // List of interactable objects in the scene
-	bool ePressed = false; // Flag to check if the 'E' key is pressed for interaction
-	std::string currentInfoText = ""; // Current information text to display when interacting with objects
-	float infoTextTimer = 0.0f; // Timer to control how long the info text is displayed
 
+	// Interaction manager instance
+	InteractionManager interactionManager;
+	
 	// Current window size
 	int currentWindowWidth = 800; // Current window width
 	int currentWindowHeight = 600; // Current window height
-	
+
 	// ----------- WINDOW CONFIGURATION AND CALLBACKS ----------------
 	// Initializes the window parameters (size, title, resizable)
 	void setWindowParameters() {
@@ -185,7 +174,7 @@ class Skeleton26ReplaceName : public BaseProject {
 						  }, /*TotalNtextures*/1, &VD);
 
 		// Loads the scene from a JSON file, which contains the models, textures, and their configurations
-		if(SC.init(this, 1, VDRs, PRs, "assets/scenes/scene.json") != 0) {
+		if(scene.init(this, 1, VDRs, PRs, "assets/scenes/scene.json") != 0) {
 			std::cout << "ERROR LOADING THE SCENE\n";
 			exit(0);
 		}
@@ -199,12 +188,12 @@ class Skeleton26ReplaceName : public BaseProject {
     		int stride = VD.Bindings[0].stride;
 
     		for (const auto& meshName : meshesToMeasure) {
-				auto it = SC.MeshIds.find(meshName);
-				if (it == SC.MeshIds.end()) {
+				auto it = scene.MeshIds.find(meshName);
+				if (it == scene.MeshIds.end()) {
 					std::cout << "[MEASURE] mesh '" << meshName << "' NOT declared in scene.json\n";
 					continue;
 				}
-       			 Model *model = SC.M[it->second];
+       			 Model *model = scene.M[it->second];
 
 				glm::vec3 minP( std::numeric_limits<float>::max());
 				glm::vec3 maxP(-std::numeric_limits<float>::max());
@@ -258,7 +247,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		// If the scene has textures coming from a render pass, the corresponding element of the technique must be
 		// updated before calling SC.pipelinesAndDescriptorSetsInit();
 
-		SC.pipelinesAndDescriptorSetsInit(); // Initialize the pipeline and descriptor sets for the scene, which includes creating descriptor sets for each model and texture in the scene.
+		scene.pipelinesAndDescriptorSetsInit(); // Initialize the pipeline and descriptor sets for the scene, which includes creating descriptor sets for each model and texture in the scene.
 		txt.pipelinesAndDescriptorSetsInit(); // Initialize the pipeline and descriptor sets for the text rendering system, which includes creating descriptor sets for the text textures.
 	}
 
@@ -270,7 +259,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		
 		DSglobal.cleanup();
 		
-		SC.pipelinesAndDescriptorSetsCleanup();
+		scene.pipelinesAndDescriptorSetsCleanup();
 		txt.pipelinesAndDescriptorSetsCleanup();
 	}
 
@@ -285,7 +274,7 @@ class Skeleton26ReplaceName : public BaseProject {
 
 		RP.destroy();
 
-		SC.localCleanup();
+		scene.localCleanup();
 		txt.localCleanup();
 	}
 	
@@ -310,7 +299,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		// begin standard pass
 		RP.begin(commandBuffer, currentImage); // Begin the render pass for the current frame
 
-		SC.populateCommandBuffer(commandBuffer, 0, currentImage); // Populate the command buffer with the rendering commands for the scene, using the first render pass (index 0)
+		scene.populateCommandBuffer(commandBuffer, 0, currentImage); // Populate the command buffer with the rendering commands for the scene, using the first render pass (index 0)
 
 		RP.end(commandBuffer); // End the render pass for the current frame
 	}
@@ -354,15 +343,15 @@ class Skeleton26ReplaceName : public BaseProject {
 
 		int instanceId;
 		// Iterate through all instances in the scene and update their model matrices and MVP matrices based on the current view-projection matrix.
-		for(instanceId = 0; instanceId < SC.TI[0].InstanceCount; instanceId++) {
-			ubo.mMat = SC.TI[0].I[instanceId].Wm; // Get the world matrix for the current instance
+		for(instanceId = 0; instanceId < scene.TI[0].InstanceCount; instanceId++) {
+			ubo.mMat = scene.TI[0].I[instanceId].Wm; // Get the world matrix for the current instance
 			ubo.mvpMat = ViewPrj * ubo.mMat; // Calculate the model-view-projection matrix for the current instance
 			
 			// Map the local uniform buffer object to the GPU memory for the current frame and instance. 
 			// The first descriptor set (DS[0]) is used for global parameters, and the second descriptor set (DS[1]) is used for local parameters specific to each instance.
 			// DS[1] = Pchar pass (main render): set0=DSLglobal, set1=DSLlocal
-			SC.TI[0].I[instanceId].DS[0][0]->map(currentImage, &gubo, 0); // Set 0: Global UBO (light/camera)
-			SC.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0); // Set 1: Local UBO (camera MVPs)
+			scene.TI[0].I[instanceId].DS[0][0]->map(currentImage, &gubo, 0); // Set 0: Global UBO (light/camera)
+			scene.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0); // Set 1: Local UBO (camera MVPs)
 		}
 		
 		// Calculates and updates on the screen the FPS (Frame Per Second)
@@ -388,144 +377,17 @@ class Skeleton26ReplaceName : public BaseProject {
 		txt.updateCommandBuffer();
 	}
 
-	// ----------------- INTERACTION MANAGEMENT -------------------
-	// Add an interactable object with the specified ID, prompt, and info text to the list of interactables
-	void addInfoInteraction(const std::string& id, const std::string& prompt, const std::string& text){
-		interactables.push_back({id, "", EFFECT_INFO, prompt, text, true}); 
-	}
-
-	// Add a trigger interaction with the specified ID, target ID, effect, and prompt to the list of interactables
-	void addTriggerInteraction(const std::string& id, const std::string& targetId, InteractionEffects effect, const std::string& prompt){
-		interactables.push_back({id, targetId, effect, prompt, "", true});
-	}
-
+	// ----------------- Setup Interactions Objects ------------------
 	// Setup the interactions for the scene by adding info and trigger interactions for specific objects
 	// TODO: You can add your own interactions here
 	void setupInteractions() {
 		// Add an info interaction for the "info01" object
-		addInfoInteraction("entrance_steps", "Press E for reading", "This tree represents...... (add story)."); // TODO: Replace with your own story or information
+		interactionManager.addInfoInteraction("entrance_steps", "Press E for reading", "This tree represents...... (add story)."); // TODO: Replace with your own story or information
 		
 		// Add a trigger interaction for the "door01" object that opens the door when interacted with
-		addTriggerInteraction("wall_0_2_N", "wall_0_2_N", EFFECT_OPEN_SECRET_DOOR, "Press E to open the secret door");
+		interactionManager.addTriggerInteraction("wall_0_2_N", "wall_0_2_N", EFFECT_OPEN_SECRET_DOOR, "Press E to open the secret door");
 	}
 
-	// Function to get the world position of an instance based on its ID
-	glm::vec3 getInstanceWorldPosition(const std::string& instanceId) {
-		// 1. Find if the instance exists in the map
-		auto it = SC.InstanceIds.find(instanceId); // Look for the instance ID in the map SC.InstanceIds)
-		// 2. If the ID is not found, return a secure far away position (to avoid collisions)
-		if (it == SC.InstanceIds.end()) {
-			glm::vec3 farAwayPos = cam.getCameraPosition() + glm::vec3(1000000.0f);
-			return farAwayPos;
-		}
-		// 3. If the ID is found, retrieve the instance 
-		int instanceIndex = it->second;
-		auto instance = SC.I[instanceIndex];
-
-		// 4. Get the world matrix of the instance and extract its translation (position) component
-		const glm::mat4& worldMatrix = instance->Wm; // Get the world matrix of the instance
-		glm::vec3 worldPosition = glm::vec3(worldMatrix[3]); // Extract the translation component (position) from the world matrix
-		return worldPosition;	
-	}
-
-	// Function to find the nearest interactable object to the player (camera) within a certain distance threshold
-	// Returns the index of the nearest interactable object in the interactables vector, or -1 if none are found within the threshold
-	int findNearestInteractable(float maxRange=6.0f, float maxAngleDegrees=60.0f){
-		int nearestIndex = -1; // Initialize the index of the nearest interactable to -1 (not found)
-		float nearestDistance = maxRange; // Initialize the nearest distance to the maximum range
-		
-		for(int i = 0; i < interactables.size(); i++){
-			if(!interactables[i].active) 
-				continue; // Skip inactive interactables
-			glm::vec3 interactablePos = getInstanceWorldPosition(interactables[i].instanceId); // Get the world position of the interactable
-			glm::vec3 toInteractable = interactablePos - cam.getCameraPosition(); // Calculate the vector from the camera to the interactable
-			float distance = glm::length(toInteractable); // Calculate the distance to the interactable
-			if(distance > nearestDistance)
-				continue; // Skip if the distance is greater than the nearest distance found so far
-			if(distance > 0.001f){
-				glm::vec3 directionToInteractable = toInteractable / distance; // Normalize the vector to get the direction
-				// Check if the interactable is within the maximum angle threshold relative to the camera's front direction
-				if(glm::dot(directionToInteractable, cam.getCameraFront()) < cos(glm::radians(maxAngleDegrees)))
-					continue;
-			}
-			nearestIndex = i; // Update the index of the nearest interactable
-			nearestDistance = distance; // Update the nearest distance
-		}
-		return nearestIndex; // Return the index of the nearest interactable 
-	}
-
-	// TODO: Finish to implement this function
-	// Function to execute the interaction with the interactable object
-	void executeInteraction(int interactableIndex){
-		// 1. Check if the index is valid
-		if(interactableIndex < 0 || interactableIndex >= interactables.size())
-			return; // Invalid index, do nothing
-		// 2. Get the interactable object
-		Interactable& interactable = interactables[interactableIndex];
-		// 3. Execute the effect based on the type of interaction
-		switch(interactable.effect){
-			case EFFECT_INFO:
-				currentInfoText = interactable.infoText; // Set the current info text to display
-				infoTextTimer = 10.0f; // Set the timer for how long the info text should be displayed (5 seconds)
-				break;
-			case EFFECT_OPEN_SECRET_DOOR: {
-				// Determine the target ID for the interaction. If the target ID is empty, use the instance ID of the interactable object
-				std::string targetId;
-				if(interactable.targetId.empty())
-					targetId = interactable.instanceId; // If no target ID is specified, use the instance ID of the interactable
-				else
-					targetId = interactable.targetId; // Use the specified target ID
-				
-				// Find the instance in the scene based on the target ID
-				auto it = SC.InstanceIds.find(targetId);
-				if(it != SC.InstanceIds.end()){
-					int instanceIndex = it->second; // Get the index of the instance in the scene
-					Instance *instance = SC.I[instanceIndex]; // Get the instance object
-					if(instance->C == nullptr){
-						// If the secret door was opened in another interaction, don't open it again
-						interactable.active = false; // Deactivate the interactable to prevent further interactions
-						break;
-					}
-
-					// Apply the effect
-					// TODO: change this number
-					const float SINK_DEPTH = 15.0f; // Depth to sink the door into the ground
-					instance->Wm = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -SINK_DEPTH, 0.0f)) * instance->Wm;
-					instance->C = nullptr; // Remove the collider to allow the player to pass through the door
-					interactable.active = false; // Deactivate the interactable to prevent further interactions
-				}
-				break;
-			}
-			default:
-			std::cout << "[ERROR] Unknown interaction effect for instance '" << interactable.instanceId << "'\n";
-				break;
-		}
-	}
-
-	// Function to calculate the text scale based on the current window size. This ensures that the text remains readable across different window sizes.
-	float getTextScale(){
-		float s = std::min(currentWindowWidth/800.0f, currentWindowHeight/600.0f);
-		return glm::clamp(s, 0.5f, 2.0f); // Avoid too small or too big text 
-	}
-
-	// ------------------ COLLISION DETECTION -------------------
-	// Check if the player (sphere) collides with any object in the scene
-	// This function uses a sphere collision detection method
-	bool collidesWithScene(glm::vec3 pos, float radius) {
-		Collider playerCol; // Temporary collider that represents the player
-		playerCol.initSphere(0.0f, 0.0f, 0.0f, radius); // Initialize the player collider as a sphere with the given radius at the origin
-		playerCol.setWorldMatrix(glm::translate(glm::mat4(1.0f), pos)); // Set the world matrix for the player collider based on its position
-
-		for (int i = 0; i < SC.InstanceCount; i++) { // Iterate through all instances in the scene
-			Collider *c = SC.I[i]->C; // Get the collider for the current instance
-			if (c == nullptr) 
-				continue; // Skip if the instance does not have a collider
-			if (playerCol.collidesWith(*c)) 
-				return true; // Return true if a collision is detected between the player and the instance's collider
-		}
-		return false;
-	}
-	
 	// ------------------ GAME LOGIC -------------------
 	float GameLogic() {
 		// Camera FOV-y, Near Plane and Far Plane
@@ -542,30 +404,24 @@ class Skeleton26ReplaceName : public BaseProject {
 		// ------------------ Process mouse and keyboard input ------------------
 		// Process mouse input to update the camera's orientation based on the current mouse position
 		cam.processMouseInput(window);
-		cam.processKeyboardInput(window, deltaT,
-			[this](glm::vec3 pos, float radius) { 
-				return collidesWithScene(pos, radius); 
-		});
+		cam.processKeyboardInput(window, deltaT, scene);
 
 		// --------- Check for interactions with objects in the scene ---------
-		int nearestInteractableObjIndex = findNearestInteractable(10.0f); // Find the nearest interactable object
-		if (nearestInteractableObjIndex >= 0){
-			txt.print(0.5f, 0.85f, interactables[nearestInteractableObjIndex].prompt, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(), getTextScale()); // Display the prompt for the nearest interactable object
+		int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 10.0f); // Find the nearest interactable object
+		if (nearestInteractableObjIndex >= 0 && interactionManager.infoTextTimer <= 0.0f){
+			txt.print(0.5f, 0.85f, interactionManager.get(nearestInteractableObjIndex).prompt, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the prompt for the nearest interactable object
 		} else{
 			txt.removeText(2); // Remove any previous prompts 
 		}
 
-		// Check if the 'E' key is pressed for interaction
+		// Handle the 'E' key interaction
 		bool ePressedNow = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
-		if(ePressedNow && !ePressed && nearestInteractableObjIndex >= 0){
-			executeInteraction(nearestInteractableObjIndex); // Execute the interaction with the nearest interactable object
-		}
-		ePressed = ePressedNow; // Update the state of the 'E' key for the next frame
+		interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam); 
 
-		if(infoTextTimer > 0.0f){
-			infoTextTimer -= deltaT; // Decrease the timer for displaying info text
-			if(infoTextTimer > 0.0f){
-				txt.print(0.5f, 0.7f, currentInfoText, 3, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(), getTextScale()); // Display the info text
+		if(interactionManager.infoTextTimer > 0.0f){
+			interactionManager.infoTextTimer -= deltaT; // Decrease the timer for displaying info text
+			if(interactionManager.infoTextTimer > 0.0f){
+				txt.print(0.5f, 0.7f, interactionManager.currentInfoText, 3, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the info text
 			}
 			else{
 				txt.removeText(3); // Remove the info text when the timer expires
