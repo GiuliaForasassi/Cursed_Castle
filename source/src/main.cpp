@@ -8,6 +8,7 @@
 #include "modules/Starter.hpp"
 #include "modules/TextMaker.hpp"
 #include "modules/Scene.hpp"
+#include "camera.h"
 
 #include <limits>
 #include <cstring>
@@ -30,24 +31,6 @@ struct Vertex {
 	glm::vec3 pos; // Position 3D (x, y, z)
 	glm::vec2 UV; // Texture coordinates (u, v)
 };
-
-// Camera structure to manage camera position and orientation
-struct Camera {
-		// Initial position
-		glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 3.0f); 
-		// Orientation angles
-		float yaw = -glm::pi<float>() / 2.0f; // to control Horizontal rotation: initialized to -90 degrees
-		float pitch = 0.0f; // Vertical rotation
-
-		// Vectors 
-		glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f); // Direction the camera is facing
-		glm::vec3 up    = glm::vec3(0.0f, 1.0f, 0.0f); // Up direction for the camera
-		glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f); // Right direction for the camera
-
-		// Parameters to control the camera movement and sensitivity
-		float moveSpeed   = 5.0f; // Speed of camera movement
-		float mouseSensitivity = 0.002f; // Sensitivity of mouse movement for camera rotation
-	};
 
 // Interaction effects that can be applied to interactable objects in the scene
 enum InteractionEffects {EFFECT_INFO, EFFECT_OPEN_SECRET_DOOR, EFFECT_TOGGLE_CANDLE, EFFECT_PICKUP};
@@ -95,10 +78,7 @@ class Skeleton26ReplaceName : public BaseProject {
 
 	// Camera FPS instance
 	Camera cam;
-	double lastMouseX = 0.0;
-	double lastMouseY = 0.0; // Last mouse positions for camera control
-	bool firstMouse = true; // Flag to check if it's the first mouse movement
-
+	
 	// Interactables objects
 	std::vector<Interactable> interactables; // List of interactable objects in the scene
 	bool ePressed = false; // Flag to check if the 'E' key is pressed for interaction
@@ -364,7 +344,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = lightDir; // Update the light direction based on the rotation
 		gubo.lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)*5.0f; // Update the light color and intensity
-		gubo.eyePos = cam.cameraPos; // Update the eye position based on camera movement
+		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
@@ -408,60 +388,6 @@ class Skeleton26ReplaceName : public BaseProject {
 		txt.updateCommandBuffer();
 	}
 
-	// ------------------ CAMERA AND INPUT MANAGEMENT -------------------
-	// Update the camera orientation based on mouse movement
-	void updateMouseInput(Camera& cam, float deltaX, float deltaY){
-		cam.yaw += deltaX * cam.mouseSensitivity; // Update the yaw based on horizontal mouse movement
-		cam.pitch -= deltaY * cam.mouseSensitivity; // Update the pitch based on vertical mouse movement (inverted to match typical FPS controls)
-
-		// Clamp the pitch to avoid gimbal lock effect
-		const float maxPitch = glm::radians(89.0f);
-		cam.pitch = glm::clamp(cam.pitch, -maxPitch, maxPitch);
-
-		// Calculate the new front vector using spherical coordinates 
-		glm::vec3 direction; 
-		direction.x = cos(cam.pitch) * cos(cam.yaw);
-		direction.y = sin(cam.pitch);
-		direction.z = cos(cam.pitch) * sin(cam.yaw);
-
-		// Normalize the camera vectors
-		cam.front = glm::normalize(direction); 
-		cam.right = glm::normalize(glm::cross(cam.front, glm::vec3(0.0f, 1.0f, 0.0f))); // Assuming Y-up world
-		cam.up = glm::normalize(glm::cross(cam.right, cam.front));
-	}
-
-	// Update the camera position based on keyboard input (WASD keys) and collision detection with the scene
-	void updateKeyboardInput(Camera& cam, float deltaT, GLFWwindow* window){
-		float movementSpeed = cam.moveSpeed * deltaT; // Calculate movement speed based on delta time to ensure consistent movement regardless of frame rate
-		const float playerRadius = 1.0f; // Radius of the player for collision detection
-
-		glm::vec3 movement(0.0f); // Initialize movement vector: it accumulates the movement direction based on key presses
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			movement += cam.front; // Move forward
-		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			movement -= cam.front; // Move backward
-		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			movement -= cam.right; // Move left
-		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			movement += cam.right; // Move right
-		}
-		movement.y = 0.0f; // Prevent vertical movement (Y-axis) to keep the player on the ground
-		if (glm::length(movement) > 0.0001f) {
-			movement = glm::normalize(movement) * movementSpeed; // Normalize the movement vector and scale it by the movement speed
-		}
-		glm::vec3 tryPosX = cam.cameraPos + glm::vec3(movement.x, 0.0f, 0.0f); // Try moving in the X direction
-		if (!collidesWithScene(tryPosX, playerRadius)) {
-			cam.cameraPos.x = tryPosX.x; // Update camera position if no collision
-		}
-		glm::vec3 tryPosZ = cam.cameraPos + glm::vec3(0.0f, 0.0f, movement.z); // Try moving in the Z direction
-		if (!collidesWithScene(tryPosZ, playerRadius)) {
-			cam.cameraPos.z = tryPosZ.z; // Update camera position if no collision
-		}
-	}
-
 	// ----------------- INTERACTION MANAGEMENT -------------------
 	// Add an interactable object with the specified ID, prompt, and info text to the list of interactables
 	void addInfoInteraction(const std::string& id, const std::string& prompt, const std::string& text){
@@ -489,7 +415,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		auto it = SC.InstanceIds.find(instanceId); // Look for the instance ID in the map SC.InstanceIds)
 		// 2. If the ID is not found, return a secure far away position (to avoid collisions)
 		if (it == SC.InstanceIds.end()) {
-			glm::vec3 farAwayPos = cam.cameraPos + glm::vec3(1000000.0f);
+			glm::vec3 farAwayPos = cam.getCameraPosition() + glm::vec3(1000000.0f);
 			return farAwayPos;
 		}
 		// 3. If the ID is found, retrieve the instance 
@@ -512,14 +438,14 @@ class Skeleton26ReplaceName : public BaseProject {
 			if(!interactables[i].active) 
 				continue; // Skip inactive interactables
 			glm::vec3 interactablePos = getInstanceWorldPosition(interactables[i].instanceId); // Get the world position of the interactable
-			glm::vec3 toInteractable = interactablePos - cam.cameraPos; // Calculate the vector from the camera to the interactable
+			glm::vec3 toInteractable = interactablePos - cam.getCameraPosition(); // Calculate the vector from the camera to the interactable
 			float distance = glm::length(toInteractable); // Calculate the distance to the interactable
 			if(distance > nearestDistance)
 				continue; // Skip if the distance is greater than the nearest distance found so far
 			if(distance > 0.001f){
 				glm::vec3 directionToInteractable = toInteractable / distance; // Normalize the vector to get the direction
 				// Check if the interactable is within the maximum angle threshold relative to the camera's front direction
-				if(glm::dot(directionToInteractable, cam.front) < cos(glm::radians(maxAngleDegrees)))
+				if(glm::dot(directionToInteractable, cam.getCameraFront()) < cos(glm::radians(maxAngleDegrees)))
 					continue;
 			}
 			nearestIndex = i; // Update the index of the nearest interactable
@@ -576,7 +502,6 @@ class Skeleton26ReplaceName : public BaseProject {
 		}
 	}
 
-
 	// Function to calculate the text scale based on the current window size. This ensures that the text remains readable across different window sizes.
 	float getTextScale(){
 		float s = std::min(currentWindowWidth/800.0f, currentWindowHeight/600.0f);
@@ -613,24 +538,14 @@ class Skeleton26ReplaceName : public BaseProject {
 		glm::vec3 m = glm::vec3(0.0f), r = glm::vec3(0.0f); // m = motion input, r = rotation input
 		bool fire = false; // fire = action input 
 		getSixAxis(deltaT, m, r, fire); // Retrieve input from a six-axis controller
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
-		if (firstMouse) { 
-			lastMouseX = xpos; 
-			lastMouseY = ypos; 
-			firstMouse = false; 
-		}
-		double dx = xpos - lastMouseX;
-		double dy = ypos - lastMouseY;
-		lastMouseX = xpos; 
-		lastMouseY = ypos;
 
-		// Update camera orientation based on mouse movement
-		// r.y = horizontal (yaw) input, r.x = vertical (pitch) input
-		updateMouseInput(cam, -(float)dx / 10.0f, -(float)dy / 10.0f);
-
-		// Update camera position based on keyboard input
-		updateKeyboardInput(cam, deltaT, window);
+		// ------------------ Process mouse and keyboard input ------------------
+		// Process mouse input to update the camera's orientation based on the current mouse position
+		cam.processMouseInput(window);
+		cam.processKeyboardInput(window, deltaT,
+			[this](glm::vec3 pos, float radius) { 
+				return collidesWithScene(pos, radius); 
+		});
 
 		// --------- Check for interactions with objects in the scene ---------
 		int nearestInteractableObjIndex = findNearestInteractable(10.0f); // Find the nearest interactable object
@@ -662,7 +577,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		Prj[1][1] *= -1; // Invert Y axis for Vulkan (Y toward down in Vulkan)
 
 		// --------- View matrix calculation (Look-in-direction) ---------
-		View = glm::lookAt(cam.cameraPos, cam.cameraPos + cam.front, cam.up);
+		View = glm::lookAt(cam.getCameraPosition(), cam.getCameraPosition() + cam.getCameraFront(), cam.getCameraUp());
 		
 		// View-Projection
 		ViewPrj = Prj * View;
