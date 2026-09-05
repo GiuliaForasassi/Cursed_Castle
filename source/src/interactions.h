@@ -101,7 +101,7 @@ class InteractionManager {
             // 3. Execute the effect based on the type of interaction
             switch(interactable.effect){
                 case EFFECT_INFO:
-                    currentInfoText = wrapText(interactable.infoText, 28); // Set the current info text to display, wrapped to 50 characters per line
+                    currentInfoText = interactable.infoText; // Set the current info text to display, wrapped to 50 characters per line
                     infoTextTimer = 10.0f; // Set the timer for how long the info text should be displayed (5 seconds)
                     break;
                 case EFFECT_OPEN_SECRET_DOOR: {

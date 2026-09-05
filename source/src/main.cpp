@@ -6,7 +6,10 @@
 #include <json.hpp>
 
 #include "modules/Starter.hpp"
+#ifndef TEXTMAKER_HPP_GUARD
+#define TEXTMAKER_HPP_GUARD
 #include "modules/TextMaker.hpp"
+#endif
 #ifndef SCENE_HPP_GUARD
 #define SCENE_HPP_GUARD
 #include "modules/Scene.hpp"
@@ -14,10 +17,13 @@
 #include "camera.h"
 #include "interactions.h"
 #include "utils.h"
+#include "game_state.h"
 
 
 #include <limits>
 #include <cstring>
+
+#define MAX_POINT_LIGHTS 8
 
 // Uniform buffer object for the local parameters (per object)
 struct UniformBufferObject {
@@ -30,6 +36,11 @@ struct GlobalUniformBufferObject {
 	alignas(16) glm::vec3 lightDir; // Direction of the light 
 	alignas(16) glm::vec4 lightColor; // Light color and intensity
 	alignas(16) glm::vec3 eyePos; // Position of the camera
+
+	// Point lights
+	alignas(16) glm::vec4 pointLightPos[MAX_POINT_LIGHTS]; // Position of the point light: x, y, z, w (w can be used for padding or other purposes)
+	alignas(16) glm::vec4 pointLightColor[MAX_POINT_LIGHTS]; // Color and intensity of the point light: r, g, b, intensity (and a = 1 if is light on, otherwise 0)
+	alignas(16) glm::vec4 fogColor; // Color of the fog (r, g, b, a); a = density = no fog if 0
 };
 
 // Vertex structure for vertex of the 3D model
@@ -73,6 +84,9 @@ class Skeleton26ReplaceName : public BaseProject {
 
 	// Interaction manager instance
 	InteractionManager interactionManager;
+
+	// Game state instance
+	GameManager gameManager;
 	
 	// Current window size
 	int currentWindowWidth = 800; // Current window width
@@ -162,7 +176,8 @@ class Skeleton26ReplaceName : public BaseProject {
 		VDRs.resize(1);
 		VDRs[0].init("VDposUV",  &VD);
 
-		PRs.resize(1); // This is the technique that will be used for the scene. It is a Blinn-Phong shader that uses the position and UV coordinates of the vertices.
+		PRs.resize(1); 
+		// This is the technique that will be used for the scene. It is a Blinn-Phong shader that uses the position and UV coordinates of the vertices.
 		PRs[0].init("BlinnPos", {
 							{&P, {//Pipeline and DSL for the main pass
 							 /*DSLglobal*/{},
@@ -178,42 +193,6 @@ class Skeleton26ReplaceName : public BaseProject {
 			std::cout << "ERROR LOADING THE SCENE\n";
 			exit(0);
 		}
-
-		// DEBUG
-		{
-			std::vector<std::string> meshesToMeasure = {
-			"floor", "wall01", "wall02", "tower", "castle01", "castle02", "steps", "concrete", "road01", "light"
-			};
-
-    		int stride = VD.Bindings[0].stride;
-
-    		for (const auto& meshName : meshesToMeasure) {
-				auto it = scene.MeshIds.find(meshName);
-				if (it == scene.MeshIds.end()) {
-					std::cout << "[MEASURE] mesh '" << meshName << "' NOT declared in scene.json\n";
-					continue;
-				}
-       			 Model *model = scene.M[it->second];
-
-				glm::vec3 minP( std::numeric_limits<float>::max());
-				glm::vec3 maxP(-std::numeric_limits<float>::max());
-
-				for (size_t off = 0; off + sizeof(Vertex) <= model->vertices.size(); off += stride) {
-					Vertex v{};
-					memcpy(&v, model->vertices.data() + off, sizeof(Vertex));
-					glm::vec3 p = glm::vec3(model->Wm * glm::vec4(v.pos, 1.0f));
-					minP = glm::min(minP, p);
-					maxP = glm::max(maxP, p);
-				}
-
-				glm::vec3 size = maxP - minP;
-				std::cout << "[MEASURE] " << meshName
-						<< " | min(" << minP.x << ", " << minP.y << ", " << minP.z << ")"
-						<< " | max(" << maxP.x << ", " << maxP.y << ", " << maxP.z << ")"
-						<< " | size(" << size.x << ", " << size.y << ", " << size.z << ")\n";
-			}
-		}
-		// DEBUG END
 
 		// Setup the interactions for the interactable objects in the scene
 		setupInteractions();
@@ -329,12 +308,19 @@ class Skeleton26ReplaceName : public BaseProject {
 									glm::rotate(glm::mat4(1), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		const glm::vec3 lightDir =  glm::vec3(lightView * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
 
-		// Populate the data structure of global uniforms (light and camera))
+		//--------- Populate the data structure of global uniforms (light and camera)) ---------
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = lightDir; // Update the light direction based on the rotation
 		gubo.lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)*5.0f; // Update the light color and intensity
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
+		//--------- Populate the point light data in the global uniform buffer ---------
+		gubo.pointLightPos[0] = glm::vec4(0.0f, 3.0f, 20.0f, 0.0f);
+		gubo.pointLightColor[0] = glm::vec4(3.0f, 1.8f, 0.9f, 1.0f);  // Active point light
+		for(int i = 1; i < 4; i++) {
+			gubo.pointLightPos[i] = glm::vec4(0.0f);
+			gubo.pointLightColor[i] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f); // Inactive point light (a = 0)
+		}
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
 
@@ -382,7 +368,7 @@ class Skeleton26ReplaceName : public BaseProject {
 	// TODO: You can add your own interactions here
 	void setupInteractions() {
 		// Add an info interaction for the "info01" object
-		interactionManager.addInfoInteraction("entrance_steps", "Press E for reading", "This tree represents...... (add story)."); // TODO: Replace with your own story or information
+		interactionManager.addInfoInteraction("entrance_steps", "Press E for reading", "This entrance steps represents...... (add a long story)."); // TODO: Replace with your own story or information
 		
 		// Add a trigger interaction for the "door01" object that opens the door when interacted with
 		interactionManager.addTriggerInteraction("wall_0_2_N", "wall_0_2_N", EFFECT_OPEN_SECRET_DOOR, "Press E to open the secret door");
@@ -401,31 +387,54 @@ class Skeleton26ReplaceName : public BaseProject {
 		bool fire = false; // fire = action input 
 		getSixAxis(deltaT, m, r, fire); // Retrieve input from a six-axis controller
 
-		// ------------------ Process mouse and keyboard input ------------------
-		// Process mouse input to update the camera's orientation based on the current mouse position
-		cam.processMouseInput(window);
-		cam.processKeyboardInput(window, deltaT, scene);
+		//------------------- 1. Handle Game State Input and UI -------------------
+		gameManager.handleInput(window, txt, currentWindowWidth, currentWindowHeight);
+    	gameManager.updateUI(txt, currentWindowWidth, currentWindowHeight);
 
-		// --------- Check for interactions with objects in the scene ---------
-		int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 10.0f); // Find the nearest interactable object
-		if (nearestInteractableObjIndex >= 0 && interactionManager.infoTextTimer <= 0.0f){
-			txt.print(0.5f, 0.85f, interactionManager.get(nearestInteractableObjIndex).prompt, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the prompt for the nearest interactable object
-		} else{
-			txt.removeText(2); // Remove any previous prompts 
-		}
+		// ------------------ 2. Process mouse/keyboard and Gameplay ------------------
+		if (gameManager.currentState == GameState::PLAYING) {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide and capture the cursor during gameplay
 
-		// Handle the 'E' key interaction
-		bool ePressedNow = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
-		interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam); 
+			// Process mouse input to update the camera's orientation based on the current mouse position
+			cam.processMouseInput(window);
+			cam.processKeyboardInput(window, deltaT, scene);
 
-		if(interactionManager.infoTextTimer > 0.0f){
-			interactionManager.infoTextTimer -= deltaT; // Decrease the timer for displaying info text
+
+			// --------- 3. Check for interactions with objects in the scene ---------
+			int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 10.0f); // Find the nearest interactable object
+			if (nearestInteractableObjIndex >= 0 && interactionManager.infoTextTimer <= 0.0f){
+				txt.print(0.5f, 0.85f, interactionManager.get(nearestInteractableObjIndex).prompt, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the prompt for the nearest interactable object
+			} else{
+				txt.removeText(2); // Remove any previous prompts 
+			}
+
+			// Handle the 'E' key interaction
+			bool ePressedNow = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
+			interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam); 
+
+			// TODO: rivedi come viene gestito il wrapping del testo informativo in base alla larghezza disponibile
 			if(interactionManager.infoTextTimer > 0.0f){
-				txt.print(0.5f, 0.7f, interactionManager.currentInfoText, 3, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the info text
+				interactionManager.infoTextTimer -= deltaT; // Decrease the timer for displaying info text
+				if(interactionManager.infoTextTimer > 0.0f){
+					int actualWidth, actualHeight;
+					glfwGetFramebufferSize(window, &actualWidth, &actualHeight);
+					float scale = getTextScale(actualWidth, actualHeight);
+					float availablePixels = actualWidth * 0.85f;
+					float maxWidthUnscaled = availablePixels / scale;
+					int maxCharsPerLine = estimateMaxCharsPerLine(actualWidth, scale);
+					// std::string wrappedInfoText = wrapText(interactionManager.currentInfoText, maxCharsPerLine);
+					std::string wrappedInfoText = wrapTextToWidth(txt, interactionManager.currentInfoText, 4, maxWidthUnscaled);
+					txt.print(0.5f, 0.7f, wrappedInfoText, 3, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, scale, scale);
+				}
+				else{
+					txt.removeText(3); // Remove the info text when the timer expires
+				}
 			}
-			else{
-				txt.removeText(3); // Remove the info text when the timer expires
-			}
+		} else {
+			// If we are in the menu (not interacting with objects), show the cursor and remove any interaction texts
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			txt.removeText(2);
+			txt.removeText(3);
 		}
 
 		// --------- Projection matrix calculation ---------
