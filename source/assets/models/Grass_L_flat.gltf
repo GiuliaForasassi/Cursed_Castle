@@ -1,0 +1,355 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 231,
+			"max": [1.06584, 2.105944, 0.35523],
+			"min": [-0.713066, -0.077953, -0.419515],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 231,
+			"max": [1, 0.386149, 0.981718, 1],
+			"min": [-0.887882, -0.28222, -0.99894, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 231,
+			"max": [0.99567, 0.982343, 0.996899],
+			"min": [-0.995823, -1, -0.885896],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 231,
+			"max": [1, 0.87],
+			"min": [0, 0],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 15,
+			"componentType": 5125,
+			"count": 333,
+			"max": [230],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5126,
+			"count": 201,
+			"max": [0.555386, 1.644841, 0.469012],
+			"min": [-0.491146, -0.072705, -0.511301],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5126,
+			"count": 201,
+			"max": [1, 0.322971, 0.999393, 1],
+			"min": [-0.947043, -0.153048, -0.950622, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 7,
+			"componentType": 5126,
+			"count": 201,
+			"max": [0.950997, 0.982336, 0.97649],
+			"min": [-0.995912, -1, -0.951233],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 8,
+			"componentType": 5126,
+			"count": 201,
+			"max": [1, 0.87],
+			"min": [0, 0],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 16,
+			"componentType": 5125,
+			"count": 291,
+			"max": [200],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 10,
+			"componentType": 5126,
+			"count": 162,
+			"max": [0.233344, 1.638737, 0.563248],
+			"min": [-0.90801, -0.060652, -0.5925],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 11,
+			"componentType": 5126,
+			"count": 162,
+			"max": [1, 0.517767, 0.998712, 1],
+			"min": [-0.962764, -0.371515, -0.969002, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 12,
+			"componentType": 5126,
+			"count": 162,
+			"max": [0.968984, 0.986415, 0.963273],
+			"min": [-0.989405, -1, -0.961978],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 13,
+			"componentType": 5126,
+			"count": 162,
+			"max": [1, 0.87],
+			"min": [0, 0],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 17,
+			"componentType": 5125,
+			"count": 234,
+			"max": [161],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 2772,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3696,
+			"byteOffset": 2772,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2772,
+			"byteOffset": 6468,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1848,
+			"byteOffset": 9240,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 333,
+			"byteOffset": 11088,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2412,
+			"byteOffset": 11424,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3216,
+			"byteOffset": 13836,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2412,
+			"byteOffset": 17052,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1608,
+			"byteOffset": 19464,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 291,
+			"byteOffset": 21072,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1944,
+			"byteOffset": 21364,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2592,
+			"byteOffset": 23308,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1944,
+			"byteOffset": 25900,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1296,
+			"byteOffset": 27844,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 234,
+			"byteOffset": 29140,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 29376,
+			"byteLength": 1332
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 30708,
+			"byteLength": 1164
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 31872,
+			"byteLength": 936
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 32808,
+			"uri": "Grass_L_flat0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"materials": [
+		{
+			"doubleSided": true,
+			"name": "H4B_canopy",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.064803, 0.371238, 0.074214, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		},
+		{
+			"doubleSided": true,
+			"name": "H4B_bush_brighter",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.097586, 0.502887, 0.090842, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		},
+		{
+			"doubleSided": true,
+			"name": "H4B_bush",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Grass_L_flat_Grass_L_flat",
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				},
+				{
+					"attributes": {
+						"NORMAL": 7,
+						"POSITION": 5,
+						"TANGENT": 6,
+						"TEXCOORD_0": 8
+					},
+					"indices": 9,
+					"material": 1,
+					"mode": 4
+				},
+				{
+					"attributes": {
+						"NORMAL": 12,
+						"POSITION": 10,
+						"TANGENT": 11,
+						"TEXCOORD_0": 13
+					},
+					"indices": 14,
+					"material": 2,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Grass_L_flat2"
+		},
+		{
+			"mesh": 0,
+			"name": "Grass_L_flat"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

@@ -1,0 +1,251 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 162,
+			"max": [0.406931, 1.643487, 0.333272],
+			"min": [-0.339253, -0.036724, -0.42408],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 162,
+			"max": [1, 0.322974, 0.997992, 1],
+			"min": [-0.964232, -0.136039, -0.966362, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 162,
+			"max": [0.969589, 0.982337, 0.898131],
+			"min": [-0.997225, -1, -0.96332],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 162,
+			"max": [1, 0.87],
+			"min": [0, 0],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 10,
+			"componentType": 5125,
+			"count": 234,
+			"max": [161],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5126,
+			"count": 108,
+			"max": [0.215456, 0.876727, 0.382692],
+			"min": [-0.480192, -0.043045, -0.218243],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5126,
+			"count": 108,
+			"max": [1, 0.187152, 0.948316, 1],
+			"min": [-0.663055, -0.027433, -0.879739, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 7,
+			"componentType": 5126,
+			"count": 108,
+			"max": [0.881378, 0.982328, 0.996073],
+			"min": [-0.948358, -1, -0.658059],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 8,
+			"componentType": 5126,
+			"count": 108,
+			"max": [1, 0.87],
+			"min": [0, 0],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 11,
+			"componentType": 5125,
+			"count": 156,
+			"max": [107],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 1944,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2592,
+			"byteOffset": 1944,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1944,
+			"byteOffset": 4536,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1296,
+			"byteOffset": 6480,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 234,
+			"byteOffset": 7776,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1296,
+			"byteOffset": 8012,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1728,
+			"byteOffset": 9308,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1296,
+			"byteOffset": 11036,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 864,
+			"byteOffset": 12332,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 156,
+			"byteOffset": 13196,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 13352,
+			"byteLength": 936
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 14288,
+			"byteLength": 624
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 14912,
+			"uri": "Grass_M_flat0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"materials": [
+		{
+			"doubleSided": true,
+			"name": "H4B_bush",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		},
+		{
+			"doubleSided": true,
+			"name": "H4B_bush_brighter",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.097586, 0.502887, 0.090842, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Grass_M_flat_Grass_M_flat",
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				},
+				{
+					"attributes": {
+						"NORMAL": 7,
+						"POSITION": 5,
+						"TANGENT": 6,
+						"TEXCOORD_0": 8
+					},
+					"indices": 9,
+					"material": 1,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Grass_M_flat2"
+		},
+		{
+			"mesh": 0,
+			"name": "Grass_M_flat"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

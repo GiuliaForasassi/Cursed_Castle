@@ -98,7 +98,7 @@ public:
     void updateUI(TextMaker& txt, int windowWidth, int windowHeight) {
         float scale = getTextScale(windowWidth, windowHeight);
 
-        // Colori a tema dark fantasy / oro
+        // Dark fantasy / gold themed colors
         glm::vec4 goldFill   = {1.0f, 0.85f, 0.4f, 1.0f};
         glm::vec4 whiteFill  = {0.95f, 0.95f, 0.95f, 1.0f};
         glm::vec4 darkStroke = {0.1f, 0.05f, 0.0f, 1.0f};
@@ -106,15 +106,34 @@ public:
 
         switch (currentState) {
             case GameState::TITLE:{
-                txt.print(0.5f, 0.35f, "CURSED CASTLE", 10, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.6f, scale * 1.6f);
+                // Color palette in Gothic Fantasy style
+                glm::vec4 goldBright = {1.0f, 0.88f, 0.45f, 1.0f};  // Oro chiaro brillante (per il titolo)
+                glm::vec4 goldSub    = {0.85f, 0.70f, 0.30f, 1.0f};  // Oro antico (per sottotitolo e fregi)
+                glm::vec4 darkBorder = {0.12f, 0.04f, 0.02f, 1.0f};  // Bordo scuro marcato
+                glm::vec4 deepShadow = {0.02f, 0.01f, 0.01f, 0.85f}; // Ombra profonda
 
-                txt.print(0.5f, 0.85f, "PRESS ENTER TO CONTINUE", 12, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_BOTTOM, goldFill, darkStroke, noShadow, scale * 0.9f, scale * 0.9f);
+                // 1. The main title centered on the screen (x = 0.0f, y = -0.30f)
+                txt.print(0.0f, -0.30f, "CURSED CASTLE", 10, "CO", false, true, false,
+                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
+                          goldBright, darkBorder, deepShadow,
+                          scale * 1.8f, scale * 1.8f);
+
+                // 2. Subtitle spaced vertically below the main title (y = -0.05f)
+                std::string subtitle = "--~ + Try to break the curse + ~--";
+                txt.print(0.0f, -0.05f, subtitle, 11, "CO", false, false, false,
+                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
+                          goldSub, darkBorder, deepShadow,
+                          scale * 0.90f, scale * 0.90f);
+
+                // 3. Prompt near the bottom of the screen (y = 0.75f)
+                txt.print(0.0f, 0.75f, "PRESS [ENTER] TO CONTINUE", 12, "CO", false, true, false,
+                          TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
+                          goldBright, darkBorder, deepShadow,
+                          scale * 0.85f, scale * 0.85f);
                 break;
             }
             case GameState::STORY: {
-                txt.print(0.5f, 0.20f, "HAUNTED CASTLE", 10, "CO", false, false, true,
+                txt.print(0.0f, -0.65f, "HAUNTED CASTLE", 10, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.3f, scale * 1.3f);
 
                 std::string story = "A dark curse plagues the ancient castle,\n"
@@ -123,15 +142,15 @@ public:
                                     "place them upon the altar, and break the curse\n"
                                     "before escaping to see the dawn!";
 
-                txt.print(0.5f, 0.50f, story, 11, "CO", false, false, true,
+                txt.print(0.0f, 0.0f, story, 11, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 0.95f, scale * 0.95f);
 
-                txt.print(0.5f, 0.88f, "PRESS ENTER TO CONTINUE", 12, "CO", false, false, true,
+                txt.print(0.0f, 0.80f, "PRESS ENTER TO CONTINUE", 12, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_BOTTOM, goldFill, darkStroke, noShadow, scale * 0.85f, scale * 0.85f);
                 break;
             }
             case GameState::CONTROLS: {
-                txt.print(0.5f, 0.20f, "GAME CONTROLS", 10, "CO", false, false, true,
+                txt.print(0.0f, -0.65f, "GAME CONTROLS", 10, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.4f, scale * 1.4f);
 
                 std::string controls = "[W][A][S][D]   Move\n\n"
@@ -139,41 +158,35 @@ public:
                                        "[E]           Interact / Pick Up / Place\n\n"
                                        "[TAB]         Open / Close Menu";
 
-                txt.print(0.5f, 0.52f, controls, 11, "CO", false, false, true,
+                txt.print(0.0f, 0.05f, controls, 11, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 1.0f, scale * 1.0f);
 
-                txt.print(0.5f, 0.88f, "PRESS [TAB] TO PLAY", 12, "CO", false, false, true,
+                txt.print(0.0f, 0.80f, "PRESS [TAB] TO PLAY", 12, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_BOTTOM, goldFill, darkStroke, noShadow, scale * 0.9f, scale * 0.9f);
                 break;
             }
             case GameState::PLAYING: {
-                // UI in gioco (es. contatore reliquie in alto a sinistra)
+                // Relics counter in the top-left corner
                 std::string questInfo = "Relics: " + std::to_string(relicsPlaced) + "/" + std::to_string(TOTAL_RELICS);
                 if (curseBroken) {
                     questInfo = "Curse Broken! Escape the castle!";
                 }
-                txt.print(0.05f, 0.05f, questInfo, 10, "CO", false, false, true,
+                txt.print(-0.90f, -0.90f, questInfo, 10, "CO", false, false, true,
                           TAL_LEFT, TRH_LEFT, TRV_TOP, goldFill, darkStroke, noShadow, scale * 0.85f, scale * 0.85f);
                 break;
             }
             case GameState::VICTORY: {
-                txt.print(0.5f, 0.35f, "CURSE BROKEN - YOU WON!", 10, "CO", false, false, true,
+                txt.print(0.0f, -0.25f, "CURSE BROKEN - YOU WON!", 10, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.5f, scale * 1.5f);
 
-                txt.print(0.5f, 0.55f, "You successfully escaped the castle under the clear blue sky.\n\n"
+                txt.print(0.0f, 0.15f, "You successfully escaped the castle under the clear blue sky.\n\n"
                                        "Press [R] to Play Again\n"
                                        "Press [ESC] to Exit", 11, "CO", false, false, true,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 1.0f, scale * 1.0f);
                 break;
             }
 
-
-
-
         }
 
     }
-
-
-  
 };

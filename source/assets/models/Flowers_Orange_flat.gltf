@@ -1,0 +1,340 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 624,
+			"max": [0.349445, 1.533328, 0.559472],
+			"min": [-0.547727, 0.847601, -0.58782],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 624,
+			"max": [0.974795, 0.9448, 0.968908, 1],
+			"min": [-0.994397, -0.997652, -0.99341, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 624,
+			"max": [0.992715, 0.993522, 0.990144],
+			"min": [-0.992679, -0.99259, -0.993946],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 624,
+			"max": [0.993103, 1],
+			"min": [0.031739, 0.527611],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 684,
+			"max": [623],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5126,
+			"count": 504,
+			"max": [0.426168, 1.55697, 0.582192],
+			"min": [-0.572319, 0.733391, -0.635953],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5126,
+			"count": 504,
+			"max": [0.996912, 0.821306, 0.990336, 1],
+			"min": [-0.99839, -0.879964, -0.987084, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 7,
+			"componentType": 5126,
+			"count": 504,
+			"max": [0.992224, 0.987733, 0.999738],
+			"min": [-0.993071, -0.985485, -0.999251],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 8,
+			"componentType": 5126,
+			"count": 504,
+			"max": [0.993103, 1],
+			"min": [0.02472, 0.527611],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 9,
+			"componentType": 5123,
+			"count": 504,
+			"max": [503],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 10,
+			"componentType": 5126,
+			"count": 1824,
+			"max": [0.934163, 1.421225, 0.720618],
+			"min": [-1.008212, -0.195113, -0.752634],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 11,
+			"componentType": 5126,
+			"count": 1824,
+			"max": [1, 0.936638, 0.995878, 1],
+			"min": [-0.995588, -0.460095, -0.999582, -1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 12,
+			"componentType": 5126,
+			"count": 1824,
+			"max": [0.999037, 0.998219, 0.996933],
+			"min": [-0.998216, -0.998366, -0.996948],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 13,
+			"componentType": 5126,
+			"count": 1824,
+			"max": [0.987183, 1],
+			"min": [0.036374, 0],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 14,
+			"componentType": 5123,
+			"count": 2556,
+			"max": [1823],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 7488,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 9984,
+			"byteOffset": 7488,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 7488,
+			"byteOffset": 17472,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4992,
+			"byteOffset": 24960,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1368,
+			"byteOffset": 29952,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 6048,
+			"byteOffset": 31320,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8064,
+			"byteOffset": 37368,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 6048,
+			"byteOffset": 45432,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4032,
+			"byteOffset": 51480,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1008,
+			"byteOffset": 55512,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 21888,
+			"byteOffset": 56520,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 29184,
+			"byteOffset": 78408,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 21888,
+			"byteOffset": 107592,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 14592,
+			"byteOffset": 129480,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 5112,
+			"byteOffset": 144072,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 149184,
+			"uri": "Flowers_Orange_flat0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"materials": [
+		{
+			"doubleSided": true,
+			"name": "H4B_mapple",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.916708, 0.028996, 0.029819, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		},
+		{
+			"doubleSided": true,
+			"name": "H4B_orange",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.918457, 0.282227, 0.025284, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		},
+		{
+			"doubleSided": true,
+			"name": "H4B_bush",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Flowers_Orange_flat_Flowers_Orange_flat",
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				},
+				{
+					"attributes": {
+						"NORMAL": 7,
+						"POSITION": 5,
+						"TANGENT": 6,
+						"TEXCOORD_0": 8
+					},
+					"indices": 9,
+					"material": 1,
+					"mode": 4
+				},
+				{
+					"attributes": {
+						"NORMAL": 12,
+						"POSITION": 10,
+						"TANGENT": 11,
+						"TEXCOORD_0": 13
+					},
+					"indices": 14,
+					"material": 2,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Flowers_Orange_flat2"
+		},
+		{
+			"mesh": 0,
+			"name": "Flowers_Orange_flat"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

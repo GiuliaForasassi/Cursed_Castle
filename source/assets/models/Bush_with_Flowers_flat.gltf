@@ -1,0 +1,280 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 246,
+			"max": [1.3677, 1.946094, 1.257069],
+			"min": [-1.342423, -0.202451, -1.601245],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 246,
+			"max": [0.980498, 0.999886, 0.882698, 1],
+			"min": [-0.784508, -0.969547, -0.956282, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 246,
+			"max": [0.984109, 0.933287, 0.977681],
+			"min": [-0.965814, -0.999331, -0.962506],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 246,
+			"max": [0.97818, 0.993378],
+			"min": [0.015198, 0.549157],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5126,
+			"count": 246,
+			"max": [1, 1, 1, 1],
+			"min": [1, 1, 1, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 12,
+			"componentType": 5125,
+			"count": 246,
+			"max": [245],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5126,
+			"count": 840,
+			"max": [1.310116, 1.94847, 1.300836],
+			"min": [-1.367619, 0.331499, -1.500524],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 7,
+			"componentType": 5126,
+			"count": 840,
+			"max": [0.990684, 0.996006, 0.960708, 1],
+			"min": [-0.851196, -0.995409, -0.970419, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 8,
+			"componentType": 5126,
+			"count": 840,
+			"max": [0.943393, 0.993424, 0.999789],
+			"min": [-0.943256, -0.998278, -0.999818],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 9,
+			"componentType": 5126,
+			"count": 840,
+			"max": [0.657282, 0.967803],
+			"min": [0.343908, 0.136049],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 10,
+			"componentType": 5126,
+			"count": 840,
+			"max": [1, 1, 1, 1],
+			"min": [1, 1, 1, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 11,
+			"componentType": 5123,
+			"count": 840,
+			"max": [839],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 2952,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3936,
+			"byteOffset": 2952,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2952,
+			"byteOffset": 6888,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1968,
+			"byteOffset": 9840,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3936,
+			"byteOffset": 11808,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 246,
+			"byteOffset": 15744,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 10080,
+			"byteOffset": 15992,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 13440,
+			"byteOffset": 26072,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 10080,
+			"byteOffset": 39512,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 6720,
+			"byteOffset": 49592,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 13440,
+			"byteOffset": 56312,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1680,
+			"byteOffset": 69752,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 71432,
+			"byteLength": 984
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 72416,
+			"uri": "Bush_with_Flowers_flat0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"materials": [
+		{
+			"doubleSided": true,
+			"name": "H4B_bush",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		},
+		{
+			"doubleSided": true,
+			"name": "H4B_mapple",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.916708, 0.028996, 0.029819, 1],
+				"metallicFactor": 0,
+				"roughnessFactor": 0.5
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Bush_with_Flowers_flat_Bush_with_Flowers_flat",
+			"primitives": [
+				{
+					"attributes": {
+						"COLOR_0": 4,
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 5,
+					"material": 0,
+					"mode": 4
+				},
+				{
+					"attributes": {
+						"COLOR_0": 10,
+						"NORMAL": 8,
+						"POSITION": 6,
+						"TANGENT": 7,
+						"TEXCOORD_0": 9
+					},
+					"indices": 11,
+					"material": 1,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Bush_with_Flowers_flat2"
+		},
+		{
+			"mesh": 0,
+			"name": "Bush_with_Flowers_flat"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

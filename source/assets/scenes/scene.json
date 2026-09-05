@@ -1,89 +1,139 @@
 {
 	"models": [
 		{
-			"id": "floor",
+			"id": "Ground_Tiles_Large",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Terrain_Grass_Flat.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Ground_Tiles_Large.gltf",
+			"format": "GLTF"
 		},
 		{
-			"id": "wall01",
+			"id": "Book_2",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Medieval_Castle_Wall_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Book_2.gltf",
+			"format": "GLTF"
 		},
 		{
-			"id": "wall02",
+			"id": "Altar",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Medieval_Castle_Wall_02.mgcg",
-			"format": "MGCG",
-			"collider": { "type": "OOBB"}
+			"model": "assets/models/Altar.gltf",
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
-			"id": "steps",
+			"id": "Throne",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Medieval_Castle_Steps.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Throne.gltf",
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
-			"id": "tower",
+			"id": "Stone_Statue",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Medieval_Castle_Tower.mgcg",
-			"format": "MGCG",
-			"collider": { "type": "OOBB"}
+			"model": "assets/models/Stone_Statue.gltf",
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
-			"id": "road01",
+			"id": "Rug_1_Way",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Medieval_Road_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Rug_1_Way.gltf",
+			"format": "GLTF"
 		},
 		{
-			"id": "light",
+			"id": "Wall",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Medieval_Light.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Wall.gltf",
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
-			"id": "tree_dead",
+			"id": "Wall_Door",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Natures_Tree_Dead_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Wall_Door.gltf",
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
-			"id": "tree",
+			"id": "Sword",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Natures_Tree_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Sword.gltf",
+			"format": "GLTF"
 		},
 		{
-			"id": "fir",
+			"id": "Cup_Golden_Large",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Natures_Tree_Fir_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Cup_Golden_Large.gltf",
+			"format": "GLTF"
 		},
 		{
-			"id": "bush",
+			"id": "Grass_L_flat",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Natures_Bush_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Grass_L_flat.gltf",
+			"format": "GLTF"
 		},
 		{
-			"id": "stone",
+			"id": "Grass_M_flat",
 			"VD": "VDposUV",
-			"model": "assets/models/SPW_Natures_Stone_01.mgcg",
-			"format": "MGCG"
+			"model": "assets/models/Grass_M_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Grass_S_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Grass_S_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Grass_M_Yellow_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Grass_M_Yellow_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Ground_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Ground_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Bush_M_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Bush_M_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Bush_with_Flowers_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Bush_with_Flowers_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Flowers_Red_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Flowers_Red_flat.gltf",
+			"format": "GLTF"
+		},
+		{
+			"id": "Flowers_Orange_flat",
+			"VD": "VDposUV",
+			"model": "assets/models/Flowers_Orange_flat.gltf",
+			"format": "GLTF"
 		}
 	],
 	"textures": [
 		{
-			"id": "natureTex",
-			"texture": "assets/textures/SPW_Natures_01.png",
-			"format": "C"
-		},
-		{
-			"id": "medievalTex",
-			"texture": "assets/textures/SPW_Medieval.png",
+			"id": "Texture",
+			"texture": "assets/textures/Texture.png",
 			"format": "C"
 		}
 	],
@@ -92,3983 +142,892 @@
 			"technique": "BlinnPos",
 			"elements": [
 				{
-					"id": "floor_0_1",
-					"model": "floor",
+					"id": "Ground1",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ceiling_0_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						11.000000866339,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "floor_0_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ceiling_0_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						11.000000866339,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "floor_0_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ceiling_0_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						11.000000866339,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "floor_0_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ceiling_0_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						11.000000866339,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "floor_-1_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ceiling_-1_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						11.000000866339,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_-1_2_N",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-20.0,
-						1.1136e-07,
-						49.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_-1_2_S",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-20.0,
-						1.1136e-07,
-						29.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_-1_2_W",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-30.05,
-						1.1136e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_0_E",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						9.95,
-						1.1136e-07,
-						-3.061616997868386e-18
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_0_W",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-10.05,
-						1.1136e-07,
-						-3.061616997868386e-18
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_1_E",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						9.95,
-						1.1136e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_1_W",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-10.05,
-						1.1136e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_2_E",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						9.95,
-						1.1136e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_3_N",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						0.0,
-						1.1136e-07,
-						69.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_3_E",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						9.95,
-						1.1136e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "wall_0_3_W",
-					"model": "wall02",
-					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-10.05,
-						1.1136e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-5_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-100.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-4_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-80.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-3_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-60.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-2_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-40.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_-1_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-20.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_0_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						0.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_1_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						20.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_2_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						40.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_-4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_-3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_-2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_-1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_0",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						0.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_1",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_2",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_3",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_4",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_5",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_6",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": "ground_3_7",
-					"model": "floor",
-					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						60.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_-4",
-					"model": "floor",
+					"id": "Ground2",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						-80.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_-3",
-					"model": "floor",
+					"id": "Ground3",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_-2",
-					"model": "floor",
+					"id": "Ground4",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						-40.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_-1",
-					"model": "floor",
+					"id": "Ground5",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_0",
-					"model": "floor",
+					"id": "Ground6",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						0.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_1",
-					"model": "floor",
+					"id": "Ground7",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_2",
-					"model": "floor",
+					"id": "Ground8",
+					"model": "Ground_Tiles_Large",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						40.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,4.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_3",
-					"model": "floor",
+					"id": "Book_1",
+					"model": "Book_2",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,3.36551713943481,0.0,4.0,0.0,0.526101469993591,0.0,0.0,4.0,5.40370845794678,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_4",
-					"model": "floor",
+					"id": "Altar",
+					"model": "Altar",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						80.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-7.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_5",
-					"model": "floor",
+					"id": "Throne",
+					"model": "Throne",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,0.0,-4.0,0.0,0.0,4.0,0.0,0.0,4.0,0.0,-0.000000174845553146952,-12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_6",
-					"model": "floor",
+					"id": "StatueL",
+					"model": "Stone_Statue",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						120.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,0.0,-4.0,-4.0,0.0,4.0,0.0,0.0,4.0,0.0,-0.000000174845553146952,-11.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "ground_4_7",
-					"model": "floor",
+					"id": "StatueR",
+					"model": "Stone_Statue",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						7.54979e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,0.0,-4.0,4.0,0.0,4.0,0.0,0.0,4.0,0.0,-0.000000174845553146952,-11.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tower_sw",
-					"model": "tower",
+					"id": "StatueW1",
+					"model": "Stone_Statue",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-30.000005,
-						0.000166256,
-						-9.999995
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-7.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tower_se",
-					"model": "tower",
+					"id": "StatueE1",
+					"model": "Stone_Statue",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						9.999995,
-						0.000166256,
-						-9.999995
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,7.0,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,0.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tower_nw",
-					"model": "tower",
+					"id": "Rug1",
+					"model": "Rug_1_Way",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-30.000005,
-						0.000166256,
-						70.000005
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0799999982118607,0.0,0.0,4.0,-4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tower_ne",
-					"model": "tower",
+					"id": "Rug2",
+					"model": "Rug_1_Way",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						9.999995,
-						0.000166256,
-						70.000005
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0799999982118607,0.0,0.0,4.0,0.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "entrance_steps",
-					"model": "steps",
+					"id": "Wall_N__",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						0.0,
-						1.13247e-07,
-						-10.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.0,0.0,4.0,-6.0,0.0,4.0,0.0,0.0,4.0,0.0,0.0,-16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "entrance_light_L",
-					"model": "light",
+					"id": "Wall_N__B",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-2.5,
-						0.000236702,
-						-13.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,-0.0000000000000152854837213176,-4.0,-6.0,-0.000000349691106293903,4.0,0.0,0.0,-4.0,-0.000000349691106293903,0.000000174845553146952,-15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "entrance_light_R",
-					"model": "light",
+					"id": "Wall_N_1",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						2.5,
-						0.000236702,
-						-13.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
-					
+					"transform": [0.0,0.0,4.0,-2.0,0.0,4.0,0.0,0.0,4.0,0.0,0.0,-16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "road_0",
-					"model": "road01",
+					"id": "Wall_N_1B",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						0.0,
-						3.77489e-07,
-						-15.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,-0.0000000000000152854837213176,-4.0,-2.0,-0.000000349691106293903,4.0,0.0,0.0,-4.0,-0.000000349691106293903,0.000000174845553146952,-15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "road_1",
-					"model": "road01",
+					"id": "Wall_N_2",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						0.0,
-						3.77489e-07,
-						-25.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.0,0.0,4.0,2.0,0.0,4.0,0.0,0.0,4.0,0.0,0.0,-16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "road_2",
-					"model": "road01",
+					"id": "Wall_N_2B",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						0.0,
-						3.77489e-07,
-						-35.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,-0.0000000000000152854837213176,-4.0,2.0,-0.000000349691106293903,4.0,0.0,0.0,-4.0,-0.000000349691106293903,0.000000174845553146952,-15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "road_3",
-					"model": "road01",
+					"id": "Wall_N_3",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						0.0,
-						3.77489e-07,
-						-45.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.0,0.0,4.0,6.0,0.0,4.0,0.0,0.0,4.0,0.0,0.0,-16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "road_4",
-					"model": "road01",
+					"id": "Wall_N_3B",
+					"model": "Wall",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						0.0,
-						3.77489e-07,
-						-55.0
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [-0.000000174845553146952,-0.0000000000000152854837213176,-4.0,6.0,-0.000000349691106293903,4.0,0.0,0.0,-4.0,-0.000000349691106293903,0.000000174845553146952,-15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_0",
-					"model": "tree_dead",
+					"id": "Wall_E__",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-75.81443605976779,
-						0.0,
-						106.43542212619118
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						77.97578296702082,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,8.00000095367432,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_1",
-					"model": "tree_dead",
+					"id": "Wall_E__B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						37.479431415790515,
-						0.0,
-						-23.884814337327228
-					],
-					"eulerAngles": [
-						90.0,
-						151.96196720977824,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.60000133514404,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_2",
-					"model": "tree_dead",
+					"id": "Wall_E_1",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						17.286735090097338,
-						0.0,
-						93.5191372498129
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						10.45468352695246,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,8.00000095367432,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_3",
-					"model": "tree_dead",
+					"id": "Wall_E_1B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-83.10527438063772,
-						0.0,
-						-73.7635551651586
-					],
-					"eulerAngles": [
-						90.0,
-						79.80899985829262,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.60000133514404,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_4",
-					"model": "tree_dead",
+					"id": "Wall_E_2",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						50.43771870557654,
-						0.0,
-						15.208754939111742
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						157.63953371420595,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,8.00000095367432,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_5",
-					"model": "tree_dead",
+					"id": "Wall_E_2B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						37.21041484242957,
-						0.0,
-						-79.53666826275565
-					],
-					"eulerAngles": [
-						90.0,
-						178.49240689746622,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.60000133514404,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_6",
-					"model": "tree_dead",
+					"id": "Wall_E_3",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-58.82280017131853,
-						0.0,
-						127.95955302186292
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						83.91040209272614,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,8.0,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_7",
-					"model": "tree_dead",
+					"id": "Wall_E_3B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						62.25694237006704,
-						0.0,
-						-73.27020373261823
-					],
-					"eulerAngles": [
-						90.0,
-						83.11195495475434,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.60000038146973,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_8",
-					"model": "tree_dead",
+					"id": "Wall_E_4",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-95.41974502117705,
-						0.0,
-						39.11074401456925
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						78.7611734415679,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,8.0,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_dead_9",
-					"model": "tree_dead",
+					"id": "Wall_E_4B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						69.0468493001319,
-						0.0,
-						3.8649322914067312
-					],
-					"eulerAngles": [
-						90.0,
-						165.45724766558408,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.60000038146973,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,-2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_0",
-					"model": "tree",
+					"id": "Wall_E_5",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						72.08616894006488,
-						0.0,
-						128.52204715305686
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						189.2709968925702,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,7.99999952316284,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_1",
-					"model": "tree",
+					"id": "Wall_E_5B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-89.82075380917443,
-						0.0,
-						-61.32816106503724
-					],
-					"eulerAngles": [
-						90.0,
-						201.7837299695396,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.59999990463257,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,-6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_2",
-					"model": "tree",
+					"id": "Wall_E_6",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						50.38979806330093,
-						0.0,
-						81.91339759507511
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						85.00442656142235,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,7.99999904632568,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_3",
-					"model": "tree",
+					"id": "Wall_E_6B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						4.616723080160554,
-						0.0,
-						-45.15576854394277
-					],
-					"eulerAngles": [
-						90.0,
-						8.58890849068159,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.59999942779541,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,-10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_4",
-					"model": "tree",
+					"id": "Wall_E_7",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						30.142174622743852,
-						0.0,
-						138.8603038489434
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						117.05145435401761,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,7.99999856948853,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_5",
-					"model": "tree",
+					"id": "Wall_E_7B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						70.89118515678385,
-						0.0,
-						39.718950434450576
-					],
-					"eulerAngles": [
-						90.0,
-						49.211061475128,
-						0.0
-					]
+					"transform": [4.0,0.0,0.000000699382212587807,7.59999895095825,0.0,4.0,0.0,0.0,-0.000000699382212587807,0.0,4.0,-14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_6",
-					"model": "tree",
+					"id": "Wall_W__",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-93.53362070928563,
-						0.0,
-						-73.96213144001982
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						183.68058450139242,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "tree_7",
-					"model": "tree",
+					"id": "Wall_W__B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-31.597314057871912,
-						0.0,
-						116.19368072222323
-					],
-					"eulerAngles": [
-						90.0,
-						359.52608454931874,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "fir_0",
-					"model": "fir",
+					"id": "Wall_W_1",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-57.16636712345955,
-						0.0,
-						39.730429565109404
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						230.0645305958983,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "fir_1",
-					"model": "fir",
+					"id": "Wall_W_1B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						12.62965473944972,
-						0.0,
-						-65.58365096724111
-					],
-					"eulerAngles": [
-						90.0,
-						54.22191264846862,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "fir_2",
-					"model": "fir",
+					"id": "Wall_W_2",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-97.62976152012266,
-						0.0,
-						104.2431980612212
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						228.54983698266784,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "fir_3",
-					"model": "fir",
+					"id": "Wall_W_2B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-53.31627742095863,
-						0.0,
-						-28.447188569726798
-					],
-					"eulerAngles": [
-						90.0,
-						312.49631057158683,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "fir_4",
-					"model": "fir",
+					"id": "Wall_W_3",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						79.2160703918833,
-						0.0,
-						23.457971654938547
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						188.34523573798847,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,-2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "fir_5",
-					"model": "fir",
+					"id": "Wall_W_3B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						50.56306122938997,
-						0.0,
-						24.79770591385369
-					],
-					"eulerAngles": [
-						90.0,
-						266.85066823253646,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,-2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_0",
-					"model": "bush",
+					"id": "Wall_W_4",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-57.511343847261784,
-						0.0,
-						-57.30347246924252
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						316.81827049003175,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_1",
-					"model": "bush",
+					"id": "Wall_W_4B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-28.70951633007742,
-						0.0,
-						-45.90610042346974
-					],
-					"eulerAngles": [
-						90.0,
-						31.21857094857186,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_2",
-					"model": "bush",
+					"id": "Wall_W_5",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-88.02728277767382,
-						0.0,
-						8.35002318671647
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						218.10667813915674,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_3",
-					"model": "bush",
+					"id": "Wall_W_5B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						65.2319077557894,
-						0.0,
-						96.09951732907788
-					],
-					"eulerAngles": [
-						90.0,
-						241.81252434593037,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,6.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_4",
-					"model": "bush",
+					"id": "Wall_W_6",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						37.72926845097891,
-						0.0,
-						-31.175801348130122
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						182.14335925574952,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_5",
-					"model": "bush",
+					"id": "Wall_W_6B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-68.92038472863359,
-						0.0,
-						-56.63967566506337
-					],
-					"eulerAngles": [
-						90.0,
-						64.0044627266824,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,10.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_6",
-					"model": "bush",
+					"id": "Wall_W_7",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-61.40792213579503,
-						0.0,
-						124.0446389141733
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						170.49163953065226,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,-8.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_7",
-					"model": "bush",
+					"id": "Wall_W_7B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						49.20560878011548,
-						0.0,
-						97.46351627451116
-					],
-					"eulerAngles": [
-						90.0,
-						32.16463461554052,
-						0.0
-					]
+					"transform": [-4.0,0.0,-0.000000349691106293903,-7.60000038146973,0.0,4.0,0.0,0.0,0.000000349691106293903,0.0,-4.0,14.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_8",
-					"model": "bush",
+					"id": "Wall_S__",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						44.08061093773392,
-						0.0,
-						-37.444164035767194
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						336.4518110039669,
-						0.0
-					]
+					"transform": [-0.000000349691106293903,0.0,-4.0,6.0,0.0,4.0,0.0,0.0,-4.0,0.0,0.000000349691106293903,15.9999990463257,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "bush_9",
-					"model": "bush",
+					"id": "Wall_S__B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						31.741047598169246,
-						0.0,
-						108.02263875809638
-					],
-					"eulerAngles": [
-						90.0,
-						311.57430126662996,
-						0.0
-					]
+					"transform": [0.000000524536631019146,0.0000000000000458564528580188,4.0,6.0,-0.000000349691106293903,4.0,0.0,0.0,4.0,0.000000349691106293903,-0.000000524536631019146,15.5999994277954,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_0",
-					"model": "stone",
+					"id": "Wall_S_1",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						43.13484180182539,
-						0.0,
-						127.33906243095106
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						286.9729169152336,
-						0.0
-					]
+					"transform": [-0.000000349691106293903,0.0,-4.0,4.0,0.0,4.0,0.0,0.0,-4.0,0.0,0.000000349691106293903,16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_1",
-					"model": "stone",
+					"id": "Wall_S_1B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						33.18174345318752,
-						0.0,
-						122.91149926639173
-					],
-					"eulerAngles": [
-						90.0,
-						49.956270623605135,
-						0.0
-					]
+					"transform": [0.000000524536631019146,0.0000000000000458564528580188,4.0,4.0,-0.000000349691106293903,4.0,0.0,0.0,4.0,0.000000349691106293903,-0.000000524536631019146,15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_2",
-					"model": "stone",
+					"id": "Wall_S_2",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-94.77905890894935,
-						0.0,
-						22.43698396318318
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						222.28290736780198,
-						0.0
-					]
+					"transform": [-0.000000349691106293903,0.0,-4.0,-4.0,0.0,4.0,0.0,0.0,-4.0,0.0,0.000000349691106293903,16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_3",
-					"model": "stone",
+					"id": "Wall_S_2B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						69.80420905969646,
-						0.0,
-						62.77440169012331
-					],
-					"eulerAngles": [
-						90.0,
-						45.611723718097096,
-						0.0
-					]
+					"transform": [0.000000524536631019146,0.0000000000000458564528580188,4.0,-4.0,-0.000000349691106293903,4.0,0.0,0.0,4.0,0.000000349691106293903,-0.000000524536631019146,15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_4",
-					"model": "stone",
+					"id": "Wall_S_3",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						62.16208851511209,
-						0.0,
-						-55.09468777630824
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.6389503929124718,
-						0.0
-					]
+					"transform": [-0.000000349691106293903,0.0,-4.0,-6.0,0.0,4.0,0.0,0.0,-4.0,0.0,0.000000349691106293903,16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_5",
-					"model": "stone",
+					"id": "Wall_S_3B",
+					"model": "Wall",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						-97.6394458739976,
-						0.0,
-						-32.319443897953406
-					],
-					"eulerAngles": [
-						90.0,
-						313.70570810074156,
-						0.0
-					]
+					"transform": [0.000000524536631019146,0.0000000000000458564528580188,4.0,-6.0,-0.000000349691106293903,4.0,0.0,0.0,4.0,0.000000349691106293903,-0.000000524536631019146,15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_6",
-					"model": "stone",
+					"id": "Wall_S_Arc",
+					"model": "Wall_Door",
 					"texture": [
-						"natureTex"
-					],
-					"translate": [
-						-49.693174118000144,
-						0.0,
-						121.59598179788142
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						75.40429769824244,
-						0.0
-					]
+					"transform": [-0.000000349691106293903,0.0,-4.0,0.0,0.0,4.0,0.0,0.0,-4.0,0.0,0.000000349691106293903,16.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "stone_7",
-					"model": "stone",
+					"id": "Wall_S_ArcB",
+					"model": "Wall_Door",
 					"texture": [
-						"natureTex"
+						"Texture"
 					],
-					"translate": [
-						37.8305812932455,
-						0.0,
-						-44.88707328123159
-					],
-					"eulerAngles": [
-						90.0,
-						77.57322092090361,
-						0.0
-					]
+					"transform": [0.000000524536631019146,0.0000000000000458564528580188,4.0,-0.000000034969076523339,-0.000000349691106293903,4.0,0.0,0.0,4.0,0.000000349691106293903,-0.000000524536631019146,15.6000003814697,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_-5",
-					"model": "wall02",
+					"id": "Rug3",
+					"model": "Rug_1_Way",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-100.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0799999982118607,0.0,0.0,4.0,4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_-5",
-					"model": "wall02",
+					"id": "Rug4",
+					"model": "Rug_1_Way",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-100.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0799999982118607,0.0,0.0,4.0,8.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_-4",
-					"model": "wall02",
+					"id": "Rug5",
+					"model": "Rug_1_Way",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-80.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,0.0,0.0,4.0,0.0,0.0799999982118607,0.0,0.0,4.0,12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_-4",
-					"model": "wall02",
+					"id": "Sword",
+					"model": "Sword",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-80.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.00000000000000764274186065882,-0.000000174845553146952,4.0,4.68315124511719,-4.0,-0.000000174845553146952,0.0,0.478119850158691,0.000000174845553146952,-4.0,-0.000000174845553146952,5.47217464447021,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_-3",
-					"model": "wall02",
+					"id": "Cup",
+					"model": "Cup_Golden_Large",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-60.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [4.0,0.0,0.0,5.88315105438232,0.0,4.0,0.0,0.478119850158691,0.0,0.0,4.0,5.47217464447021,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_-3",
-					"model": "wall02",
+					"id": "Grass_N_1",
+					"model": "Grass_L_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-60.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.75,0.0,0.0,-5.0,0.0,0.75,0.0,0.0500000007450581,0.0,0.0,0.75,-18.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_-2",
-					"model": "wall02",
+					"id": "Grass_N_2",
+					"model": "Grass_M_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-40.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.899999976158142,0.0,0.0,3.0,0.0,0.899999976158142,0.0,0.0500000007450581,0.0,0.0,0.899999976158142,-18.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_-2",
-					"model": "wall02",
+					"id": "Grass_N_3",
+					"model": "Grass_S_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-40.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [1.0,0.0,0.0,6.0,0.0,1.0,0.0,0.0500000007450581,0.0,0.0,1.0,-17.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_-1",
-					"model": "wall02",
+					"id": "Grass_N_4",
+					"model": "Grass_M_Yellow_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-20.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.75,0.0,0.0,5.5,0.0,0.75,0.0,0.0500000007450581,0.0,0.0,0.75,-14.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_-1",
-					"model": "wall02",
+					"id": "Grass_E_1",
+					"model": "Grass_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-20.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.899999976158142,0.0,0.0,10.0,0.0,0.899999976158142,0.0,0.0500000007450581,0.0,0.0,0.899999976158142,-1.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_0",
-					"model": "wall02",
+					"id": "Grass_E_2",
+					"model": "Grass_L_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						0.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.75,0.0,0.0,10.5,0.0,0.75,0.0,0.0500000007450581,0.0,0.0,0.75,3.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_0",
-					"model": "wall02",
+					"id": "Grass_E_3",
+					"model": "Grass_S_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						0.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [1.0,0.0,0.0,10.0,0.0,1.0,0.0,0.0500000007450581,0.0,0.0,1.0,7.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_1",
-					"model": "wall02",
+					"id": "Grass_W_1",
+					"model": "Grass_L_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						20.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.75,0.0,0.0,-10.0,0.0,0.75,0.0,0.0500000007450581,0.0,0.0,0.75,-1.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_1",
-					"model": "wall02",
+					"id": "Grass_W_2",
+					"model": "Grass_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						20.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.899999976158142,0.0,0.0,-10.5,0.0,0.899999976158142,0.0,0.0500000007450581,0.0,0.0,0.899999976158142,4.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_2",
-					"model": "wall02",
+					"id": "Grass_W_3",
+					"model": "Grass_M_Yellow_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						40.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.75,0.0,0.0,-10.0,0.0,0.75,0.0,0.0500000007450581,0.0,0.0,0.75,9.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_2",
-					"model": "wall02",
+					"id": "Grass_S_1",
+					"model": "Grass_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						40.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.899999976158142,0.0,0.0,-4.0,0.0,0.899999976158142,0.0,0.0500000007450581,0.0,0.0,0.899999976158142,27.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_3",
-					"model": "wall02",
+					"id": "Grass_S_2",
+					"model": "Grass_L_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						60.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.75,0.0,0.0,4.0,0.0,0.75,0.0,0.0500000007450581,0.0,0.0,0.75,26.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_3",
-					"model": "wall02",
+					"id": "Grass_S_3",
+					"model": "Grass_S_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						60.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [1.0,0.0,0.0,0.5,0.0,1.0,0.0,0.0500000007450581,0.0,0.0,1.0,28.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_S_4",
-					"model": "wall02",
+					"id": "OG__",
+					"model": "Ground_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						80.0,
-						1.1136e-07,
-						-90.05
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.00499999988824129,0.0,0.0,-9.0,0.0,0.00499999988824129,0.0,0.0,0.0,0.0,0.00499999988824129,-20.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_N_4",
-					"model": "wall02",
+					"id": "OG_1",
+					"model": "Ground_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						80.0,
-						1.1136e-07,
-						149.95
-					],
-					"eulerAngles": [
-						90.0,
-						0.0,
-						0.0
-					]
+					"transform": [0.00499999988824129,0.0,0.0,-9.71945285797119,0.0,0.00499999988824129,0.0,0.0,0.0,0.0,0.00499999988824129,-20.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_-4",
-					"model": "wall02",
+					"id": "GardenPathS",
+					"model": "Ground_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						-80.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.0149999996647239,0.0,0.0,0.0,0.0,0.0149999996647239,0.0,0.00999999977648258,0.0,0.0,0.0149999996647239,28.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_-4",
-					"model": "wall02",
+					"id": "Bush_N_1",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						-80.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-6.5,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-21.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_-3",
-					"model": "wall02",
+					"id": "Bush_N_2",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						-60.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-2.5,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-21.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_-3",
-					"model": "wall02",
+					"id": "Bush_N_3",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						-60.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,3.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-21.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_-2",
-					"model": "wall02",
+					"id": "Bush_N_4",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						-40.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,7.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-20.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_-2",
-					"model": "wall02",
+					"id": "Flowers_N_1",
+					"model": "Flowers_Red_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						-40.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,-4.5,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,-18.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_-1",
-					"model": "wall02",
+					"id": "Flowers_N_2",
+					"model": "Flowers_Orange_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						-20.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,5.0,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,-18.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_-1",
-					"model": "wall02",
+					"id": "Bush_W_1",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						-20.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-13.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_0",
-					"model": "wall02",
+					"id": "Bush_W_2",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						-3.061616997868386e-18
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-13.5,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-7.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_0",
-					"model": "wall02",
+					"id": "Flowers_W_1",
+					"model": "Flowers_Orange_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						-3.061616997868386e-18
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,-13.0,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,-3.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_1",
-					"model": "wall02",
+					"id": "Bush_W_3",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						20.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-13.5,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_1",
-					"model": "wall02",
+					"id": "Bush_W_4",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						20.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-13.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,7.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_2",
-					"model": "wall02",
+					"id": "Flowers_W_2",
+					"model": "Flowers_Red_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						40.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,-13.0,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,11.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_2",
-					"model": "wall02",
+					"id": "Bush_E_1",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						40.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,13.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-12.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_3",
-					"model": "wall02",
+					"id": "Flowers_E_1",
+					"model": "Flowers_Red_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						60.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,13.5,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,-7.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_3",
-					"model": "wall02",
+					"id": "Bush_E_2",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						60.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,13.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,-2.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_4",
-					"model": "wall02",
+					"id": "Flowers_E_2",
+					"model": "Flowers_Orange_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						80.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,13.5,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,3.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_4",
-					"model": "wall02",
+					"id": "Bush_E_3",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						80.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,13.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,8.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_5",
-					"model": "wall02",
+					"id": "Bush_S_1",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						100.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-7.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,31.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_5",
-					"model": "wall02",
+					"id": "Bush_S_2",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						100.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,-3.0,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,31.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_6",
-					"model": "wall02",
+					"id": "Bush_S_3",
+					"model": "Bush_with_Flowers_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						120.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,3.5,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,31.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_6",
-					"model": "wall02",
+					"id": "Bush_S_4",
+					"model": "Bush_M_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						120.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.5,0.0,0.0,7.5,0.0,0.5,0.0,0.0500000007450581,0.0,0.0,0.5,30.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_W_7",
-					"model": "wall02",
+					"id": "Flowers_S_1",
+					"model": "Flowers_Orange_flat",
 					"texture": [
-						"medievalTex"
+						"Texture"
 					],
-					"translate": [
-						-110.05,
-						1.1136e-07,
-						140.0
-					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,-5.0,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,28.5,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "boundary_E_7",
-					"model": "wall02",
+					"id": "Flowers_S_2",
+					"model": "Flowers_Red_flat",
 					"texture": [
-						"medievalTex"
-					],
-					"translate": [
-						89.95,
-						1.1136e-07,
-						140.0
+						"Texture"
 					],
-					"eulerAngles": [
-						90.0,
-						90.0,
-						0.0
-					]
+					"transform": [0.200000002980232,0.0,0.0,5.5,0.0,0.200000002980232,0.0,0.0500000007450581,0.0,0.0,0.200000002980232,28.5,0.0,0.0,0.0,1.0]
 				}
 			]
 		}
