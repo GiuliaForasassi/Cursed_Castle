@@ -17,7 +17,8 @@ enum InteractionEffects {
     EFFECT_OPEN_SECRET_DOOR, 
     EFFECT_PICKUP_RELIC, 
     EFFECT_PICKUP_KEY,
-    EFFECT_UNLOCK_DOOR,
+    EFFECT_OPEN_DOOR, // Open door if you interact with it
+    EFFECT_UNLOCK_DOOR, // Unlock door if you have the required key
     EFFECT_ALTAR_DEPOSIT
 };
 // Structure to define an interactable object in the scene
@@ -31,6 +32,22 @@ struct Interactable {
 	bool active = true; // Whether the interactable is active
 };
 
+struct AnimatedDoor {
+    std::string instanceId;
+    enum State { CLOSED, OPENING, STAY_OPEN, CLOSING } state = CLOSED;
+    float currentAngle = 0.0f; // degrees
+    float targetAngle = 90.0f; // opening of 90 degrees
+    float speed = 90.0f; // degrees per second (opens in 1 second)
+    float openTimer = 0.0f;
+    float openDuration = 5.0f;
+    glm::mat4 initialWm = glm::mat4(1.0f);
+    bool initialWmSaved = false;
+    Collider* originalCollider = nullptr;
+    // Cardine in coordinate locali del modello Door (larghezza anta lungo Z, semilarghezza 0.172)
+    glm::vec3 hinge = glm::vec3(0.0f, 0.0f, -0.1719f);
+    float openSign = 1.0f; // verso di apertura: +1 o -1
+    };
+
 class InteractionManager {
     // List of interactable objects in the scene
 	std::vector<Interactable> interactables; 
@@ -38,6 +55,9 @@ class InteractionManager {
 	bool ePressed = false; 
     std::unordered_set<std::string> inventoryKeys;
     std::unordered_set<std::string> collectedRelics; // Set of collected relics
+
+    // Map to store the state of animated doors in the scene
+    std::unordered_map<std::string, AnimatedDoor> doors;
 
     //----------------- Helper functions for getting instance world position -------------------
     // Function to get the world position of an instance based on its ID
@@ -102,6 +122,25 @@ class InteractionManager {
             if (index < 0 || index >= (int)interactables.size()) return "";
             const Interactable& item = interactables[index];
 
+            if (item.effect == EFFECT_UNLOCK_DOOR) {
+                if (doors.count(item.instanceId) && doors.at(item.instanceId).state != AnimatedDoor::CLOSED) {
+                    return ""; // Se la porta è già aperta, non mostrare alcun prompt
+                }
+                if (inventoryKeys.count(item.requiredKey)) {
+                    return "Press E to unlock and open Door";
+                } else {
+                    return "Locked Door (Requires " + item.requiredKey + ")";
+                }
+            }
+
+
+            if (item.effect == EFFECT_OPEN_DOOR) {
+                if (doors.count(item.instanceId) && doors.at(item.instanceId).state != AnimatedDoor::CLOSED) {
+                    return ""; // Se la porta è già aperta, non mostrare prompt
+                }
+                return "Press E to open Door";
+            }
+
             if (item.effect == EFFECT_ALTAR_DEPOSIT) {
                 if (gm.curseBroken) {
                     return "The Altar is glowing (Curse is broken!)";
@@ -112,6 +151,82 @@ class InteractionManager {
                 return "Sacred Altar (Find relics in the castle first)";
             }
             return item.prompt;
+        }
+
+        void startOpeningDoor(Scene& scena, const std::string& doorId) {
+            auto d = doors.find(doorId);
+            if (d == doors.end()) return;
+            AnimatedDoor& door = d->second;
+
+            auto it = scena.InstanceIds.find(doorId);
+            if (it == scena.InstanceIds.end()) return;
+
+            if (door.state == AnimatedDoor::STAY_OPEN) {
+                door.openTimer = door.openDuration; // ri-premendo E rinnovi il tempo
+                return;
+            }
+            if (door.state == AnimatedDoor::CLOSED || door.state == AnimatedDoor::CLOSING) {
+                scena.I[it->second]->C = nullptr;
+                door.state = AnimatedDoor::OPENING;
+            }
+        }
+
+        
+        void updateAnimations(Scene& scena, float deltaT, const glm::vec3& playerPos) {
+            for (auto& pair : doors) {
+                AnimatedDoor& door = pair.second;
+                auto it = scena.InstanceIds.find(door.instanceId);
+                if (it == scena.InstanceIds.end()) continue;
+                Instance* inst = scena.I[it->second];
+
+                if (!door.initialWmSaved) {
+                    door.initialWm = inst->Wm;
+                    door.originalCollider = inst->C;
+                    door.initialWmSaved = true;
+                }
+
+                switch (door.state) {
+                    case AnimatedDoor::OPENING: {
+                        door.currentAngle += door.speed * deltaT;
+                        if (door.currentAngle >= door.targetAngle) {
+                            door.currentAngle = door.targetAngle;
+                            door.state = AnimatedDoor::STAY_OPEN;
+                            door.openTimer = door.openDuration; // Inizia il conto alla rovescia
+                        }
+                        break;
+                    }
+                    case AnimatedDoor::STAY_OPEN: {
+                        door.openTimer -= deltaT;
+                        if (door.openTimer <= 0.0f) {
+                            door.state = AnimatedDoor::CLOSING; // Tempo scaduto, si richiude
+                        }
+                        break;
+                    }
+                    case AnimatedDoor::CLOSING: {
+                        glm::vec3 doorPos = glm::vec3(door.initialWm[3]);
+                        if (glm::distance(glm::vec2(playerPos.x, playerPos.z),
+                                        glm::vec2(doorPos.x, doorPos.z)) < 2.5f) {
+                            door.state = AnimatedDoor::STAY_OPEN; // il giocatore è nel vano: rimanda la chiusura
+                            door.openTimer = 1.0f;
+                            break;
+                        }
+                        door.currentAngle -= door.speed * deltaT;
+                        if (door.currentAngle <= 0.0f) {
+                            door.currentAngle = 0.0f;
+                            door.state = AnimatedDoor::CLOSED;
+                            inst->C = door.originalCollider;
+                        }
+                        break;
+                    }
+                    case AnimatedDoor::CLOSED:
+                    default:
+                        break;
+                }
+
+                glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(door.currentAngle * door.openSign),glm::vec3(0.0f, 1.0f, 0.0f));
+                inst->Wm = door.initialWm * glm::translate(glm::mat4(1.0f), door.hinge) * rot * glm::translate(glm::mat4(1.0f), -door.hinge);
+                if (inst->C != nullptr) inst->C->setWorldMatrix(inst->Wm);
+            }
         }
 
         // ------------------ Add different types of interactions ------------------
@@ -133,12 +248,31 @@ class InteractionManager {
             interactables.push_back({id, "", EFFECT_PICKUP_KEY, prompt, "Key collected!", keyId, true});
         }
 
-        void addLockedDoorInteraction(const std::string& id, const std::string& targetDoorId, const std::string& keyId, const std::string& prompt = "Press E to unlock door") {
-            interactables.push_back({id, targetDoorId, EFFECT_UNLOCK_DOOR, prompt, "", keyId, true});
-        }
-
         void addAltarInteraction(const std::string& altarId, const std::string& prompt = "Press E to place Relic on Altar") {
             interactables.push_back({altarId, "", EFFECT_ALTAR_DEPOSIT, prompt, "", "", true});
+        }
+
+        // Function to add a door interaction
+        void addDoorInteraction(const std::string& doorId, const std::string& prompt = "Press E to open Door") {
+            interactables.push_back({doorId, doorId, EFFECT_OPEN_DOOR, prompt, "", "", true});
+            AnimatedDoor door;
+            door.instanceId = doorId;
+            doors[doorId] = door;
+        }
+
+        // Function to add a locked door interaction
+        void addLockedDoorInteraction(const std::string& doorId, const std::string& keyId, const std::string& prompt = "Press E to unlock Door") {
+            interactables.push_back({doorId, doorId, EFFECT_UNLOCK_DOOR, prompt, "", keyId, true});
+            AnimatedDoor door;
+            door.instanceId = doorId;
+            doors[doorId] = door;
+        }
+
+        void setDoorHinge(const std::string& doorId, float localZ, float sign) {
+            auto it = doors.find(doorId);
+            if (it == doors.end()) return;
+            it->second.hinge = glm::vec3(0.0f, 0.0f, localZ);
+            it->second.openSign = sign;
         }
 
          //-------------------- Searching for nearest interactable objects --------------------
@@ -205,6 +339,25 @@ class InteractionManager {
                     inventoryKeys.insert(interactable.requiredKey);
                     currentInfoText = "Key obtained!";
                     infoTextTimer = 3.0f;
+                    break;
+                }
+
+                case EFFECT_OPEN_DOOR: {
+                    startOpeningDoor(scena, interactable.instanceId);
+                    currentInfoText = "Door opened!";
+                    infoTextTimer = 2.0f;
+                    break;
+                }
+
+                case EFFECT_UNLOCK_DOOR: {
+                    if (inventoryKeys.count(interactable.requiredKey)) {
+                        startOpeningDoor(scena, interactable.instanceId);
+                        currentInfoText = "Door unlocked!";
+                        infoTextTimer = 2.0f;
+                    } else {
+                        currentInfoText = "The door is locked! You need the " + interactable.requiredKey + ".";
+                        infoTextTimer = 3.0f;
+                    }
                     break;
                 }
                     

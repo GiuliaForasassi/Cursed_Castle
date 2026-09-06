@@ -43,7 +43,7 @@ void main() {
 
     //--------------- Fetch albedo from texture ---------------
     // 2. Fetch the albedo color from the texture and apply gamma correction
-    vec3 albedo = pow(texture(albedoMap, fragUV).rgb, vec3(2.2)); 
+    vec3 albedo = texture(albedoMap, fragUV).rgb; 
 
     //--------------- Directional light calculations ---------------
     // 3. Compute the directional light contribution
@@ -97,8 +97,6 @@ void main() {
 
     // 7. Reinhard tone mapping to compress the dynamic range of the color
     color = color / (color + vec3(1.0));
-    // 8. Apply gamma correction to convert the color from linear space to sRGB space
-    color = pow(color, vec3(1.0 / 2.2));
 
     // Output the final color of the fragment
     outColor = vec4(color, 1.0);

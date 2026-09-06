@@ -1,0 +1,193 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 46,
+			"max": [2.117755, 1.876513, 0.359557],
+			"min": [-0.111176, 0, -0.359557],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 46,
+			"max": [1, 1, 0.336834, 1],
+			"min": [-1, -1, -0.336794, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 46,
+			"max": [0.996817, 0.941564, 0.997145],
+			"min": [-0.99682, -0.273957, -0.997144],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 46,
+			"max": [0.999286, 0.653327],
+			"min": [0.413039, 0.232375],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5126,
+			"count": 46,
+			"max": [1, 1, 1, 1],
+			"min": [1, 1, 1, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5125,
+			"count": 66,
+			"max": [45],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 552,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 736,
+			"byteOffset": 552,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 552,
+			"byteOffset": 1288,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 368,
+			"byteOffset": 1840,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 736,
+			"byteOffset": 2208,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 66,
+			"byteOffset": 2944,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 3012,
+			"byteLength": 264
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 3276,
+			"uri": "bush_tall_single_spring0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root",
+		"KHR_materials_emissive_strength"
+	],
+	"images": [
+		{
+			"name": "bush_tall_single_spring_0",
+			"uri": "../textures/bush_tall_single_spring_0.png"
+		}
+	],
+	"materials": [
+		{
+			"alphaMode": "BLEND",
+			"emissiveFactor": [1, 1, 1],
+			"extensions": {
+				"KHR_materials_emissive_strength": {
+					"emissiveStrength": 0
+				}
+			},
+			"name": "bush_summer",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [1, 1, 1, 1],
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0,
+				"roughnessFactor": 1
+			}
+		}
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"COLOR_0": 4,
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 5,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "bush_tall_single_spring"
+		},
+		{
+			"mesh": 0,
+			"name": "bush_tall_single_spring2"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	]
+}

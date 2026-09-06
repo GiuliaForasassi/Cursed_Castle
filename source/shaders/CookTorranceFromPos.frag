@@ -100,7 +100,7 @@ void main() {
     vec3 N = -normalize(cross(X, Y));
 
     // Albedo lineare
-    vec3 albedo = pow(texture(albedoMap, fragUV).rgb, vec3(2.2));
+    vec3 albedo = texture(albedoMap, fragUV).rgb;
     vec3 V = normalize(gubo.eyePos - fragPos);
 
     // Default PBR parameters for metallic / precious objects (Relics / Altar / Statues)
@@ -142,7 +142,6 @@ void main() {
 
     // 5. Reinhard Tone Mapping & Gamma Correction
     color = color / (color + vec3(1.0));
-    color = pow(color, vec3(1.0 / 2.2));
 
     outColor = vec4(color, 1.0);
 }

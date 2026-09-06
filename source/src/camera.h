@@ -31,9 +31,9 @@ class Camera {
 
         void updateOrientation(float deltaX, float deltaY) {
             // Update the yaw based on horizontal mouse movement
-            yaw += deltaX * mouseSensitivity;
+            yaw -= deltaX * mouseSensitivity;
             // Update the pitch based on vertical mouse movement
-            pitch -= deltaY * mouseSensitivity;
+            pitch += deltaY * mouseSensitivity;
 
             // Clamp the pitch to avoid gimbal lock effect
             const float maxPitch = glm::radians(89.0f);

@@ -26,7 +26,7 @@ void main() {
     vec2 skyUV = vec2(u, v);
 
     // Campionamento del cielo
-    vec3 baseColor = pow(texture(skyMap, skyUV).rgb, vec3(2.2));
+    vec3 baseColor = texture(skyMap, skyUV).rgb;
 
     // 1. Aspetto Cursed / Notturno (desaturato e tinto di blu/viola spettrale)
     float gray = dot(baseColor, vec3(0.299, 0.587, 0.114));
@@ -39,9 +39,6 @@ void main() {
     // 3. Interpolazione fluida tra Cursed e Giorno
     float t = clamp(ubo.dayFactor, 0.0, 1.0);
     vec3 finalColor = mix(cursedColor, dayColor, t);
-
-    // Gamma correction finale per sRGB
-    finalColor = pow(finalColor, vec3(1.0 / 2.2));
 
     outColor = vec4(finalColor, 1.0);
 }

@@ -472,12 +472,11 @@ class Skeleton26ReplaceName : public BaseProject {
 		interactionManager.addRelicInteraction("Book", "Press E to pick up Sacred Grimoire");
         interactionManager.addRelicInteraction("Cup", "Press E to pick up Holy Chalice");
         interactionManager.addRelicInteraction("Sword", "Press E to pick up Cursed Blade");
-
 		interactionManager.addAltarInteraction("Altar");
-
-
-
-		
+		interactionManager.addDoorInteraction("Door_main");
+		interactionManager.setDoorHinge("Door_main", -0.1719f, +1.0f);
+		interactionManager.addDoorInteraction("DoorL");
+		interactionManager.addLockedDoorInteraction("Door_locked", "Key", "Press E to unlock Door");
 	}
 
 	// ------------------ GAME LOGIC -------------------
@@ -504,6 +503,8 @@ class Skeleton26ReplaceName : public BaseProject {
 			// Process mouse input to update the camera's orientation based on the current mouse position
 			cam.processMouseInput(window);
 			cam.processKeyboardInput(window, deltaT, scene);
+
+			interactionManager.updateAnimations(scene, deltaT, cam.getCameraPosition());
 
 
 			// --------- 3. Check for interactions with objects in the scene ---------
