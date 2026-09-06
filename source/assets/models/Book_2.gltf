@@ -103,7 +103,7 @@
 	"images": [
 		{
 			"name": "Texture2",
-			"uri": "textures%2FTexture2.png"
+			"uri": "../textures/Texture2.png"
 		}
 	],
 	"materials": [

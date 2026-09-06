@@ -5,7 +5,7 @@
 			"componentType": 5126,
 			"count": 853,
 			"max": [0.104383, 0.75, 0.5],
-			"min": [-0.0, 0, -0.5],
+			"min": [0, 0, -0.5],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -14,7 +14,7 @@
 			"componentType": 5126,
 			"count": 853,
 			"max": [0.996221, 0.999998, 0.999988, 1],
-			"min": [-0.999572, -0.999462, -1.0, -1],
+			"min": [-0.999572, -0.999462, -1, -1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -98,7 +98,7 @@
 	"images": [
 		{
 			"name": "Texture2",
-			"uri": "textures%2FTexture2.png"
+			"uri": "../textures/Texture2.png"
 		}
 	],
 	"materials": [

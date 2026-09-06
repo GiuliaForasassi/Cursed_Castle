@@ -59,7 +59,8 @@ class Skeleton26ReplaceName : public BaseProject {
 	// Vertex formats, Pipelines [Shader couples] and Render passes
 	VertexDescriptor VD; // Vertex format for the scene
 	RenderPass RP; // Render pass for the scene
-	Pipeline P; // Pipeline for the scene
+	Pipeline P; // Pipeline for the scene --> Blinn-Phong lighting model
+	Pipeline P_CookTorrance;
 
 	// Models, textures and Descriptors (values assigned to the uniforms)
 	DescriptorSet DSglobal; // Descriptor set for global parameters
@@ -106,22 +107,25 @@ class Skeleton26ReplaceName : public BaseProject {
 	}
 	
 	// What to do when the window changes size
-	void onWindowResize(int w, int h) {
-		std::cout << "Window resized to: " << w << " x " << h << "\n"; // Print the new window size to the console
-		Ar = (float)w / (float)h; // Update the aspect ratio based on the new window size
-		// Update Render Pass
-		RP.width = w; // Update the width of the render pass to match the new window width
-		RP.height = h; // Update the height of the render pass to match the new window height
-		
-		// updates the textual output
-		txt.resizeScreen(w, h); // Update the text rendering system to accommodate the new window size
+    void onWindowResize(int w, int h) {
+        if (w <= 0 || h <= 0) return; // Avoid division by zero if the window is minimized
 
-		currentWindowWidth = w; // Store the current window width
-		currentWindowHeight = h; // Store the current window height
-	}
+        std::cout << "Window resized to: " << w << " x " << h << "\n";
+        Ar = (float)w / (float)h; // Update aspect ratio
+
+		// Update the render pass dimensions to match the new window size
+		RP.width = w;
+        RP.height = h;
+        
+        // Update the text rendering system for the new resolution
+        txt.resizeScreen(w, h);
+
+        currentWindowWidth = w;
+        currentWindowHeight = h;
+    }
 	
 	// ------------------ INITIALIZATION OF RESOURCES -------------------
-	// Here you load and setup all oyur Vulkan Models and Texutures.
+	// Here you load and setup all your Vulkan Models and Textures.
 	// Here you also create your Descriptor set layouts and load the shaders for the pipelines
 	void localInit() {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -162,9 +166,17 @@ class Skeleton26ReplaceName : public BaseProject {
 		// The last array, is a vector of pointer to the layouts of the sets that will
 		// be used in this pipeline. The first element will be set 0, and so on..
 		// Initializes the pipeline with the vertex and fragment shaders, and the descriptor set layouts
-		P.init(this, &VD, "shaders/toChangeSimplePos.vert.spv",
-						  "shaders/toChangeBlinnFromPos.frag.spv",
-						  {&DSLglobal, &DSLlocal});
+
+		//----------- Pipelines Initialization -----------
+		// Pipeline 0: Blinn-Phong
+        P.init(this, &VD, "shaders/SimplePos.vert.spv",
+                          "shaders/BlinnFromPos.frag.spv",
+                          {&DSLglobal, &DSLlocal});
+
+        // Pipeline 1: Cook-Torrance (PBR)
+        P_CookTorrance.init(this, &VD, "shaders/SimplePos.vert.spv",
+                                       "shaders/CookTorranceFromPos.frag.spv",
+                                       {&DSLglobal, &DSLlocal});
 
 
 		// Sets the size of the Descriptor Set Pool to allocate sufficient GPU space (it MUST be done before loading the scene)
@@ -176,8 +188,9 @@ class Skeleton26ReplaceName : public BaseProject {
 		VDRs.resize(1);
 		VDRs[0].init("VDposUV",  &VD);
 
-		PRs.resize(1); 
+		PRs.resize(2); 
 		// This is the technique that will be used for the scene. It is a Blinn-Phong shader that uses the position and UV coordinates of the vertices.
+		// Tecnica 0 -> BlinnPos
 		PRs[0].init("BlinnPos", {
 							{&P, {//Pipeline and DSL for the main pass
 							 /*DSLglobal*/{},
@@ -187,6 +200,10 @@ class Skeleton26ReplaceName : public BaseProject {
 								 }
 								}
 						  }, /*TotalNtextures*/1, &VD);
+		// Tecnica 1 -> CookTorrancePos
+        PRs[1].init("CookTorrancePos", {
+                            {&P_CookTorrance, { {}, { {true, 0, {}} } } }
+                          }, 1, &VD);
 
 		// Loads the scene from a JSON file, which contains the models, textures, and their configurations
 		if(scene.init(this, 1, VDRs, PRs, "assets/scenes/scene.json") != 0) {
@@ -218,6 +235,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		
 		// This creates a new pipeline (with the current surface), using its shaders for the provided render pass
 		P.create(&RP);
+		P_CookTorrance.create(&RP);
 		
 		// Initializes the global descriptor set 
 		DSglobal.init(this, &DSLglobal, {});
@@ -233,6 +251,7 @@ class Skeleton26ReplaceName : public BaseProject {
 	// Here you destroy your pipelines and Descriptor Sets!
 	void pipelinesAndDescriptorSetsCleanup() {
 		P.cleanup();
+		P_CookTorrance.cleanup();
 
 		RP.cleanup();
 		
@@ -250,6 +269,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		DSLglobal.cleanup();
 
 		P.destroy();
+		P_CookTorrance.destroy();
 
 		RP.destroy();
 
@@ -311,8 +331,19 @@ class Skeleton26ReplaceName : public BaseProject {
 		//--------- Populate the data structure of global uniforms (light and camera)) ---------
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = lightDir; // Update the light direction based on the rotation
-		gubo.lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)*5.0f; // Update the light color and intensity
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
+
+		if (!gameManager.curseBroken) {
+            // Notte / Maledizione: luce fredda, bluastra e fioca, nebbia presente
+            gubo.lightColor = glm::vec4(0.2f, 0.3f, 0.6f, 1.0f) * 2.5f;
+            gubo.fogColor = glm::vec4(0.08f, 0.08f, 0.15f, 0.00f); // a > 0 attiva la nebbia
+            RP.properties[0].clearValue = {0.02f, 0.02f, 0.08f, 1.0f}; // Cielo notturno scuro
+        } else {
+            // Maledizione spezzata: luce solare calda, cielo azzurro, niente nebbia
+            gubo.lightColor = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
+            gubo.fogColor = glm::vec4(0.7f, 0.85f, 1.0f, 0.0f); // a = 0 disattiva la nebbia
+            RP.properties[0].clearValue = {0.0f, 0.85f, 1.0f, 1.0f}; // Cielo sereno azzurro
+        }
 
 		//--------- Populate the point light data in the global uniform buffer ---------
 		gubo.pointLightPos[0] = glm::vec4(0.0f, 3.0f, 20.0f, 0.0f);
@@ -327,18 +358,16 @@ class Skeleton26ReplaceName : public BaseProject {
 		// Defines the local parameters for the uniforms (for each 3D object in the scene)
 		UniformBufferObject ubo{};		
 
-		int instanceId;
-		// Iterate through all instances in the scene and update their model matrices and MVP matrices based on the current view-projection matrix.
-		for(instanceId = 0; instanceId < scene.TI[0].InstanceCount; instanceId++) {
-			ubo.mMat = scene.TI[0].I[instanceId].Wm; // Get the world matrix for the current instance
-			ubo.mvpMat = ViewPrj * ubo.mMat; // Calculate the model-view-projection matrix for the current instance
-			
-			// Map the local uniform buffer object to the GPU memory for the current frame and instance. 
-			// The first descriptor set (DS[0]) is used for global parameters, and the second descriptor set (DS[1]) is used for local parameters specific to each instance.
-			// DS[1] = Pchar pass (main render): set0=DSLglobal, set1=DSLlocal
-			scene.TI[0].I[instanceId].DS[0][0]->map(currentImage, &gubo, 0); // Set 0: Global UBO (light/camera)
-			scene.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0); // Set 1: Local UBO (camera MVPs)
-		}
+		// Metodo più pulito e diretto: itera su tutte le istanze della scena (scene.I)
+        for (int i = 0; i < scene.InstanceCount; i++) {
+            ubo.mMat = scene.I[i]->Wm;
+            ubo.mvpMat = ViewPrj * ubo.mMat;
+
+            // Set 0: Global UBO (luci, camera, nebbia)
+            // Set 1: Local UBO (matrice MVP e Model)
+            scene.I[i]->DS[0][0]->map(currentImage, &gubo, 0);
+            scene.I[i]->DS[0][1]->map(currentImage, &ubo, 0);
+        }
 		
 		// Calculates and updates on the screen the FPS (Frame Per Second)
 		static float elapsedT = 0.0f; // Accumulated time since the last FPS update
@@ -372,6 +401,17 @@ class Skeleton26ReplaceName : public BaseProject {
 		
 		// Add a trigger interaction for the "door01" object that opens the door when interacted with
 		interactionManager.addTriggerInteraction("wall_0_2_N", "wall_0_2_N", EFFECT_OPEN_SECRET_DOOR, "Press E to open the secret door");
+
+		// Register relics interactions
+		interactionManager.addRelicInteraction("sacred_relic_01");
+		interactionManager.addRelicInteraction("sacred_relic_02");
+		interactionManager.addRelicInteraction("sacred_relic_03");
+
+		interactionManager.addAltarInteraction("Altar");
+
+
+
+		
 	}
 
 	// ------------------ GAME LOGIC -------------------
@@ -403,14 +443,15 @@ class Skeleton26ReplaceName : public BaseProject {
 			// --------- 3. Check for interactions with objects in the scene ---------
 			int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 10.0f); // Find the nearest interactable object
 			if (nearestInteractableObjIndex >= 0 && interactionManager.infoTextTimer <= 0.0f){
-				txt.print(0.5f, 0.85f, interactionManager.get(nearestInteractableObjIndex).prompt, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the prompt for the nearest interactable object
+				std::string promptText = interactionManager.getPrompt(nearestInteractableObjIndex, gameManager);
+				txt.print(0.0f, 0.75f, promptText, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the prompt for the nearest interactable object
 			} else{
 				txt.removeText(2); // Remove any previous prompts 
 			}
 
 			// Handle the 'E' key interaction
 			bool ePressedNow = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
-			interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam); 
+			interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam, gameManager); 
 
 			// TODO: rivedi come viene gestito il wrapping del testo informativo in base alla larghezza disponibile
 			if(interactionManager.infoTextTimer > 0.0f){
@@ -424,12 +465,24 @@ class Skeleton26ReplaceName : public BaseProject {
 					int maxCharsPerLine = estimateMaxCharsPerLine(actualWidth, scale);
 					// std::string wrappedInfoText = wrapText(interactionManager.currentInfoText, maxCharsPerLine);
 					std::string wrappedInfoText = wrapTextToWidth(txt, interactionManager.currentInfoText, 4, maxWidthUnscaled);
-					txt.print(0.5f, 0.7f, wrappedInfoText, 3, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, scale, scale);
+					txt.print(0.0f, 0.40f, wrappedInfoText, 3, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, scale, scale);
 				}
 				else{
 					txt.removeText(3); // Remove the info text when the timer expires
 				}
 			}
+
+			// Check victory condition (e.g., all relics collected and brought to the altar)
+			if (gameManager.curseBroken) {
+                glm::vec3 playerPos = cam.getCameraPosition();
+                // Esempio: se il giocatore esce dal portone oltre Z = 25.0f (adatterai la coordinata in base alla nuova mappa)
+                if (playerPos.z > 25.0f) {
+                    gameManager.clearMenuTexts(txt);
+                    txt.removeText(2); // Rimuove eventuali prompt di interazione
+                    txt.removeText(3); // Rimuove eventuali testi informativi
+                    gameManager.currentState = GameState::VICTORY;
+                }
+            }
 		} else {
 			// If we are in the menu (not interacting with objects), show the cursor and remove any interaction texts
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

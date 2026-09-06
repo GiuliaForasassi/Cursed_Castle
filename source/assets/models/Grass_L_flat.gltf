@@ -22,7 +22,7 @@
 			"bufferView": 2,
 			"componentType": 5126,
 			"count": 231,
-			"max": [0.99567, 0.982343, 0.996899],
+			"max": [0.99567, 0.982351, 0.996899],
 			"min": [-0.995823, -1, -0.885896],
 			"normalized": false,
 			"type": "VEC3"
@@ -31,7 +31,7 @@
 			"bufferView": 3,
 			"componentType": 5126,
 			"count": 231,
-			"max": [1, 0.87],
+			"max": [0.003906, 0.87],
 			"min": [0, 0],
 			"normalized": false,
 			"type": "VEC2"
@@ -59,7 +59,7 @@
 			"componentType": 5126,
 			"count": 201,
 			"max": [1, 0.322971, 0.999393, 1],
-			"min": [-0.947043, -0.153048, -0.950622, -1],
+			"min": [-0.94702, -0.153048, -0.950629, -1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -68,7 +68,7 @@
 			"componentType": 5126,
 			"count": 201,
 			"max": [0.950997, 0.982336, 0.97649],
-			"min": [-0.995912, -1, -0.951233],
+			"min": [-0.995916, -1, -0.951263],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -76,8 +76,8 @@
 			"bufferView": 8,
 			"componentType": 5126,
 			"count": 201,
-			"max": [1, 0.87],
-			"min": [0, 0],
+			"max": [0.070312, 0.87],
+			"min": [0.066406, 0],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -104,7 +104,7 @@
 			"componentType": 5126,
 			"count": 162,
 			"max": [1, 0.517767, 0.998712, 1],
-			"min": [-0.962764, -0.371515, -0.969002, -1],
+			"min": [-0.96279, -0.371515, -0.968991, -1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -113,7 +113,7 @@
 			"componentType": 5126,
 			"count": 162,
 			"max": [0.968984, 0.986415, 0.963273],
-			"min": [-0.989405, -1, -0.961978],
+			"min": [-0.989402, -1, -0.961978],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -121,8 +121,8 @@
 			"bufferView": 13,
 			"componentType": 5126,
 			"count": 162,
-			"max": [1, 0.87],
-			"min": [0, 0],
+			"max": [0.136719, 0.87],
+			"min": [0.132812, 0],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -267,12 +267,21 @@
 	"extensionsUsed": [
 		"GODOT_single_root"
 	],
+	"images": [
+		{
+			"name": "Flat_Atlas",
+			"uri": "../textures/Flat_Atlas.png"
+		}
+	],
 	"materials": [
 		{
 			"doubleSided": true,
 			"name": "H4B_canopy",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.064803, 0.371238, 0.074214, 1],
+				"baseColorTexture": {
+					"index": 0
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -282,6 +291,9 @@
 			"name": "H4B_bush_brighter",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.097586, 0.502887, 0.090842, 1],
+				"baseColorTexture": {
+					"index": 1
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -291,6 +303,9 @@
 			"name": "H4B_bush",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"baseColorTexture": {
+					"index": 2
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -298,7 +313,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Grass_L_flat_Grass_L_flat",
 			"primitives": [
 				{
 					"attributes": {
@@ -346,10 +360,32 @@
 			"name": "Grass_L_flat"
 		}
 	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
 	"scene": 0,
 	"scenes": [
 		{
 			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"sampler": 0,
+			"source": 0
 		}
 	]
 }

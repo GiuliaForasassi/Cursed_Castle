@@ -13,8 +13,8 @@
 			"bufferView": 1,
 			"componentType": 5126,
 			"count": 168,
-			"max": [0.983694, 0.606358, 0.988007, 1],
-			"min": [-0.998845, -0.558994, -0.999447, 1],
+			"max": [0.983691, 0.606297, 0.988011, 1],
+			"min": [-0.998843, -0.559039, -0.999446, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -22,8 +22,8 @@
 			"bufferView": 2,
 			"componentType": 5126,
 			"count": 168,
-			"max": [0.92482, 0.984485, 0.960253],
-			"min": [-0.966868, -0.999883, -0.956768],
+			"max": [0.92481, 0.984488, 0.960253],
+			"min": [-0.966875, -0.999884, -0.956783],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -31,8 +31,8 @@
 			"bufferView": 3,
 			"componentType": 5126,
 			"count": 168,
-			"max": [0.96112, 0.97937],
-			"min": [0.015198, 0.537453],
+			"max": [0.136567, 0.97937],
+			"min": [0.132872, 0.537453],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -99,12 +99,21 @@
 	"extensionsUsed": [
 		"GODOT_single_root"
 	],
+	"images": [
+		{
+			"name": "Flat_Atlas",
+			"uri": "../textures/Flat_Atlas.png"
+		}
+	],
 	"materials": [
 		{
 			"doubleSided": true,
 			"name": "H4B_bush",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"baseColorTexture": {
+					"index": 0
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -112,7 +121,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Bush_M_flat_Bush_M_flat",
 			"primitives": [
 				{
 					"attributes": {
@@ -138,10 +146,24 @@
 			"name": "Bush_M_flat"
 		}
 	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
 	"scene": 0,
 	"scenes": [
 		{
 			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
 		}
 	]
 }

@@ -13,8 +13,8 @@
 			"bufferView": 1,
 			"componentType": 5126,
 			"count": 162,
-			"max": [0.998706, 0.320899, 0.96418, 1],
-			"min": [-0.065317, -0.385497, -0.991928, -1],
+			"max": [0.998701, 0.320807, 0.96419, 1],
+			"min": [-0.065318, -0.38548, -0.991924, -1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -22,8 +22,8 @@
 			"bufferView": 2,
 			"componentType": 5126,
 			"count": 162,
-			"max": [0.984975, 0.979643, 0.897642],
-			"min": [-0.999577, -1, -0.966295],
+			"max": [0.984972, 0.979643, 0.897655],
+			"min": [-0.999574, -1, -0.966291],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -31,8 +31,8 @@
 			"bufferView": 3,
 			"componentType": 5126,
 			"count": 162,
-			"max": [0.546715, 0.985321],
-			"min": [0.530037, 0.123903],
+			"max": [0.201354, 0.985321],
+			"min": [0.201289, 0.123903],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -58,8 +58,8 @@
 			"bufferView": 6,
 			"componentType": 5126,
 			"count": 108,
-			"max": [0.999512, 0.325845, 0.87307, 1],
-			"min": [0.275727, -0.380545, -0.896992, -1],
+			"max": [0.99951, 0.325945, 0.872995, 1],
+			"min": [0.275888, -0.380594, -0.896917, -1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -67,8 +67,8 @@
 			"bufferView": 7,
 			"componentType": 5126,
 			"count": 108,
-			"max": [0.890481, 0.992097, 0.996044],
-			"min": [-0.954991, -1, -0.667042],
+			"max": [0.89051, 0.992094, 0.996041],
+			"min": [-0.954998, -1, -0.667007],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -76,8 +76,8 @@
 			"bufferView": 8,
 			"componentType": 5126,
 			"count": 108,
-			"max": [0.5514, 0.781872],
-			"min": [0.52874, 0.241123],
+			"max": [0.267779, 0.781872],
+			"min": [0.26769, 0.241123],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -183,12 +183,21 @@
 	"extensionsUsed": [
 		"GODOT_single_root"
 	],
+	"images": [
+		{
+			"name": "Flat_Atlas",
+			"uri": "../textures/Flat_Atlas.png"
+		}
+	],
 	"materials": [
 		{
 			"doubleSided": true,
 			"name": "H4B_summer_grass",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.293347, 0.289331, 0.004493, 1],
+				"baseColorTexture": {
+					"index": 0
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -198,6 +207,9 @@
 			"name": "H4B_orange",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.918457, 0.282227, 0.025284, 1],
+				"baseColorTexture": {
+					"index": 1
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -205,7 +217,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Grass_M_Yellow_flat_Grass_M_Yellow_flat",
 			"primitives": [
 				{
 					"attributes": {
@@ -242,10 +253,28 @@
 			"name": "Grass_M_Yellow_flat"
 		}
 	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
 	"scene": 0,
 	"scenes": [
 		{
 			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"sampler": 0,
+			"source": 0
 		}
 	]
 }

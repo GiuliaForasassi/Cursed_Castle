@@ -14,7 +14,7 @@
 			"componentType": 5126,
 			"count": 9178,
 			"max": [1, 0.548721, 0.999745, 1],
-			"min": [-0.938838, -0.900309, -0.960306, -1],
+			"min": [-0.938838, -0.900309, -0.96029, -1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -31,8 +31,8 @@
 			"bufferView": 3,
 			"componentType": 5126,
 			"count": 9178,
-			"max": [0.655712, 0.90156],
-			"min": [0.615497, 0.12114],
+			"max": [0.334593, 0.90156],
+			"min": [0.334436, 0.12114],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -94,12 +94,21 @@
 	"extensionsUsed": [
 		"GODOT_single_root"
 	],
+	"images": [
+		{
+			"name": "Flat_Atlas",
+			"uri": "../textures/Flat_Atlas.png"
+		}
+	],
 	"materials": [
 		{
 			"doubleSided": true,
 			"name": "H4B_grass",
 			"pbrMetallicRoughness": {
 				"baseColorFactor": [0.082282, 0.423268, 0.084376, 1],
+				"baseColorTexture": {
+					"index": 0
+				},
 				"metallicFactor": 0,
 				"roughnessFactor": 0.5
 			}
@@ -107,7 +116,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Ground_flat_Ground_flat",
 			"primitives": [
 				{
 					"attributes": {
@@ -133,10 +141,24 @@
 			"name": "Ground_flat"
 		}
 	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
 	"scene": 0,
 	"scenes": [
 		{
 			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
 		}
 	]
 }

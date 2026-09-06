@@ -22,7 +22,7 @@
 			"bufferView": 2,
 			"componentType": 5126,
 			"count": 1034,
-			"max": [0.998376, 1.0, 0.996972],
+			"max": [0.998376, 1, 0.996972],
 			"min": [-0.999315, -0.974174, -0.998005],
 			"normalized": false,
 			"type": "VEC3"
@@ -98,7 +98,7 @@
 	"images": [
 		{
 			"name": "Texture2",
-			"uri": "textures%2FTexture2.png"
+			"uri": "../textures/Texture2.png"
 		}
 	],
 	"materials": [
