@@ -31,8 +31,8 @@
 			"bufferView": 3,
 			"componentType": 5126,
 			"count": 246,
-			"max": [0.136634, 0.993378],
-			"min": [0.132872, 0.549157],
+			"max": [0.031977, 0.993378],
+			"min": [0.031742, 0.549157],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -85,8 +85,8 @@
 			"bufferView": 9,
 			"componentType": 5126,
 			"count": 840,
-			"max": [0.401005, 0.967803],
-			"min": [0.399781, 0.136049],
+			"max": [0.047768, 0.967803],
+			"min": [0.047691, 0.136049],
 			"normalized": false,
 			"type": "VEC2"
 		},

@@ -37,6 +37,7 @@ class InteractionManager {
     // Flag to check if the 'E' key is pressed for interaction
 	bool ePressed = false; 
     std::unordered_set<std::string> inventoryKeys;
+    std::unordered_set<std::string> collectedRelics; // Set of collected relics
 
     //----------------- Helper functions for getting instance world position -------------------
     // Function to get the world position of an instance based on its ID
@@ -68,6 +69,17 @@ class InteractionManager {
         }
     }
 
+    // Posiziona una reliquia sopra l'altare a una posizione specifica
+    void placeOnAltar(Scene& scena, const std::string& id, glm::vec3 altarSlotPos, glm::vec3 scale = glm::vec3(4.0f)) {
+        auto it = scena.InstanceIds.find(id);
+        if (it != scena.InstanceIds.end()) {
+            Instance* instance = scena.I[it->second];
+            // Crea una nuova matrice di trasformazione posizionata sull'altare
+            glm::mat4 m = glm::translate(glm::mat4(1.0f), altarSlotPos);
+            m = glm::scale(m, scale);
+            instance->Wm = m;
+        }
+    }
 
     public:
         // Current information text to display when interacting with objects
@@ -78,6 +90,7 @@ class InteractionManager {
         // Reset the interaction manager to its initial state, clearing inventory keys, info text, and reactivating all interactables
         void reset() {
             inventoryKeys.clear();
+            collectedRelics.clear();
             currentInfoText = "";
             infoTextTimer = 0.0f;
             for (auto& item : interactables) {
@@ -179,6 +192,7 @@ class InteractionManager {
                 case EFFECT_PICKUP_RELIC: {
                     hideInstance(scena, interactable.instanceId);
                     interactable.active = false;
+                    collectedRelics.insert(interactable.instanceId);
                     gm.relicsCollected++;
                     currentInfoText = "Sacred Relic collected (" + std::to_string(gm.relicsCollected) + "/" + std::to_string(gm.TOTAL_RELICS) + ")! Bring it to the altar.";
                     infoTextTimer = 4.0f;
@@ -227,16 +241,28 @@ class InteractionManager {
                         infoTextTimer = 4.0f;
                     } else if (gm.relicsCollected > gm.relicsPlaced) {
                         gm.relicsPlaced = gm.relicsCollected;
+
+                        // Posiziona solo le reliquie che sono state effettivamente raccolte
+                        if (collectedRelics.count("Book")) {
+                            placeOnAltar(scena, "Book",  glm::vec3(-0.7f, 0.88f, -7.0f), glm::vec3(3.5f)); // Libro a sinistra
+                        }
+                        if (collectedRelics.count("Cup")) {
+                            placeOnAltar(scena, "Cup",   glm::vec3( 0.0f, 0.88f, -7.0f), glm::vec3(3.5f)); // Coppa al centro
+                        }
+                        if (collectedRelics.count("Sword")) {
+                            placeOnAltar(scena, "Sword", glm::vec3( 0.7f, 0.88f, -7.0f), glm::vec3(3.5f)); // Spada a destra
+                        }
+
                         if (gm.relicsPlaced >= gm.TOTAL_RELICS) {
                             gm.curseBroken = true;
-                            currentInfoText = "THE CURSE IS BROKEN!\nThe sky clears up. Escape the castle to claim your freedom!";
+                            currentInfoText = "THE CURSE IS BROKEN!\nThe sacred relics resonate on the Altar. Escape the castle!";
                             infoTextTimer = 7.0f;
                         } else {
-                            currentInfoText = "Relic placed on the Altar (" + std::to_string(gm.relicsPlaced) + "/" + std::to_string(gm.TOTAL_RELICS) + ")!";
+                            currentInfoText = "Relics placed on the Altar (" + std::to_string(gm.relicsPlaced) + "/" + std::to_string(gm.TOTAL_RELICS) + ")!";
                             infoTextTimer = 4.0f;
                         }
                     } else {
-                        currentInfoText = "You have no relics to place!\nExplore the castle to find the 3 sacred relics.";
+                        currentInfoText = "You have no relics in your bag!\nFind the sacred relics hidden in the castle first.";
                         infoTextTimer = 4.0f;
                     }
                     break;

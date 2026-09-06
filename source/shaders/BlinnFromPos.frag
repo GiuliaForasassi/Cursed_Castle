@@ -60,7 +60,7 @@ void main() {
     // Compute the dot products for the diffuse and specular components
     float NdotL = max(dot(N, L), 0.0);
     float HdotN = max(dot(H, N), 0.0);
-    vec3 Lo = (albedo * NdotL + vec3(pow(HdotN,  64.0))* 0.25) * radianceDir;
+    vec3 Lo = (albedo * NdotL + vec3(pow(HdotN,  128.0))* 0.04) * radianceDir;
 
     //--------------- Point light calculations ---------------
     // 4. Point lights (Torches)
@@ -79,7 +79,7 @@ void main() {
         float NdotLp = max(dot(N, Lp), 0.0);
         float HdotNp = max(dot(Hp, N), 0.0);
         // TODO: questo valore (150.0) può essere cambiato: provare altri valori
-         vec3 LoPoint = (albedo * NdotLp + vec3(pow(HdotNp, 32.0)) * 0.15) * radiancePoint;
+        vec3 LoPoint = (albedo * NdotLp + vec3(pow(HdotNp, 64.0)) *0.03) * radiancePoint;
         Lo += LoPoint;
     }
         

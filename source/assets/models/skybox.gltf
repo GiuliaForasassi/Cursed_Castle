@@ -3,44 +3,44 @@
 		{
 			"bufferView": 0,
 			"componentType": 5126,
-			"count": 168,
-			"max": [1.571705, 2.004123, 1.478532],
-			"min": [-1.349748, -0.333257, -1.511242],
+			"count": 2210,
+			"max": [399.546936, 400, 399.546936],
+			"min": [-399.546936, -400, -399.546936],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 1,
 			"componentType": 5126,
-			"count": 168,
-			"max": [0.983691, 0.606297, 0.988011, 1],
-			"min": [-0.998843, -0.559039, -0.999446, 1],
+			"count": 2210,
+			"max": [1, 0, 1, 1],
+			"min": [-1, -0.000022, -1, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 2,
 			"componentType": 5126,
-			"count": 168,
-			"max": [0.92481, 0.984488, 0.960253],
-			"min": [-0.966875, -0.999884, -0.956783],
+			"count": 2210,
+			"max": [0.998868, 1, 0.998868],
+			"min": [-0.998869, -1, -0.998867],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 3,
 			"componentType": 5126,
-			"count": 168,
-			"max": [0.031973, 0.97937],
-			"min": [0.031742, 0.537453],
+			"count": 2210,
+			"max": [1, 1],
+			"min": [0, 0],
 			"normalized": false,
 			"type": "VEC2"
 		},
 		{
-			"bufferView": 5,
-			"componentType": 5125,
-			"count": 168,
-			"max": [167],
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 12672,
+			"max": [2209],
 			"min": [0],
 			"normalized": false,
 			"type": "SCALAR"
@@ -53,69 +53,67 @@
 	"bufferViews": [
 		{
 			"buffer": 0,
-			"byteLength": 2016,
+			"byteLength": 26520,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 2688,
-			"byteOffset": 2016,
+			"byteLength": 35360,
+			"byteOffset": 26520,
 			"byteStride": 16,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 2016,
-			"byteOffset": 4704,
+			"byteLength": 26520,
+			"byteOffset": 61880,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 1344,
-			"byteOffset": 6720,
+			"byteLength": 17680,
+			"byteOffset": 88400,
 			"byteStride": 8,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 168,
-			"byteOffset": 8064,
+			"byteLength": 25344,
+			"byteOffset": 106080,
 			"target": 34963
-		},
-		{
-			"buffer": 0,
-			"byteOffset": 8232,
-			"byteLength": 672
 		}
 	],
 	"buffers": [
 		{
-			"byteLength": 8904,
-			"uri": "Bush_M_flat0.bin"
+			"byteLength": 131424,
+			"uri": "skybox0.bin"
 		}
 	],
 	"extensionsUsed": [
-		"GODOT_single_root"
+		"GODOT_single_root",
+		"KHR_materials_unlit"
 	],
 	"images": [
 		{
-			"name": "Flat_Atlas",
-			"uri": "../textures/Flat_Atlas.png"
+			"name": "Skybox_Puresky",
+			"uri": "../textures/Skybox_Puresky.png"
 		}
 	],
 	"materials": [
 		{
-			"doubleSided": true,
-			"name": "H4B_bush",
+			"extensions": {
+				"KHR_materials_unlit": {}
+			},
+			"name": "Skybox_Mat",
 			"pbrMetallicRoughness": {
-				"baseColorFactor": [0.035601, 0.283149, 0.076185, 1],
+				"baseColorFactor": [1, 1, 1, 1],
 				"baseColorTexture": {
 					"index": 0
 				},
 				"metallicFactor": 0,
-				"roughnessFactor": 0.5
+				"roughnessFactor": 1
 			}
 		}
 	],
@@ -139,11 +137,11 @@
 	"nodes": [
 		{
 			"children": [1],
-			"name": "Bush_M_flat2"
+			"name": "Skybox"
 		},
 		{
 			"mesh": 0,
-			"name": "Bush_M_flat"
+			"name": "Mesh"
 		}
 	],
 	"samplers": [

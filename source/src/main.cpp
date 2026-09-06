@@ -49,6 +49,13 @@ struct Vertex {
 	glm::vec2 UV; // Texture coordinates (u, v)
 };
 
+struct SkyBoxUniformBlock {
+	// Matrix model view-projection for the skybox
+	alignas(16) glm::mat4 mvpMat;  
+	// 0.0 = Night, 1.0 = Day     
+	alignas(16) float dayFactor;        
+};
+
 class Skeleton26ReplaceName : public BaseProject {
 	protected:
 	// Here you list all the Vulkan objects you need
@@ -92,6 +99,15 @@ class Skeleton26ReplaceName : public BaseProject {
 	// Current window size
 	int currentWindowWidth = 800; // Current window width
 	int currentWindowHeight = 600; // Current window height
+
+	//------ Skybox objects ------------
+	DescriptorSetLayout DSLsky;
+    DescriptorSet DSsky;
+    Pipeline P_SkyBox;
+    Model M_SkyBox;
+	Texture T_Sky;
+
+    float currentDayFactor = 0.0f; // 0.0f = Notte, 1.0f = Giorno
 
 	// ----------- WINDOW CONFIGURATION AND CALLBACKS ----------------
 	// Initializes the window parameters (size, title, resizable)
@@ -138,7 +154,7 @@ class Skeleton26ReplaceName : public BaseProject {
 					// third  element : the pipeline stage where it will be used
 					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(UniformBufferObject), 1},
 					{1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}
-				  });
+		});
 		// Initializes the global descriptor layout (for the global parameters)
 		DSLglobal.init(this, {
 					// this array contains the binding:
@@ -146,7 +162,7 @@ class Skeleton26ReplaceName : public BaseProject {
 					// second element : the type of element (buffer or texture)
 					// third  element : the pipeline stage where it will be used
 					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1}
-				  });
+		});
 		// Initialize the vertex descriptor (format of the vertices)
 		VD.init(this, {
 				  {0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}
@@ -155,7 +171,14 @@ class Skeleton26ReplaceName : public BaseProject {
 				         sizeof(glm::vec3), POSITION},
 				  {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV),
 				         sizeof(glm::vec2), UV}
-				});
+		});
+		
+		// Descriptor layout per lo SkyBox: UBO (b0), TexNotte (b1), TexGiorno (b2)
+        // Descriptor layout per lo SkyBox: UBO (b0) e 1 Texture (b1)
+        DSLsky.init(this, {
+            {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(SkyBoxUniformBlock), 1},
+            {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}
+        });
 
 		// Initializes the render passes
 		RP.init(this);
@@ -178,11 +201,20 @@ class Skeleton26ReplaceName : public BaseProject {
                                        "shaders/CookTorranceFromPos.frag.spv",
                                        {&DSLglobal, &DSLlocal});
 
+		// Pipeline 2: SkyBox
+        P_SkyBox.init(this, &VD, "shaders/SkyBox.vert.spv", "shaders/SkyBox.frag.spv", {&DSLsky});
+        P_SkyBox.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+        P_SkyBox.polyModel = VK_POLYGON_MODE_FILL;
+        P_SkyBox.CM = VK_CULL_MODE_NONE;
+
+		// Carica il modello glTF e la texture singola dello Skybox
+        M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
+        T_Sky.init(this, "assets/textures/Skybox_Puresky.png");
 
 		// Sets the size of the Descriptor Set Pool to allocate sufficient GPU space (it MUST be done before loading the scene)
-		DPSZs.uniformBlocksInPool = 3; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
-		DPSZs.texturesInPool = 2; // 1 for each object (in this case, we have 2 objects)
-		DPSZs.setsInPool = 3; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
+		DPSZs.uniformBlocksInPool = 10; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
+		DPSZs.texturesInPool = 10; // 1 for each object (in this case, we have 2 objects)
+		DPSZs.setsInPool = 10; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
 
 		// Configure the structures for automatic scene management
 		VDRs.resize(1);
@@ -236,9 +268,15 @@ class Skeleton26ReplaceName : public BaseProject {
 		// This creates a new pipeline (with the current surface), using its shaders for the provided render pass
 		P.create(&RP);
 		P_CookTorrance.create(&RP);
+		P_SkyBox.create(&RP);
 		
 		// Initializes the global descriptor set 
 		DSglobal.init(this, &DSLglobal, {});
+
+		
+		DSsky.init(this, &DSLsky, {
+            T_Sky.getViewAndSampler()
+        });
 		
 		// Here you define the data set
 		// If the scene has textures coming from a render pass, the corresponding element of the technique must be
@@ -252,10 +290,12 @@ class Skeleton26ReplaceName : public BaseProject {
 	void pipelinesAndDescriptorSetsCleanup() {
 		P.cleanup();
 		P_CookTorrance.cleanup();
+		P_SkyBox.cleanup();
 
 		RP.cleanup();
 		
 		DSglobal.cleanup();
+		DSsky.cleanup();
 		
 		scene.pipelinesAndDescriptorSetsCleanup();
 		txt.pipelinesAndDescriptorSetsCleanup();
@@ -267,9 +307,14 @@ class Skeleton26ReplaceName : public BaseProject {
 	void localCleanup() {
 		DSLlocal.cleanup();
 		DSLglobal.cleanup();
+		DSLsky.cleanup();
 
 		P.destroy();
 		P_CookTorrance.destroy();
+		P_SkyBox.destroy();
+
+		M_SkyBox.cleanup();
+		T_Sky.cleanup();
 
 		RP.destroy();
 
@@ -298,6 +343,13 @@ class Skeleton26ReplaceName : public BaseProject {
 		// begin standard pass
 		RP.begin(commandBuffer, currentImage); // Begin the render pass for the current frame
 
+		// Disegna lo SkyBox
+        P_SkyBox.bind(commandBuffer);
+        M_SkyBox.bind(commandBuffer);
+        DSsky.bind(commandBuffer, P_SkyBox, 0, currentImage);
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(M_SkyBox.indices.size()), 1, 0, 0, 0);
+
+
 		scene.populateCommandBuffer(commandBuffer, 0, currentImage); // Populate the command buffer with the rendering commands for the scene, using the first render pass (index 0)
 
 		RP.end(commandBuffer); // End the render pass for the current frame
@@ -318,8 +370,15 @@ class Skeleton26ReplaceName : public BaseProject {
 
 		// Calculate the game logic and return the delta time since the last frame. This is used to update the scene and camera movement.
 		float deltaT = GameLogic();
+
+		// 1. Calcolo transizione graduale Notte -> Giorno (da 0.0 a 1.0 in ~3 secondi)
+        if (gameManager.curseBroken) {
+            currentDayFactor = glm::clamp(currentDayFactor + 0.35f * deltaT, 0.0f, 1.0f);
+        } else {
+            currentDayFactor = 0.0f;
+        }
 		
-		// Calculate the light rotation 
+		// 2. Calculate the light rotation 
 		static float lightRotationAngle = 0.0f; // Static variable to keep track of rotation
 		lightRotationAngle += -0.5f * deltaT; // Increment rotation angle based on delta time
 
@@ -329,21 +388,19 @@ class Skeleton26ReplaceName : public BaseProject {
 		const glm::vec3 lightDir =  glm::vec3(lightView * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
 
 		//--------- Populate the data structure of global uniforms (light and camera)) ---------
+		// 3. Popola GUBO (Luce direzionale sfumata con mix tra Notte e Giorno)
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = lightDir; // Update the light direction based on the rotation
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
-		if (!gameManager.curseBroken) {
-            // Notte / Maledizione: luce fredda, bluastra e fioca, nebbia presente
-            gubo.lightColor = glm::vec4(0.2f, 0.3f, 0.6f, 1.0f) * 2.5f;
-            gubo.fogColor = glm::vec4(0.08f, 0.08f, 0.15f, 0.00f); // a > 0 attiva la nebbia
-            RP.properties[0].clearValue = {0.02f, 0.02f, 0.08f, 1.0f}; // Cielo notturno scuro
-        } else {
-            // Maledizione spezzata: luce solare calda, cielo azzurro, niente nebbia
-            gubo.lightColor = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
-            gubo.fogColor = glm::vec4(0.7f, 0.85f, 1.0f, 0.0f); // a = 0 disattiva la nebbia
-            RP.properties[0].clearValue = {0.0f, 0.85f, 1.0f, 1.0f}; // Cielo sereno azzurro
-        }
+		// Colori luce: Notte (bluastra) vs Giorno (calda dorata)
+        glm::vec4 nightLight = glm::vec4(0.2f, 0.3f, 0.6f, 1.0f) * 2.5f;
+        glm::vec4 dayLight   = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
+        gubo.lightColor = glm::mix(nightLight, dayLight, currentDayFactor);
+
+
+        // Nebbia disattivata (a = 0)
+        gubo.fogColor = glm::vec4(0.0f);
 
 		//--------- Populate the point light data in the global uniform buffer ---------
 		gubo.pointLightPos[0] = glm::vec4(0.0f, 3.0f, 20.0f, 0.0f);
@@ -355,6 +412,20 @@ class Skeleton26ReplaceName : public BaseProject {
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
 
+		// 4. Aggiorna Uniform Buffer per lo SkyBox (Matrice View senza traslazione + dayFactor)
+        const float FOVy = glm::radians(45.0f);
+		const float nearPlane = 0.1f;
+        const float farPlane = 400.f;
+        glm::mat4 Prj = glm::perspective(FOVy, Ar, nearPlane, farPlane);
+        Prj[1][1] *= -1;
+
+        glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(View)); // Solo rotazione, niente traslazione
+        SkyBoxUniformBlock skyUbo{};
+        skyUbo.mvpMat = Prj * viewNoTranslation;
+        skyUbo.dayFactor = currentDayFactor;
+        DSsky.map(currentImage, &skyUbo, 0);
+
+		//----------------------- Uniform BUffers --------------------
 		// Defines the local parameters for the uniforms (for each 3D object in the scene)
 		UniformBufferObject ubo{};		
 
@@ -369,6 +440,7 @@ class Skeleton26ReplaceName : public BaseProject {
             scene.I[i]->DS[0][1]->map(currentImage, &ubo, 0);
         }
 		
+		// 6. Aggiorna FPS e Text
 		// Calculates and updates on the screen the FPS (Frame Per Second)
 		static float elapsedT = 0.0f; // Accumulated time since the last FPS update
 		static int countedFrames = 0; // Number of frames counted since the last FPS update
@@ -396,16 +468,10 @@ class Skeleton26ReplaceName : public BaseProject {
 	// Setup the interactions for the scene by adding info and trigger interactions for specific objects
 	// TODO: You can add your own interactions here
 	void setupInteractions() {
-		// Add an info interaction for the "info01" object
-		interactionManager.addInfoInteraction("entrance_steps", "Press E for reading", "This entrance steps represents...... (add a long story)."); // TODO: Replace with your own story or information
-		
-		// Add a trigger interaction for the "door01" object that opens the door when interacted with
-		interactionManager.addTriggerInteraction("wall_0_2_N", "wall_0_2_N", EFFECT_OPEN_SECRET_DOOR, "Press E to open the secret door");
-
 		// Register relics interactions
-		interactionManager.addRelicInteraction("sacred_relic_01");
-		interactionManager.addRelicInteraction("sacred_relic_02");
-		interactionManager.addRelicInteraction("sacred_relic_03");
+		interactionManager.addRelicInteraction("Book", "Press E to pick up Sacred Grimoire");
+        interactionManager.addRelicInteraction("Cup", "Press E to pick up Holy Chalice");
+        interactionManager.addRelicInteraction("Sword", "Press E to pick up Cursed Blade");
 
 		interactionManager.addAltarInteraction("Altar");
 

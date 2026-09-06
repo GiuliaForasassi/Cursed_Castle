@@ -31,8 +31,8 @@
 			"bufferView": 3,
 			"componentType": 5126,
 			"count": 231,
-			"max": [0.003906, 0.87],
-			"min": [0, 0],
+			"max": [0.111328, 0.87],
+			"min": [0.111084, 0],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -76,8 +76,8 @@
 			"bufferView": 8,
 			"componentType": 5126,
 			"count": 201,
-			"max": [0.070312, 0.87],
-			"min": [0.066406, 0],
+			"max": [0.127197, 0.87],
+			"min": [0.126953, 0],
 			"normalized": false,
 			"type": "VEC2"
 		},
@@ -121,8 +121,8 @@
 			"bufferView": 13,
 			"componentType": 5126,
 			"count": 162,
-			"max": [0.136719, 0.87],
-			"min": [0.132812, 0],
+			"max": [0.031982, 0.87],
+			"min": [0.031738, 0],
 			"normalized": false,
 			"type": "VEC2"
 		},

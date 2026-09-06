@@ -166,11 +166,17 @@ public:
                 break;
             }
             case GameState::PLAYING: {
-                // Relics counter in the top-left corner
-                std::string questInfo = "Relics: " + std::to_string(relicsPlaced) + "/" + std::to_string(TOTAL_RELICS);
+                // UI in gioco: mostra le reliquie raccolte e quante ne sono posizionate sull'altare
+                std::string questInfo;
                 if (curseBroken) {
                     questInfo = "Curse Broken! Escape the castle!";
+                } else if (relicsPlaced > 0 && relicsPlaced < TOTAL_RELICS) {
+                    questInfo = "Relics Placed: " + std::to_string(relicsPlaced) + "/" + std::to_string(TOTAL_RELICS) + 
+                                " (In bag: " + std::to_string(relicsCollected - relicsPlaced) + ")";
+                } else {
+                    questInfo = "Relics Found: " + std::to_string(relicsCollected) + "/" + std::to_string(TOTAL_RELICS);
                 }
+
                 txt.print(-0.90f, -0.90f, questInfo, 10, "CO", false, false, true,
                           TAL_LEFT, TRH_LEFT, TRV_TOP, goldFill, darkStroke, noShadow, scale * 0.85f, scale * 0.85f);
                 break;
