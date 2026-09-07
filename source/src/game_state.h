@@ -119,7 +119,7 @@ public:
                           scale * 1.8f, scale * 1.8f);
 
                 // 2. Subtitle spaced vertically below the main title (y = -0.05f)
-                std::string subtitle = "--~ + Try to break the curse + ~--";
+                std::string subtitle = "Try to break the curse";
                 txt.print(0.0f, -0.05f, subtitle, 11, "CO", false, false, false,
                           TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
                           goldSub, darkBorder, deepShadow,
@@ -150,19 +150,21 @@ public:
                 break;
             }
             case GameState::CONTROLS: {
-                txt.print(0.0f, -0.65f, "GAME CONTROLS", 10, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.4f, scale * 1.4f);
+                txt.print(0.0f, -0.70f, "GAME CONTROLS", 10, "CO", false, false, true,
+                        TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.4f, scale * 1.4f);
 
-                std::string controls = "[W][A][S][D]   Move\n\n"
-                                       "[MOUSE]       Look Around\n\n"
-                                       "[E]           Interact / Pick Up / Place\n\n"
-                                       "[TAB]         Open / Close Menu";
+                std::string keys    = "[W] [A] [S] [D]\n[MOUSE]\n[E]\n[TAB]\n[ESC]";
+                std::string actions = "Move\nLook around\nInteract / pick up / place\nOpen / close this menu\nQuit";
 
-                txt.print(0.0f, 0.05f, controls, 11, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 1.0f, scale * 1.0f);
+                // Same y + same line count: the two columns line up row by row
+                txt.print(-0.03f, 0.05f, keys, 11, "CO", false, false, true,
+                        TAL_RIGHT, TRH_RIGHT, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 0.8f, scale * 0.8f);
 
-                txt.print(0.0f, 0.80f, "PRESS [TAB] TO PLAY", 12, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_BOTTOM, goldFill, darkStroke, noShadow, scale * 0.9f, scale * 0.9f);
+                txt.print(0.03f, 0.05f, actions, 13, "CO", false, false, true,
+                        TAL_LEFT, TRH_LEFT, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 0.8f, scale * 0.8f);
+
+                txt.print(0.0f, 0.80f, previousState == GameState::PLAYING ? "PRESS [TAB] TO RESUME" : "PRESS [TAB] TO PLAY", 12, "CO", false, false, true,
+                        TAL_CENTER, TRH_CENTER, TRV_BOTTOM, goldFill, darkStroke, noShadow, scale * 0.9f, scale * 0.9f);
                 break;
             }
             case GameState::PLAYING: {

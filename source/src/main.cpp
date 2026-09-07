@@ -115,7 +115,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		// window size, title and initial background
 		windowWidth = 800; // Initial window width (in pixels)
 		windowHeight = 600; // Initial window height (in pixels)
-		windowTitle = "Skeleton: place the name of your app here"; // Window title
+		windowTitle = "Cursed Castle"; // Window title
     	windowResizable = GLFW_TRUE; // Allow the window to be resizable
 		
 		// Initial aspect ratio
@@ -254,7 +254,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		submitCommandBuffer("main", 0, populateCommandBufferAccess, this); 
 
 		// Configure the initial layout for the FPS on-screen printout
-		txt.print(1.0f, 1.0f, "FPS:",1,"CO",false,false,true,TAL_RIGHT,TRH_RIGHT,TRV_BOTTOM,{1.0f,0.0f,0.0f,1.0f},{0.8f,0.8f,0.0f,1.0f});
+		//txt.print(1.0f, 1.0f, "FPS:",1,"CO",false,false,true,TAL_RIGHT,TRH_RIGHT,TRV_BOTTOM,{1.0f,0.0f,0.0f,1.0f},{0.8f,0.8f,0.0f,1.0f});
 
 	}
 	
@@ -397,10 +397,13 @@ class Skeleton26ReplaceName : public BaseProject {
         glm::vec4 nightLight = glm::vec4(0.2f, 0.3f, 0.6f, 1.0f) * 2.5f;
         glm::vec4 dayLight   = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
         gubo.lightColor = glm::mix(nightLight, dayLight, currentDayFactor);
+		gubo.fogColor = glm::vec4(0.0f);
 
-
-        // Nebbia disattivata (a = 0)
-        gubo.fogColor = glm::vec4(0.0f);
+		// Menu screens: dimmed lighting + dark haze so the gold text stands out
+		if (gameManager.currentState != GameState::PLAYING) {
+			gubo.lightColor = glm::vec4(glm::vec3(gubo.lightColor) * 0.25f, 1.0f);
+			gubo.fogColor = glm::vec4(0.02f, 0.02f, 0.05f, 0.06f);
+		}
 
 		//--------- Populate the point light data in the global uniform buffer ---------
 		gubo.pointLightPos[0] = glm::vec4(0.0f, 3.0f, 20.0f, 0.0f);
@@ -449,15 +452,19 @@ class Skeleton26ReplaceName : public BaseProject {
 		elapsedT += deltaT;
 		if(elapsedT > 1.0f) { // Update the FPS display every second
 			float Fps = (float)countedFrames / elapsedT; // Calculate the FPS based on the number of frames and elapsed time
-			
+
 			// Prepare the string to display the FPS on the screen
-			std::ostringstream oss;
-			oss << "FPS: " << Fps << "\n";
-			txt.print(1.0f, 1.0f, oss.str(), 1, "CO", false, false, true,TAL_RIGHT,TRH_RIGHT,TRV_BOTTOM,{1.0f,0.0f,0.0f,1.0f},{0.8f,0.8f,0.0f,1.0f});
-			
+			if(gameManager.currentState == GameState::PLAYING) {
+				std::ostringstream oss;
+				oss << "FPS: " << Fps << "\n";
+				txt.print(1.0f, 1.0f, oss.str(), 1, "CO", false, false, true, TAL_RIGHT, TRH_RIGHT, TRV_BOTTOM, {1.0f,0.0f,0.0f,1.0f}, {0.8f,0.8f,0.0f,1.0f});
+			} else if(txt.Blocks.count(1)) {
+				txt.removeText(1);
+			}
+
 			// Reset the elapsed time and the frame count for the next FPS update
-			elapsedT = 0.0f; 
-		    countedFrames = 0; 
+			elapsedT = 0.0f;
+    		countedFrames = 0;
 		}
 		
 		// Update the command buffer for the text 
