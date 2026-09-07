@@ -3,44 +3,44 @@
 		{
 			"bufferView": 0,
 			"componentType": 5126,
-			"count": 144,
-			"max": [0.265248, 0.019941, 0.5],
-			"min": [-0.25657, 0, -0.500001],
+			"count": 698,
+			"max": [0.097336, 0.219811, 0.192466],
+			"min": [-0.098775, 0.000491, -0.285603],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 1,
 			"componentType": 5126,
-			"count": 144,
-			"max": [-0.159911, 0.564458, 0.893154, 1],
-			"min": [-1, -0.577713, -0.025852, 1],
+			"count": 698,
+			"max": [0.698121, 0.789699, 1, 1],
+			"min": [-1, -1, -0.613564, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 2,
 			"componentType": 5126,
-			"count": 144,
-			"max": [0.90436, 1, 0.05651],
-			"min": [-0.902655, -0.715198, -0.040351],
+			"count": 698,
+			"max": [1, 1, 1],
+			"min": [-1, -1, -1],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 3,
 			"componentType": 5126,
-			"count": 144,
-			"max": [0.711786, 0.453387],
-			"min": [0.413172, 0.426131],
+			"count": 698,
+			"max": [0.456255, 0.334353],
+			"min": [0.418008, 0.297071],
 			"normalized": false,
 			"type": "VEC2"
 		},
 		{
-			"bufferView": 5,
-			"componentType": 5125,
-			"count": 186,
-			"max": [143],
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 900,
+			"max": [697],
 			"min": [0],
 			"normalized": false,
 			"type": "SCALAR"
@@ -53,47 +53,42 @@
 	"bufferViews": [
 		{
 			"buffer": 0,
-			"byteLength": 1728,
+			"byteLength": 8376,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 2304,
-			"byteOffset": 1728,
+			"byteLength": 11168,
+			"byteOffset": 8376,
 			"byteStride": 16,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 1728,
-			"byteOffset": 4032,
+			"byteLength": 8376,
+			"byteOffset": 19544,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 1152,
-			"byteOffset": 5760,
+			"byteLength": 5584,
+			"byteOffset": 27920,
 			"byteStride": 8,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 186,
-			"byteOffset": 6912,
+			"byteLength": 1800,
+			"byteOffset": 33504,
 			"target": 34963
-		},
-		{
-			"buffer": 0,
-			"byteOffset": 7100,
-			"byteLength": 744
 		}
 	],
 	"buffers": [
 		{
-			"byteLength": 7844,
-			"uri": "Rug_1_Way0.bin"
+			"byteLength": 35304,
+			"uri": "Anvil0.bin"
 		}
 	],
 	"extensionsUsed": [
@@ -145,11 +140,11 @@
 	"nodes": [
 		{
 			"children": [1],
-			"name": "Rug_1_Way"
+			"name": "Anvil"
 		},
 		{
 			"mesh": 0,
-			"name": "Rug_1_Way2"
+			"name": "Anvil2"
 		}
 	],
 	"samplers": [

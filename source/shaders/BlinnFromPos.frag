@@ -3,7 +3,7 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-#define MAX_POINT_LIGHTS 8
+#define MAX_POINT_LIGHTS 16
 
 // Fragment shader for Blinn-Phong lighting model with support for directional and point lights
 
@@ -11,6 +11,7 @@
 // Input attributes: fragment (=pixel) position and texture coordinates
 layout(location = 0) in vec3 fragPos;
 layout(location = 1) in vec2 fragUV;
+layout(location = 2) flat in vec4 matParams;
 
 // Output: final fragment color
 layout(location = 0) out vec4 outColor;
@@ -35,6 +36,7 @@ const float PI = 3.14159265359;
 
 void main() {
     //--------------- Compute normal from fragment position ---------------
+   
     // 1. Compute the partial derivatives of the fragment position
 	vec3 X = dFdx(fragPos);
     vec3 Y = dFdy(fragPos);
@@ -60,7 +62,7 @@ void main() {
     // Compute the dot products for the diffuse and specular components
     float NdotL = max(dot(N, L), 0.0);
     float HdotN = max(dot(H, N), 0.0);
-    vec3 Lo = (albedo * NdotL + vec3(pow(HdotN,  128.0))* 0.04) * radianceDir;
+    vec3 Lo = (albedo + vec3(pow(HdotN, 128.0)) * 0.04) * NdotL * radianceDir * matParams.x;
 
     //--------------- Point light calculations ---------------
     // 4. Point lights (Torches)
@@ -73,20 +75,25 @@ void main() {
         vec3 Lp = toLight / max(distance, 0.0001);
         vec3 Hp = normalize(V + Lp);
 
-        float attenuation = 1.0 / (1.0 + 0.1 * distance + 0.05 * distance * distance);
+        float g = gubo.pointLightPos[i].w;
+        float attenuation = min(pow(g / max(distance, 0.001), 2.0), 1.0);
+        attenuation *= clamp(1.0 - pow(distance / (3.0 * g), 4.0), 0.0, 1.0);
         vec3 radiancePoint = gubo.pointLightColor[i].rgb * (gubo.pointLightColor[i].a * attenuation);
 
         float NdotLp = max(dot(N, Lp), 0.0);
         float HdotNp = max(dot(Hp, N), 0.0);
         // TODO: questo valore (150.0) può essere cambiato: provare altri valori
-        vec3 LoPoint = (albedo * NdotLp + vec3(pow(HdotNp, 64.0)) *0.03) * radiancePoint;
+        vec3 LoPoint = (albedo + vec3(pow(HdotNp, 64.0)) * 0.03) * NdotLp * radiancePoint;
         Lo += LoPoint;
     }
         
     //---------- Compute the ambient component of the lighting ------------
     // 5. Apply a small ambient term (0.015) to simulate indirect lighting
-	vec3 ambient =(0.025 + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b)) * albedo;
-    vec3 color = ambient  + Lo;
+    vec3 skyAmbient = (0.025 + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b)) * albedo;
+    vec3 ambient = mix(0.02 * albedo, skyAmbient, matParams.x);
+    // La fiamma della torcia si illumina da sola: non dipende dalle sorgenti
+    vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
+    vec3 color = ambient + Lo + emissive;
 
     // 6. Apply exponential fog (enabled if fogColor.a > 0)
     if (gubo.fogColor.a > 0.0001) {

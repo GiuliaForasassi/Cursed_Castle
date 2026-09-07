@@ -3,8 +3,8 @@
 		{
 			"bufferView": 0,
 			"componentType": 5126,
-			"count": 228,
-			"max": [0.027279, 0.102405, 0.175271],
+			"count": 300,
+			"max": [0.027279, 0.15843, 0.175271],
 			"min": [-0.035077, -0.057008, 0.091466],
 			"normalized": false,
 			"type": "VEC3"
@@ -12,80 +12,35 @@
 		{
 			"bufferView": 1,
 			"componentType": 5126,
-			"count": 228,
-			"max": [0.998604, 0.997222, 0.973289, 1],
-			"min": [-0.99996, -0.998661, -0.999033, 1],
+			"count": 300,
+			"max": [0.801313, 0.341019, 0.999688, 1],
+			"min": [-1, -1, -0.403103, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 2,
 			"componentType": 5126,
-			"count": 228,
+			"count": 300,
 			"max": [0.999688, 1, 1],
-			"min": [-0.998537, -0.999054, -0.99663],
+			"min": [-0.998537, -0.999056, -0.99663],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 3,
 			"componentType": 5126,
-			"count": 228,
-			"max": [0.090235, 0.339342],
+			"count": 300,
+			"max": [0.339564, 0.339559],
 			"min": [0.028399, 0.156284],
 			"normalized": false,
 			"type": "VEC2"
 		},
 		{
-			"bufferView": 10,
-			"componentType": 5125,
-			"count": 318,
-			"max": [227],
-			"min": [0],
-			"normalized": false,
-			"type": "SCALAR"
-		},
-		{
-			"bufferView": 5,
-			"componentType": 5126,
-			"count": 72,
-			"max": [0.020316, 0.15843, 0.170119],
-			"min": [-0.018576, 0.066366, 0.133783],
-			"normalized": false,
-			"type": "VEC3"
-		},
-		{
-			"bufferView": 6,
-			"componentType": 5126,
-			"count": 72,
-			"max": [0.905531, 0.986594, 0.901936, 1],
-			"min": [-0.876605, -0.935959, -0.966374, 1],
-			"normalized": false,
-			"type": "VEC4"
-		},
-		{
-			"bufferView": 7,
-			"componentType": 5126,
-			"count": 72,
-			"max": [0.975504, 0.483759, 0.988081],
-			"min": [-0.955494, -0.550767, -0.985161],
-			"normalized": false,
-			"type": "VEC3"
-		},
-		{
-			"bufferView": 8,
-			"componentType": 5126,
-			"count": 72,
-			"max": [0.339564, 0.339559],
-			"min": [0.28385, 0.284981],
-			"normalized": false,
-			"type": "VEC2"
-		},
-		{
-			"bufferView": 11,
-			"componentType": 5125,
-			"count": 72,
-			"max": [71],
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 390,
+			"max": [299],
 			"min": [0],
 			"normalized": false,
 			"type": "SCALAR"
@@ -98,85 +53,41 @@
 	"bufferViews": [
 		{
 			"buffer": 0,
-			"byteLength": 2736,
+			"byteLength": 3600,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 3648,
-			"byteOffset": 2736,
+			"byteLength": 4800,
+			"byteOffset": 3600,
 			"byteStride": 16,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 2736,
-			"byteOffset": 6384,
+			"byteLength": 3600,
+			"byteOffset": 8400,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 1824,
-			"byteOffset": 9120,
+			"byteLength": 2400,
+			"byteOffset": 12000,
 			"byteStride": 8,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 318,
-			"byteOffset": 10944,
+			"byteLength": 780,
+			"byteOffset": 14400,
 			"target": 34963
-		},
-		{
-			"buffer": 0,
-			"byteLength": 864,
-			"byteOffset": 11264,
-			"byteStride": 12,
-			"target": 34962
-		},
-		{
-			"buffer": 0,
-			"byteLength": 1152,
-			"byteOffset": 12128,
-			"byteStride": 16,
-			"target": 34962
-		},
-		{
-			"buffer": 0,
-			"byteLength": 864,
-			"byteOffset": 13280,
-			"byteStride": 12,
-			"target": 34962
-		},
-		{
-			"buffer": 0,
-			"byteLength": 576,
-			"byteOffset": 14144,
-			"byteStride": 8,
-			"target": 34962
-		},
-		{
-			"buffer": 0,
-			"byteLength": 72,
-			"byteOffset": 14720,
-			"target": 34963
-		},
-		{
-			"buffer": 0,
-			"byteOffset": 14792,
-			"byteLength": 1272
-		},
-		{
-			"buffer": 0,
-			"byteOffset": 16064,
-			"byteLength": 288
 		}
 	],
 	"buffers": [
 		{
-			"byteLength": 16352,
+			"byteLength": 15180,
 			"uri": "Torch_Holder0.bin"
 		}
 	],
@@ -207,28 +118,10 @@
 				"metallicFactor": 0,
 				"roughnessFactor": 1
 			}
-		},
-		{
-			"emissiveFactor": [0.957641, 0.957641, 0.957641],
-			"extensions": {
-				"KHR_materials_emissive_strength": {
-					"emissiveStrength": 2
-				}
-			},
-			"name": "Texture_Emissive",
-			"pbrMetallicRoughness": {
-				"baseColorFactor": [0.8, 0.8, 0.8, 0.8],
-				"baseColorTexture": {
-					"index": 1
-				},
-				"metallicFactor": 0,
-				"roughnessFactor": 1
-			}
 		}
 	],
 	"meshes": [
 		{
-			"name": "Torch_Holder3",
 			"primitives": [
 				{
 					"attributes": {
@@ -239,17 +132,6 @@
 					},
 					"indices": 4,
 					"material": 0,
-					"mode": 4
-				},
-				{
-					"attributes": {
-						"NORMAL": 7,
-						"POSITION": 5,
-						"TANGENT": 6,
-						"TEXCOORD_0": 8
-					},
-					"indices": 9,
-					"material": 1,
 					"mode": 4
 				}
 			]
@@ -280,10 +162,6 @@
 		}
 	],
 	"textures": [
-		{
-			"sampler": 0,
-			"source": 0
-		},
 		{
 			"sampler": 0,
 			"source": 0

@@ -13,8 +13,8 @@
 			"bufferView": 1,
 			"componentType": 5126,
 			"count": 2339,
-			"max": [0.999846, 0.999902, 0.999935, 1],
-			"min": [-0.999544, -0.999372, -0.996737, 1],
+			"max": [0.716562, 0.760611, 0.994874, 1],
+			"min": [-1, -1, -0.752189, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -23,7 +23,7 @@
 			"componentType": 5126,
 			"count": 2339,
 			"max": [0.993809, 1, 1],
-			"min": [-0.994919, -0.996361, -1],
+			"min": [-0.994919, -0.996356, -1],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -122,7 +122,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Stone_Statue3",
 			"primitives": [
 				{
 					"attributes": {

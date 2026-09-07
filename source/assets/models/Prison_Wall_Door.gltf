@@ -3,44 +3,44 @@
 		{
 			"bufferView": 0,
 			"componentType": 5126,
-			"count": 304,
-			"max": [0.414422, 2.599999, 2],
-			"min": [-0.414422, -0.000001, -2],
+			"count": 736,
+			"max": [0.038879, 0.745, 0.250001],
+			"min": [-0.039443, 0, -0.250002],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 1,
 			"componentType": 5126,
-			"count": 304,
-			"max": [0.377969, 0.430395, 1, 1],
-			"min": [-1, -1, -0.378041, 1],
+			"count": 736,
+			"max": [0.597567, 0.235675, 0.999993, 1],
+			"min": [-1, -1, -0.558366, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
 		{
 			"bufferView": 2,
 			"componentType": 5126,
-			"count": 304,
-			"max": [1, 1, 1],
-			"min": [-1, -1, -1],
+			"count": 736,
+			"max": [0.999994, 1, 1],
+			"min": [-0.99995, -1, -1],
 			"normalized": false,
 			"type": "VEC3"
 		},
 		{
 			"bufferView": 3,
 			"componentType": 5126,
-			"count": 304,
-			"max": [0.085157, 0.075077],
-			"min": [0.0197, 0.011071],
+			"count": 736,
+			"max": [0.46616, 0.335526],
+			"min": [0.413905, 0.298076],
 			"normalized": false,
 			"type": "VEC2"
 		},
 		{
 			"bufferView": 4,
 			"componentType": 5123,
-			"count": 468,
-			"max": [303],
+			"count": 1086,
+			"max": [735],
 			"min": [0],
 			"normalized": false,
 			"type": "SCALAR"
@@ -53,66 +53,46 @@
 	"bufferViews": [
 		{
 			"buffer": 0,
-			"byteLength": 3648,
+			"byteLength": 8832,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 4864,
-			"byteOffset": 3648,
+			"byteLength": 11776,
+			"byteOffset": 8832,
 			"byteStride": 16,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 3648,
-			"byteOffset": 8512,
+			"byteLength": 8832,
+			"byteOffset": 20608,
 			"byteStride": 12,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 2432,
-			"byteOffset": 12160,
+			"byteLength": 5888,
+			"byteOffset": 29440,
 			"byteStride": 8,
 			"target": 34962
 		},
 		{
 			"buffer": 0,
-			"byteLength": 936,
-			"byteOffset": 14592,
+			"byteLength": 2172,
+			"byteOffset": 35328,
 			"target": 34963
 		}
 	],
 	"buffers": [
 		{
-			"byteLength": 15528,
-			"uri": "Wall20.bin"
+			"byteLength": 37500,
+			"uri": "Prison_Wall_Door0.bin"
 		}
 	],
 	"extensionsUsed": [
 		"GODOT_single_root"
-	],
-	"images": [
-		{
-			"name": "Texture Atlas2",
-			"uri": "../textures/Texture%20Atlas2.png"
-		}
-	],
-	"materials": [
-		{
-			"emissiveFactor": [0, 0, 0],
-			"name": "Texture Atlas",
-			"pbrMetallicRoughness": {
-				"baseColorFactor": [1, 1, 1, 1],
-				"baseColorTexture": {
-					"index": 0
-				},
-				"metallicFactor": 0,
-				"roughnessFactor": 1
-			}
-		}
 	],
 	"meshes": [
 		{
@@ -125,7 +105,6 @@
 						"TEXCOORD_0": 3
 					},
 					"indices": 4,
-					"material": 0,
 					"mode": 4
 				}
 			]
@@ -134,31 +113,17 @@
 	"nodes": [
 		{
 			"children": [1],
-			"name": "Wall"
+			"name": "Prison_Wall_Door"
 		},
 		{
 			"mesh": 0,
-			"name": "Wall2"
-		}
-	],
-	"samplers": [
-		{
-			"magFilter": 9729,
-			"minFilter": 9987,
-			"wrapS": 10497,
-			"wrapT": 10497
+			"name": "Prison_Wall_Door2"
 		}
 	],
 	"scene": 0,
 	"scenes": [
 		{
 			"nodes": [0]
-		}
-	],
-	"textures": [
-		{
-			"sampler": 0,
-			"source": 0
 		}
 	]
 }

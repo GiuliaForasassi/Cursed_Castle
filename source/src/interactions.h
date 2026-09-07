@@ -51,6 +51,24 @@ struct AnimatedDoor {
     float openSign = 1.0f; // verso di apertura: +1 o -1
     };
 
+struct AnimatedKey {
+    std::string instanceId;
+    enum State { HIDDEN, APPEARING, COLLECTED } state = HIDDEN;
+    float currentScale = 0.0f; // scale for appearing animation
+    float targetScale = 1.0f; // final scale when fully appeared
+    float speed = 1.0f; // scale per second
+    glm::mat4 initialWm = glm::mat4(1.0f);
+    bool initialWmSaved = false;
+};
+
+// Structure to define the state of a pickup item (e.g., a relic or key) in the scene
+struct PickupState {
+    glm ::mat4 Wm;
+    Collider* C;
+};
+
+
+
 class InteractionManager {
     // List of interactable objects in the scene
 	std::vector<Interactable> interactables; 
@@ -61,6 +79,9 @@ class InteractionManager {
 
     // Map to store the state of animated doors in the scene
     std::unordered_map<std::string, AnimatedDoor> doors;
+
+    // Map to store the state of pickup items in the scene
+    std::unordered_map<std::string, PickupState> initialPickups; 
 
     //----------------- Helper functions for getting instance world position -------------------
     // Function to get the world position of an instance based on its ID
@@ -93,15 +114,27 @@ class InteractionManager {
     }
 
     // Posiziona una reliquia sopra l'altare a una posizione specifica
-    void placeOnAltar(Scene& scena, const std::string& id, glm::vec3 altarSlotPos, glm::vec3 scale = glm::vec3(4.0f)) {
-        auto it = scena.InstanceIds.find(id);
-        if (it != scena.InstanceIds.end()) {
-            Instance* instance = scena.I[it->second];
-            // Crea una nuova matrice di trasformazione posizionata sull'altare
-            glm::mat4 m = glm::translate(glm::mat4(1.0f), altarSlotPos);
-            m = glm::scale(m, scale);
-            instance->Wm = m;
+    // relX in [-1,1]: posizione laterale relativa alla semi-larghezza dell'altare
+    void placeOnAltar(Scene& scena, const std::string& id, float relX,
+                    float scale = 3.5f, const glm::mat4& rot = glm::mat4(1.0f)) {
+        auto altarIt = scena.InstanceIds.find("Altar");
+        auto relicIt = scena.InstanceIds.find(id);
+        if (altarIt == scena.InstanceIds.end() || relicIt == scena.InstanceIds.end()) return;
+
+        Instance* altar = scena.I[altarIt->second];
+        glm::vec3 c = glm::vec3(altar->Wm[3]);
+        float topY = c.y, halfW = 0.5f;
+        if (altar->C != nullptr) {
+            AABBextents E = altar->C->getExtents();
+            c.x = (E.xMin + E.xMax) * 0.5f;
+            c.z = (E.zMin + E.zMax) * 0.5f;
+            topY = E.yMax;
+            halfW = (E.xMax - E.xMin) * 0.5f;
         }
+
+        glm::mat4 m = glm::translate(glm::mat4(1.0f),
+                        glm::vec3(c.x + relX * halfW * 0.6f, topY + 0.01f, c.z));
+        scena.I[relicIt->second]->Wm = m * rot * glm::scale(glm::mat4(1.0f), glm::vec3(scale));
     }
 
     public:
@@ -111,13 +144,28 @@ class InteractionManager {
         float infoTextTimer = 0.0f; 
 
         // Reset the interaction manager to its initial state, clearing inventory keys, info text, and reactivating all interactables
-        void reset() {
+        void reset(Scene& scena) {
             inventoryKeys.clear();
             collectedRelics.clear();
             currentInfoText = "";
             infoTextTimer = 0.0f;
-            for (auto& item : interactables) {
-                item.active = true;
+            for (auto& item : interactables) item.active = true;
+
+            for (const auto& kv : initialPickups) {
+                auto it = scena.InstanceIds.find(kv.first);
+                if (it == scena.InstanceIds.end()) continue;
+                Instance* inst = scena.I[it->second];
+                inst->Wm = kv.second.Wm;
+                inst->C  = kv.second.C;
+            }
+
+            for (auto& pair : doors) {
+                AnimatedDoor& door = pair.second;
+                door.state = AnimatedDoor::CLOSED;
+                door.currentAngle = 0.0f;
+                door.openTimer = 0.0f;
+                auto it = scena.InstanceIds.find(door.instanceId);
+                if (it != scena.InstanceIds.end()) scena.I[it->second]->C = door.originalCollider;
             }
         }
 
@@ -174,7 +222,6 @@ class InteractionManager {
             }
         }
 
-        
         void updateAnimations(Scene& scena, float deltaT, const glm::vec3& playerPos) {
             for (auto& pair : doors) {
                 AnimatedDoor& door = pair.second;
@@ -231,6 +278,18 @@ class InteractionManager {
                 if (inst->C != nullptr) inst->C->setWorldMatrix(inst->Wm);
             }
         }
+
+        void saveInitialState(Scene& scena) {
+            initialPickups.clear();
+            for (const auto& item : interactables) {
+                if (item.effect != EFFECT_PICKUP_RELIC && item.effect != EFFECT_PICKUP_KEY) 
+                    continue;
+                auto it = scena.InstanceIds.find(item.instanceId);
+                if (it == scena.InstanceIds.end()) 
+                    continue;
+                initialPickups[item.instanceId] = { scena.I[it->second]->Wm, scena.I[it->second]->C };
+            }
+        }       
 
         // ------------------ Add different types of interactions ------------------
         // Add an interactable object with the specified ID, prompt, and info text to the list of interactables
@@ -415,19 +474,15 @@ class InteractionManager {
                         gm.relicsPlaced = gm.relicsCollected;
 
                         // Posiziona solo le reliquie che sono state effettivamente raccolte
-                        if (collectedRelics.count("Book")) {
-                            placeOnAltar(scena, "Book",  glm::vec3(-0.7f, 0.88f, -7.0f), glm::vec3(3.5f)); // Libro a sinistra
-                        }
-                        if (collectedRelics.count("Cup")) {
-                            placeOnAltar(scena, "Cup",   glm::vec3( 0.0f, 0.88f, -7.0f), glm::vec3(3.5f)); // Coppa al centro
-                        }
-                        if (collectedRelics.count("Sword")) {
-                            placeOnAltar(scena, "Sword", glm::vec3( 0.7f, 0.88f, -7.0f), glm::vec3(3.5f)); // Spada a destra
-                        }
+                        if (collectedRelics.count("Book"))  placeOnAltar(scena, "Book",  -1.0f, 3.5f);
+                        if (collectedRelics.count("Cup"))   placeOnAltar(scena, "Cup",    0.0f, 3.5f);
+                        // la spada nel modello è verticale: va coricata come nella scena
+                        if (collectedRelics.count("Sword")) placeOnAltar(scena, "Sword",  1.0f, 3.5f,
+                                glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
                         if (gm.relicsPlaced >= gm.TOTAL_RELICS) {
                             gm.curseBroken = true;
-                            currentInfoText = "THE CURSE IS BROKEN!\nThe sacred relics resonate on the Altar. Escape the castle!";
+                            currentInfoText = "THE CURSE IS BROKEN!\nGo outside and see the sky!";
                             infoTextTimer = 7.0f;
                         } else {
                             currentInfoText = "Relics placed on the Altar (" + std::to_string(gm.relicsPlaced) + "/" + std::to_string(gm.TOTAL_RELICS) + ")!";

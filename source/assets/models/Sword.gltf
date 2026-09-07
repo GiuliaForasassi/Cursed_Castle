@@ -13,8 +13,8 @@
 			"bufferView": 1,
 			"componentType": 5126,
 			"count": 156,
-			"max": [0.992109, 0.985978, 0.999598, 1],
-			"min": [-1, -0.873036, -0.991758, 1],
+			"max": [0.643348, 0.488625, 0.831169, 1],
+			"min": [-1, -0.992551, -0.357305, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -127,7 +127,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Sword3",
 			"primitives": [
 				{
 					"attributes": {

@@ -13,8 +13,8 @@
 			"bufferView": 1,
 			"componentType": 5126,
 			"count": 1617,
-			"max": [0.999999, 0.999025, 0.999994, 1],
-			"min": [-0.999889, -0.999584, -0.999865, 1],
+			"max": [0.761475, 0.684673, 1, 1],
+			"min": [-1, -0.999909, -0.677186, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -23,7 +23,7 @@
 			"componentType": 5126,
 			"count": 1617,
 			"max": [1, 1, 0.999908],
-			"min": [-1, -0.982539, -0.999875],
+			"min": [-1, -0.982541, -0.999875],
 			"normalized": false,
 			"type": "VEC3"
 		},
@@ -122,7 +122,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Throne3",
 			"primitives": [
 				{
 					"attributes": {

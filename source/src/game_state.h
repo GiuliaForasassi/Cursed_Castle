@@ -33,6 +33,8 @@ public:
     bool enterPressedPrev = false;
     bool tabPressedPrev = false;
 
+    bool restartRequested = false;
+
     // Method to reset the game state to its initial values
     void reset() {
         currentState = GameState::PLAYING;
@@ -40,6 +42,7 @@ public:
         relicsPlaced = 0;
         curseBroken = false;
         victoryTriggered = false;
+        restartRequested = true;
     }
 
     // Method to clear all menu-related texts from the screen
@@ -89,7 +92,6 @@ public:
                     reset();
                 }
                 break;
-            
         }
         enterPressedPrev = enterPressed;
         tabPressedPrev = tabPressed;
@@ -184,13 +186,18 @@ public:
                 break;
             }
             case GameState::VICTORY: {
-                txt.print(0.0f, -0.25f, "CURSE BROKEN - YOU WON!", 10, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.5f, scale * 1.5f);
+                float titleScale = scale * 1.2f;
+                txt.print(0.0f, -0.35f, "CURSE BROKEN - YOU WON!", 10, "CO", false, false, true,
+                        TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, titleScale, titleScale);
 
-                txt.print(0.0f, 0.15f, "You successfully escaped the castle under the clear blue sky.\n\n"
-                                       "Press [R] to Play Again\n"
-                                       "Press [ESC] to Exit", 11, "CO", false, false, true,
-                          TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 1.0f, scale * 1.0f);
+                float bodyScale = scale * 0.85f;
+                std::string body = wrapText("You successfully escaped the castle under the clear blue sky.",
+                                            estimateMaxCharsPerLine(windowWidth, bodyScale));
+                body += "\n\nPress [R] to Play Again\n"
+                            "Press [ESC] to Exit";
+
+                txt.print(0.0f, 0.15f, body, 11, "CO", false, false, true,
+                        TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, bodyScale, bodyScale);
                 break;
             }
 

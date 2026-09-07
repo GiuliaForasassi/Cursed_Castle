@@ -13,8 +13,8 @@
 			"bufferView": 1,
 			"componentType": 5126,
 			"count": 2023,
-			"max": [1, 0.856255, 1, 1],
-			"min": [-1, -0.843655, -0.999975, 1],
+			"max": [-0.059723, 0.745677, 0.85687, 1],
+			"min": [-1, -0.852545, -0.690177, 1],
 			"normalized": false,
 			"type": "VEC4"
 		},
@@ -122,7 +122,6 @@
 	],
 	"meshes": [
 		{
-			"name": "Ground_Tiles_Large3",
 			"primitives": [
 				{
 					"attributes": {

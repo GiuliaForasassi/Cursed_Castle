@@ -4,6 +4,7 @@
 layout(binding = 0, set = 1) uniform UniformBufferObject {
 	mat4 mvpMat;
 	mat4 mMat;
+	vec4 lightParams; // x = 1.0 outdoor (receives the directional light), 0.0 inside the castle
 } ubo;
 
 layout(location = 0) in vec3 inPosition;
@@ -11,9 +12,11 @@ layout(location = 1) in vec2 inUV;
 
 layout(location = 0) out vec3 fragPos;
 layout(location = 1) out vec2 fragUV;
+layout(location = 2) flat out vec4 matParams;
 
 void main() {
 	gl_Position = ubo.mvpMat * vec4(inPosition, 1.0);
 	fragPos = (ubo.mMat * vec4(inPosition, 1.0)).xyz;
 	fragUV  = inUV;
+	matParams = ubo.lightParams;
 }

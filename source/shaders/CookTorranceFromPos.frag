@@ -3,12 +3,12 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-#define MAX_POINT_LIGHTS 8
+#define MAX_POINT_LIGHTS 16
 
 //--------------- Input and output definitions ---------------
 layout(location = 0) in vec3 fragPos;
 layout(location = 1) in vec2 fragUV;
-
+layout(location = 2) flat in vec4 matParams;
 layout(location = 0) out vec4 outColor;
 
 // Texture 2D for Descriptor Set 1
@@ -112,7 +112,7 @@ void main() {
 
     // 1. Directional Light (Sun / Moon)
     vec3 L = normalize(-gubo.lightDir);
-    vec3 Lo = computeCookTorrance(N, V, L, gubo.lightColor.rgb, albedo, roughness, metallic, F0);
+    vec3 Lo = computeCookTorrance(N, V, L, gubo.lightColor.rgb, albedo, roughness, metallic, F0) * matParams.x;
 
     // 2. Point Lights (Torches)
     for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
@@ -123,15 +123,18 @@ void main() {
         float distance = length(toLight);
         vec3 Lp = toLight / max(distance, 0.0001);
 
-        float attenuation = 1.0 / (1.0 + 0.1 * distance + 0.05 * distance * distance);
+        float g = gubo.pointLightPos[i].w;
+        float attenuation = min(pow(g / max(distance, 0.001), 2.0), 1.0);
+        attenuation *= clamp(1.0 - pow(distance / (3.0 * g), 4.0), 0.0, 1.0);
         vec3 radianceP = gubo.pointLightColor[i].rgb * (gubo.pointLightColor[i].a * attenuation);
 
-        Lo += computeCookTorrance(N, V, Lp, radianceP, albedo, roughness, metallic, F0);
+        Lo += computeCookTorrance(N, V, Lp, radianceP, albedo, roughness, metallic, F0) * matParams.x;
     }
 
     // 3. Ambient Light
-    vec3 ambient = vec3(0.03) * albedo;
-    vec3 color = ambient + Lo;
+    vec3 ambient = mix(0.02, 0.03, matParams.x) * albedo;
+    vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
+    vec3 color = ambient + Lo + emissive;
 
     // 4. Dynamic Fog
     if (gubo.fogColor.a > 0.0001) {

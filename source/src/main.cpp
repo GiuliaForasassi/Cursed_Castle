@@ -2,6 +2,10 @@
 
 // This has been adapted from the Vulkan tutorial
 #include <sstream>
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <cstring>
 
 #include <json.hpp>
 
@@ -19,16 +23,14 @@
 #include "utils.h"
 #include "game_state.h"
 
-
-#include <limits>
-#include <cstring>
-
-#define MAX_POINT_LIGHTS 8
+#define MAX_POINT_LIGHTS 16
 
 // Uniform buffer object for the local parameters (per object)
 struct UniformBufferObject {
 	alignas(16) glm::mat4 mvpMat; // Matrix model view-projection
 	alignas(16) glm::mat4 mMat; // Matrix model (local transformation of the object in the world)
+	// x = 1.0 outdoor (receives the directional light), 0.0 inside the castle
+    alignas(16) glm::vec4 lightParams;
 };
 
 // Uniform buffer object for the global parameters (per scene)
@@ -108,6 +110,11 @@ class Skeleton26ReplaceName : public BaseProject {
 	Texture T_Sky;
 
     float currentDayFactor = 0.0f; // 0.0f = Notte, 1.0f = Giorno
+	std::vector<glm::vec4> instanceParams; // x = outdoor, y = emissive
+
+	std::vector<glm::vec3> torchPositions;
+    float totalTime = 0.0f;
+	float victoryMenuTimer = -1.0f; // < 0 inside the castle
 
 	// ----------- WINDOW CONFIGURATION AND CALLBACKS ----------------
 	// Initializes the window parameters (size, title, resizable)
@@ -243,6 +250,26 @@ class Skeleton26ReplaceName : public BaseProject {
 			exit(0);
 		}
 
+		// Configure the sampler for the flat atlas texture --> for the grass tile texture
+		Texture* flatAtlas = scene.T[scene.TextureIds.at("Flat_Atlas")];
+		flatAtlas->sampler->cleanup();
+		flatAtlas->sampler->init(
+			this,
+			VK_FILTER_NEAREST,
+			VK_FILTER_NEAREST,
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+			VK_SAMPLER_MIPMAP_MODE_NEAREST,
+			VK_FALSE,
+			1.0f,
+			0.0f
+		);
+		// Classify instances as outdoor or indoor
+		classifyInstances();
+
+		// Collect the positions of the torch lights in the scene
+		collectTorchLights();
+
 		// Setup the interactions for the interactable objects in the scene
 		setupInteractions();
 
@@ -343,15 +370,12 @@ class Skeleton26ReplaceName : public BaseProject {
 		// begin standard pass
 		RP.begin(commandBuffer, currentImage); // Begin the render pass for the current frame
 
+		scene.populateCommandBuffer(commandBuffer, 0, currentImage); // Populate the command buffer with the rendering commands for the scene, using the first render pass (index 0)
 		// Disegna lo SkyBox
         P_SkyBox.bind(commandBuffer);
         M_SkyBox.bind(commandBuffer);
         DSsky.bind(commandBuffer, P_SkyBox, 0, currentImage);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(M_SkyBox.indices.size()), 1, 0, 0, 0);
-
-
-		scene.populateCommandBuffer(commandBuffer, 0, currentImage); // Populate the command buffer with the rendering commands for the scene, using the first render pass (index 0)
-
 		RP.end(commandBuffer); // End the render pass for the current frame
 	}
 
@@ -405,13 +429,17 @@ class Skeleton26ReplaceName : public BaseProject {
 			gubo.fogColor = glm::vec4(0.02f, 0.02f, 0.05f, 0.06f);
 		}
 
-		//--------- Populate the point light data in the global uniform buffer ---------
-		gubo.pointLightPos[0] = glm::vec4(0.0f, 3.0f, 20.0f, 0.0f);
-		gubo.pointLightColor[0] = glm::vec4(3.0f, 1.8f, 0.9f, 1.0f);  // Active point light
-		for(int i = 1; i < 4; i++) {
-			gubo.pointLightPos[i] = glm::vec4(0.0f);
-			gubo.pointLightColor[i] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f); // Inactive point light (a = 0)
-		}
+		//--------- One point light per torch holder ---------
+        totalTime += deltaT;
+        int nLights = std::min((int)torchPositions.size(), MAX_POINT_LIGHTS);
+        for (int i = 0; i < nLights; i++) {
+            float flicker = 0.85f + 0.15f * sinf(totalTime * 7.0f + (float)i * 2.3f);
+            gubo.pointLightPos[i] = glm::vec4(torchPositions[i], 5.0f); // w = falloff radius
+            gubo.pointLightColor[i] = glm::vec4(3.0f, 1.8f, 0.9f, flicker);
+        }
+        for (int i = nLights; i < MAX_POINT_LIGHTS; i++) {
+            gubo.pointLightColor[i] = glm::vec4(0.0f);
+        }
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
 
@@ -436,6 +464,7 @@ class Skeleton26ReplaceName : public BaseProject {
         for (int i = 0; i < scene.InstanceCount; i++) {
             ubo.mMat = scene.I[i]->Wm;
             ubo.mvpMat = ViewPrj * ubo.mMat;
+			ubo.lightParams = instanceParams[i];
 
             // Set 0: Global UBO (luci, camera, nebbia)
             // Set 1: Local UBO (matrice MVP e Model)
@@ -484,8 +513,36 @@ class Skeleton26ReplaceName : public BaseProject {
 		// + 0.1719 is the local Z-coordinate of the hinge relative to the door model's origin
 		interactionManager.setDoorHinge("Door_main", +0.1719f, +1.0f);
 		interactionManager.addDoorInteraction("Door_L");
+		interactionManager.setDoorHinge("Door_L", +0.1719f, +1.0f);
 		interactionManager.addLockedDoorInteraction("Door_locked", "Key", "Press E to unlock Door");
+		interactionManager.saveInitialState(scene);
 	}
+
+	// Everything beyond the castle walls: garden, trees and hedges
+    void classifyInstances() {
+        instanceParams.assign(scene.InstanceCount, glm::vec4(0.0f));
+        for (int i = 0; i < scene.InstanceCount; i++) {
+            const std::string &id = *scene.I[i]->id;
+            bool outdoor = id.rfind("garden", 0) == 0 ||
+                           id.rfind("Tree_", 0) == 0 ||
+                           id.rfind("Hedge", 0) == 0;
+            bool torch = id.rfind("Torch_Holder", 0) == 0;
+            instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, torch ? 1.0f : 0.0f, 0.0f, 0.0f);
+        }
+    }
+
+	void collectTorchLights() {
+        torchPositions.clear();
+        for (int i = 0; i < scene.InstanceCount; i++) {
+            if (scene.I[i]->id->rfind("Torch_Holder", 0) != 0) continue;
+
+            const glm::mat4 &Wm = scene.I[i]->Wm;
+            glm::vec3 pos = glm::vec3(Wm[3]);
+            glm::vec3 forward = glm::normalize(glm::vec3(Wm * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f)));
+            torchPositions.push_back(pos + forward * 0.5f + glm::vec3(0.0f, 0.8f, 0.0f));
+        }
+        std::cout << "Torch lights found: " << torchPositions.size() << "\n";
+    }
 
 	// ------------------ GAME LOGIC -------------------
 	float GameLogic() {
@@ -502,6 +559,15 @@ class Skeleton26ReplaceName : public BaseProject {
 
 		//------------------- 1. Handle Game State Input and UI -------------------
 		gameManager.handleInput(window, txt, currentWindowWidth, currentWindowHeight);
+		if (gameManager.restartRequested) {
+			gameManager.restartRequested = false;
+			cam.resetCamera();
+			interactionManager.reset(scene);
+			currentDayFactor = 0.0f;
+			victoryMenuTimer = -1.0f;
+			txt.removeText(2);
+			txt.removeText(3);
+		}
     	gameManager.updateUI(txt, currentWindowWidth, currentWindowHeight);
 
 		// ------------------ 2. Process mouse/keyboard and Gameplay ------------------
@@ -547,16 +613,23 @@ class Skeleton26ReplaceName : public BaseProject {
 				}
 			}
 
-			// Check victory condition (e.g., all relics collected and brought to the altar)
-			if (gameManager.curseBroken) {
-                glm::vec3 playerPos = cam.getCameraPosition();
-                // Esempio: se il giocatore esce dal portone oltre Z = 25.0f (adatterai la coordinata in base alla nuova mappa)
-                if (playerPos.z > 25.0f) {
-                    gameManager.clearMenuTexts(txt);
-                    txt.removeText(2); // Rimuove eventuali prompt di interazione
-                    txt.removeText(3); // Rimuove eventuali testi informativi
-                    gameManager.currentState = GameState::VICTORY;
-                }
+			//-------- Check victory condition --------------
+			if (gameManager.curseBroken && !gameManager.victoryTriggered) {
+				if(victoryMenuTimer < 0.0f) {
+					if(cam.getCameraPosition().z > 34.0f) {
+						victoryMenuTimer = 5.0f;
+					}
+				} else {
+					victoryMenuTimer -= deltaT;
+					if(victoryMenuTimer <= 0.0f) {
+						gameManager.victoryTriggered = true;
+						gameManager.clearMenuTexts(txt);
+						txt.removeText(2);
+						txt.removeText(3);
+						gameManager.currentState = GameState::VICTORY;
+
+					}
+				}
             }
 		} else {
 			// If we are in the menu (not interacting with objects), show the cursor and remove any interaction texts

@@ -8,7 +8,7 @@
 
 class Camera {
 	// Initial position
-	glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 3.0f); 
+	glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 44.0f); 
 	// Orientation angles
 	float yaw = -glm::pi<float>() / 2.0f; // to control Horizontal rotation: initialized to -90 degrees
 	float pitch = 0.0f; // Vertical rotation
@@ -105,23 +105,31 @@ class Camera {
                 cameraPos.z = tryPosZ.z;
         }
 
-    // ------------------ Collision detection -------------------
-	// Check if the player (sphere) collides with any object in the scene
-	// This function uses a sphere collision detection method
-	bool collidesWithScene(glm::vec3 pos, float radius, Scene& scene) {
-		Collider playerCol; // Temporary collider that represents the player
-		playerCol.initSphere(0.0f, 0.0f, 0.0f, radius); // Initialize the player collider as a sphere with the given radius at the origin
-		playerCol.setWorldMatrix(glm::translate(glm::mat4(1.0f), pos)); // Set the world matrix for the player collider based on its position
+        // ------------------ Collision detection -------------------
+        // Check if the player (sphere) collides with any object in the scene
+        // This function uses a sphere collision detection method
+        bool collidesWithScene(glm::vec3 pos, float radius, Scene& scene) {
+            Collider playerCol; // Temporary collider that represents the player
+            playerCol.initSphere(0.0f, 0.0f, 0.0f, radius); // Initialize the player collider as a sphere with the given radius at the origin
+            playerCol.setWorldMatrix(glm::translate(glm::mat4(1.0f), pos)); // Set the world matrix for the player collider based on its position
 
-		for (int i = 0; i < scene.InstanceCount; i++) { // Iterate through all instances in the scene
-			Collider *c = scene.I[i]->C; // Get the collider for the current instance
-			if (c == nullptr) 
-				continue; // Skip if the instance does not have a collider
-			if (playerCol.collidesWith(*c)) 
-				return true; // Return true if a collision is detected between the player and the instance's collider
-		}
-		return false;
-	}
+            for (int i = 0; i < scene.InstanceCount; i++) { // Iterate through all instances in the scene
+                Collider *c = scene.I[i]->C; // Get the collider for the current instance
+                if (c == nullptr) 
+                    continue; // Skip if the instance does not have a collider
+                if (playerCol.collidesWith(*c)) 
+                    return true; // Return true if a collision is detected between the player and the instance's collider
+            }
+            return false;
+        }
+
+        void resetCamera() {
+            cameraPos = glm::vec3(0.0f, 2.0f, 44.0f); 
+            yaw   = -glm::pi<float>() / 2.0f;   // guarda verso -Z, cioè verso il castello
+            pitch = 0.0f;
+            firstMouse = true;                  // evita lo scatto del mouse al respawn
+            updateOrientation(0.0f, 0.0f);
+        }
 
     // ------------------ Getters for camera parameters -------------------
         const glm::vec3& getCameraPosition() const {
