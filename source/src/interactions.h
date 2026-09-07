@@ -3,6 +3,9 @@
 #include <vector>
 #include <unordered_set>
 #include <iostream>
+#include <limits>
+#include <algorithm>
+#include <cmath>
 #ifndef SCENE_HPP_GUARD
 #define SCENE_HPP_GUARD
 #include "modules/Scene.hpp"
@@ -278,30 +281,46 @@ class InteractionManager {
          //-------------------- Searching for nearest interactable objects --------------------
         // Function to find the nearest interactable object to the player (camera) within a certain distance threshold
         // Returns the index of the nearest interactable object in the interactables vector, or -1 if none are found within the threshold
-        int findNearestInteractable(Scene& scena, const Camera& cam, float maxRange=6.0f, float maxAngleDegrees=60.0f){
-            int nearestIndex = -1; // Initialize the index of the nearest interactable to -1 (not found)
-            float nearestDistance = maxRange; // Initialize the nearest distance to the maximum range
-            
-            for(int i = 0; i < interactables.size(); i++){
-                if(!interactables[i].active) 
-                    continue; // Skip inactive interactables
-                glm::vec3 interactablePos = getInstanceWorldPosition(scena, cam, interactables[i].instanceId); // Get the world position of the interactable
-                glm::vec3 toInteractable = interactablePos - cam.getCameraPosition(); // Calculate the vector from the camera to the interactable
-                float distance = glm::length(toInteractable); // Calculate the distance to the interactable
-                if(distance > nearestDistance)
-                    continue; // Skip if the distance is greater than the nearest distance found so far
-                if(distance > 0.001f){
-                    glm::vec3 directionToInteractable = toInteractable / distance; // Normalize the vector to get the direction
-                    // Check if the interactable is within the maximum angle threshold relative to the camera's front direction
-                    if(glm::dot(directionToInteractable, cam.getCameraFront()) < cos(glm::radians(maxAngleDegrees)))
-                        continue;
+        // aimMargin allarga il box per rendere mirabili anche gli oggetti piccoli
+        int findNearestInteractable(Scene& scena, const Camera& cam, float maxRange = 4.0f, float aimMargin = 0.15f) {
+            const glm::vec3 ro = cam.getCameraPosition();
+            const glm::vec3 rd = cam.getCameraFront();
+
+            int bestIndex = -1;
+            float bestT = maxRange;
+
+            for (int i = 0; i < (int)interactables.size(); i++) {
+                if (!interactables[i].active) continue;
+
+                auto it = scena.InstanceIds.find(interactables[i].instanceId);
+                if (it == scena.InstanceIds.end()) 
+                    continue;
+                Instance* inst = scena.I[it->second];
+
+                AABBextents E;
+                if (inst->C != nullptr) {
+                    E = inst->C->getExtents();
+                } else {
+                    // Porta aperta o reliquia già raccolta: nessun collider, ripiego su un box attorno all'origine
+                    glm::vec3 p = glm::vec3(inst->Wm[3]);
+                    E = {p.x - 0.3f, p.x + 0.3f, p.y - 0.3f, p.y + 0.3f, p.z - 0.3f, p.z + 0.3f};
                 }
-                nearestIndex = i; // Update the index of the nearest interactable
-                nearestDistance = distance; // Update the nearest distance
+
+                E.xMin -= aimMargin; E.xMax += aimMargin;
+                E.yMin -= aimMargin; E.yMax += aimMargin;
+                E.zMin -= aimMargin; E.zMax += aimMargin;
+
+                float t;
+                if (!rayIntersectsAABB(ro, rd, E, t)) 
+                    continue;
+                if (t > bestT) 
+                    continue;
+
+                bestT = t;
+                bestIndex = i;
             }
-            return nearestIndex; // Return the index of the nearest interactable 
+            return bestIndex;
         }
-        
 
         //-------------------- Execution mechanism for interactions --------------------
         // TODO: Finish to implement this function
@@ -437,5 +456,29 @@ class InteractionManager {
         //------------------- Other methods ------------------
         const Interactable& get(int index) const { 
             return interactables[index]; 
+        }
+
+        // Slab test raggio/AABB: tHit = distanza del primo impatto (0 se l'origine è dentro il box)
+        static bool rayIntersectsAABB(const glm::vec3& ro, const glm::vec3& rd, const AABBextents& E, float& tHit) {
+            const glm::vec3 bmin(E.xMin, E.yMin, E.zMin);
+            const glm::vec3 bmax(E.xMax, E.yMax, E.zMax);
+            float tmin = 0.0f;
+            float tmax = std::numeric_limits<float>::max();
+
+            for (int a = 0; a < 3; a++) {
+                if (fabs(rd[a]) < 1e-6f) {
+                    if (ro[a] < bmin[a] || ro[a] > bmax[a]) return false; // parallelo allo slab e fuori
+                    continue;
+                }
+                float inv = 1.0f / rd[a];
+                float t1 = (bmin[a] - ro[a]) * inv;
+                float t2 = (bmax[a] - ro[a]) * inv;
+                if (t1 > t2) std::swap(t1, t2);
+                tmin = std::max(tmin, t1);
+                tmax = std::min(tmax, t2);
+                if (tmin > tmax) return false;
+            }
+            tHit = tmin;
+            return true;
         }
 };

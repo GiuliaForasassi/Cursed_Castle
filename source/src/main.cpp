@@ -474,8 +474,9 @@ class Skeleton26ReplaceName : public BaseProject {
         interactionManager.addRelicInteraction("Sword", "Press E to pick up Cursed Blade");
 		interactionManager.addAltarInteraction("Altar");
 		interactionManager.addDoorInteraction("Door_main");
-		interactionManager.setDoorHinge("Door_main", -0.1719f, +1.0f);
-		interactionManager.addDoorInteraction("DoorL");
+		// + 0.1719 is the local Z-coordinate of the hinge relative to the door model's origin
+		interactionManager.setDoorHinge("Door_main", +0.1719f, +1.0f);
+		interactionManager.addDoorInteraction("Door_L");
 		interactionManager.addLockedDoorInteraction("Door_locked", "Key", "Press E to unlock Door");
 	}
 
@@ -508,7 +509,7 @@ class Skeleton26ReplaceName : public BaseProject {
 
 
 			// --------- 3. Check for interactions with objects in the scene ---------
-			int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 10.0f); // Find the nearest interactable object
+			int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 4.0f); // Find the nearest interactable object
 			if (nearestInteractableObjIndex >= 0 && interactionManager.infoTextTimer <= 0.0f){
 				std::string promptText = interactionManager.getPrompt(nearestInteractableObjIndex, gameManager);
 				txt.print(0.0f, 0.75f, promptText, 2, "CO", false, false, true, TAL_CENTER, TRH_CENTER, TRV_BOTTOM, {1.0f, 1.0f, 1.0f, 1.0f},{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f,0.0f,0.0f,0.0f}, getTextScale(currentWindowWidth, currentWindowHeight), getTextScale(currentWindowWidth, currentWindowHeight)); // Display the prompt for the nearest interactable object
