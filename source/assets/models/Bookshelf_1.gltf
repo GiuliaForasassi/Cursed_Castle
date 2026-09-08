@@ -1,0 +1,170 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 728,
+			"max": [0.26973, 0.568031, 0.082916],
+			"min": [-0.271484, 0, -0.092302],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 728,
+			"max": [0.17176, 0.101792, 1, 1],
+			"min": [-1, -1, -0.219368, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 728,
+			"max": [1, 1, 0.999984],
+			"min": [-0.999997, -1, -1],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 728,
+			"max": [0.214817, 0.217266],
+			"min": [0.039189, 0.161728],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 1068,
+			"max": [727],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 8736,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 11648,
+			"byteOffset": 8736,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8736,
+			"byteOffset": 20384,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 5824,
+			"byteOffset": 29120,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2136,
+			"byteOffset": 34944,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 37080,
+			"uri": "Bookshelf_10.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root",
+		"KHR_materials_emissive_strength"
+	],
+	"images": [
+		{
+			"name": "Texture2",
+			"uri": "../textures/Texture2.png"
+		}
+	],
+	"materials": [
+		{
+			"emissiveFactor": [0.957641, 0.957641, 0.957641],
+			"extensions": {
+				"KHR_materials_emissive_strength": {
+					"emissiveStrength": 0
+				}
+			},
+			"name": "Texture",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.8, 0.8, 0.8, 0.8],
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0,
+				"roughnessFactor": 1
+			}
+		}
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Bookshelf_1"
+		},
+		{
+			"mesh": 0,
+			"name": "Bookshelf_12"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	]
+}

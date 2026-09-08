@@ -1,0 +1,170 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 1036,
+			"max": [0.093045, 0.084292, 0.091936],
+			"min": [-0.093929, -0.082834, -0.093527],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 1036,
+			"max": [0.392162, 0.159415, 1, 1],
+			"min": [-1, -1, -0.136743, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 1036,
+			"max": [1, 1, 1],
+			"min": [-1, -1, -1],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 1036,
+			"max": [0.213693, 0.216277],
+			"min": [0.032097, 0.15755],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 1548,
+			"max": [1035],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 12432,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 16576,
+			"byteOffset": 12432,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 12432,
+			"byteOffset": 29008,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8288,
+			"byteOffset": 41440,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3096,
+			"byteOffset": 49728,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 52824,
+			"uri": "Wooden_Box0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root",
+		"KHR_materials_emissive_strength"
+	],
+	"images": [
+		{
+			"name": "Texture2",
+			"uri": "../textures/Texture2.png"
+		}
+	],
+	"materials": [
+		{
+			"emissiveFactor": [0.957641, 0.957641, 0.957641],
+			"extensions": {
+				"KHR_materials_emissive_strength": {
+					"emissiveStrength": 0
+				}
+			},
+			"name": "Texture",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.8, 0.8, 0.8, 0.8],
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0,
+				"roughnessFactor": 1
+			}
+		}
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Wooden_Box"
+		},
+		{
+			"mesh": 0,
+			"name": "Wooden_Box2"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	]
+}

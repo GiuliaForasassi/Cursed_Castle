@@ -1,0 +1,175 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 40,
+			"max": [0.040457, 0.037995, 0.109218],
+			"min": [-0.066862, 0.003997, -0.097166],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 40,
+			"max": [0.005127, 0.39246, 0.986551, 1],
+			"min": [-0.999962, -0.978025, -0.208424, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 40,
+			"max": [0.945579, 0.999925, 0.970437],
+			"min": [-0.986251, -0.999962, -0.976783],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 40,
+			"max": [0.43606, 0.08051],
+			"min": [0.412024, 0.055913],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5125,
+			"count": 60,
+			"max": [39],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 480,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 640,
+			"byteOffset": 480,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 480,
+			"byteOffset": 1120,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 320,
+			"byteOffset": 1600,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 60,
+			"byteOffset": 1920,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 1980,
+			"byteLength": 240
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 2220,
+			"uri": "Stone_Brick0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root",
+		"KHR_materials_emissive_strength"
+	],
+	"images": [
+		{
+			"name": "Texture2",
+			"uri": "../textures/Texture2.png"
+		}
+	],
+	"materials": [
+		{
+			"emissiveFactor": [0.957641, 0.957641, 0.957641],
+			"extensions": {
+				"KHR_materials_emissive_strength": {
+					"emissiveStrength": 0
+				}
+			},
+			"name": "Texture",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.8, 0.8, 0.8, 0.8],
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0,
+				"roughnessFactor": 1
+			}
+		}
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Stone_Brick"
+		},
+		{
+			"mesh": 0,
+			"name": "Stone_Brick2"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	]
+}

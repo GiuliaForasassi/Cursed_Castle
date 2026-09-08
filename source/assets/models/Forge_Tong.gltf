@@ -1,0 +1,175 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 232,
+			"max": [0.115245, 0.008808, 0.02511],
+			"min": [-0.073554, -0.008808, -0.024929],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 232,
+			"max": [0.576708, 0.067232, 0.815993, 1],
+			"min": [-1, -0.999619, -0.072812, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 232,
+			"max": [0.85288, 1, 0.999091],
+			"min": [-0.752554, -1, -0.99963],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 232,
+			"max": [0.069093, 0.329845],
+			"min": [0.050095, 0.296212],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5125,
+			"count": 348,
+			"max": [231],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 2784,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3712,
+			"byteOffset": 2784,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2784,
+			"byteOffset": 6496,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1856,
+			"byteOffset": 9280,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 348,
+			"byteOffset": 11136,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 11484,
+			"byteLength": 1392
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 12876,
+			"uri": "Forge_Tong0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root",
+		"KHR_materials_emissive_strength"
+	],
+	"images": [
+		{
+			"name": "Texture2",
+			"uri": "../textures/Texture2.png"
+		}
+	],
+	"materials": [
+		{
+			"emissiveFactor": [0.957641, 0.957641, 0.957641],
+			"extensions": {
+				"KHR_materials_emissive_strength": {
+					"emissiveStrength": 0
+				}
+			},
+			"name": "Texture",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.8, 0.8, 0.8, 0.8],
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0,
+				"roughnessFactor": 1
+			}
+		}
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Forge_Tong"
+		},
+		{
+			"mesh": 0,
+			"name": "Forge_Tong2"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	]
+}

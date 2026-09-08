@@ -1,0 +1,170 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 1096,
+			"max": [0.358377, 0.232268, 0.334184],
+			"min": [-0.333897, -0.008603, -0.175905],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 1096,
+			"max": [0.632909, 0.570991, 1, 1],
+			"min": [-1, -0.999946, -0.651327, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 1096,
+			"max": [0.999997, 0.999997, 0.999946],
+			"min": [-1, -1, -0.999945],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 1096,
+			"max": [0.83834, 0.467348],
+			"min": [0.034773, 0.157998],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 1602,
+			"max": [1095],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 13152,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 17536,
+			"byteOffset": 13152,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 13152,
+			"byteOffset": 30688,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8768,
+			"byteOffset": 43840,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3204,
+			"byteOffset": 52608,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 55812,
+			"uri": "Bed_Ruined0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root",
+		"KHR_materials_emissive_strength"
+	],
+	"images": [
+		{
+			"name": "Texture2",
+			"uri": "../textures/Texture2.png"
+		}
+	],
+	"materials": [
+		{
+			"emissiveFactor": [0.957641, 0.957641, 0.957641],
+			"extensions": {
+				"KHR_materials_emissive_strength": {
+					"emissiveStrength": 0
+				}
+			},
+			"name": "Texture",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [0.8, 0.8, 0.8, 0.8],
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0,
+				"roughnessFactor": 1
+			}
+		}
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Bed_Ruined"
+		},
+		{
+			"mesh": 0,
+			"name": "Bed_Ruined2"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	]
+}

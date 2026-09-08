@@ -1,0 +1,134 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 1138,
+			"max": [0.096769, 0.194349, 0.165075],
+			"min": [-0.092229, 0.0, -0.161868],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 1138,
+			"max": [0.055893, 0.653238, 1, 1],
+			"min": [-1, -0.997008, -0.504987, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 1138,
+			"max": [0.999672, 0.999995, 0.994707],
+			"min": [-1, -1, -0.997024],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 1138,
+			"max": [0.212676, 0.337655],
+			"min": [0.034541, 0.160619],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 1710,
+			"max": [1137],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 13656,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 18208,
+			"byteOffset": 13656,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 13656,
+			"byteOffset": 31864,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 9104,
+			"byteOffset": 45520,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3420,
+			"byteOffset": 54624,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 58044,
+			"uri": "Wooden_Chest0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Wooden_Chest"
+		},
+		{
+			"children": [2],
+			"name": "Chest_Pivot",
+			"rotation": [-0.707107, 0, 0, 0.707107]
+		},
+		{
+			"mesh": 0,
+			"name": "Wooden_Chest2"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

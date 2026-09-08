@@ -1,0 +1,129 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 1008,
+			"max": [0.159062, 0.554968, 0.159494],
+			"min": [-0.15906, -0.000806, -0.162256],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 1008,
+			"max": [0.60794, 0.217563, 0.999994, 1],
+			"min": [-1, -1, -0.532339, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 1008,
+			"max": [0.999994, 1, 0.999981],
+			"min": [-0.999945, -1, -1],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 1008,
+			"max": [0.461226, 0.33552],
+			"min": [0.419307, 0.292803],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 1488,
+			"max": [1007],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 12096,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 16128,
+			"byteOffset": 12096,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 12096,
+			"byteOffset": 28224,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8064,
+			"byteOffset": 40320,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2976,
+			"byteOffset": 48384,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 51360,
+			"uri": "Jail_Square0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Jail_Square"
+		},
+		{
+			"mesh": 0,
+			"name": "Jail_Square2"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

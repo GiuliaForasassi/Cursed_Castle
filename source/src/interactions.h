@@ -374,6 +374,22 @@ class InteractionManager {
                     continue;
                 if (t > bestT) 
                     continue;
+                // Check if the ray to the interactable is blocked by any other instance
+                bool blocked = false;
+                for (int blockerIndex = 0; blockerIndex < scena.InstanceCount; ++blockerIndex) {
+                    Instance* blocker = scena.I[blockerIndex];
+                    if (blocker == inst || blocker->C == nullptr) 
+                        continue;
+
+                    float blockerDistance;
+                    if (rayIntersectsAABB(ro, rd, blocker->C->getExtents(), blockerDistance)
+                        && blockerDistance + 0.001f < t) {
+                        blocked = true;
+                        break;
+                    }
+                }
+                if (blocked) 
+                    continue;
 
                 bestT = t;
                 bestIndex = i;

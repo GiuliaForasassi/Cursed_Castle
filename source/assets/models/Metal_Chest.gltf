@@ -1,0 +1,134 @@
+{
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 1415,
+			"max": [0.096661, 0.218145, 0.17553],
+			"min": [-0.092402, 0.0, -0.174888],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 1415,
+			"max": [0.094372, 0.554412, 0.999985, 1],
+			"min": [-1, -1, -0.54877, 1],
+			"normalized": false,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 1415,
+			"max": [0.999984, 1, 1],
+			"min": [-0.999984, -1, -1],
+			"normalized": false,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 1415,
+			"max": [0.455835, 0.334486],
+			"min": [0.039529, 0.03947],
+			"normalized": false,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5123,
+			"count": 2085,
+			"max": [1414],
+			"min": [0],
+			"normalized": false,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"generator": "Godot Engine v4.7.2.stable.official@ed1daf0bf001b61586d9930840f2f1394092c079",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 16980,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 22640,
+			"byteOffset": 16980,
+			"byteStride": 16,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 16980,
+			"byteOffset": 39620,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 11320,
+			"byteOffset": 56600,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4170,
+			"byteOffset": 67920,
+			"target": 34963
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 72090,
+			"uri": "Metal_Chest0.bin"
+		}
+	],
+	"extensionsUsed": [
+		"GODOT_single_root"
+	],
+	"meshes": [
+		{
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 2,
+						"POSITION": 0,
+						"TANGENT": 1,
+						"TEXCOORD_0": 3
+					},
+					"indices": 4,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"name": "Metal_Chest"
+		},
+		{
+			"children": [2],
+			"name": "Metal_Chest_Pivot",
+			"rotation": [-0.707107, 0, 0, 0.707107]
+		},
+		{
+			"mesh": 0,
+			"name": "Metal_Chest2"
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [0]
+		}
+	]
+}

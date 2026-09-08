@@ -25,7 +25,7 @@
 
 #define MAX_POINT_LIGHTS 16
 
-// Uniform buffer object for the local parameters (per object)
+// UBO: Variables specific to each object (instance) in the scene (local parameters)
 struct UniformBufferObject {
 	alignas(16) glm::mat4 mvpMat; // Matrix model view-projection
 	alignas(16) glm::mat4 mMat; // Matrix model (local transformation of the object in the world)
@@ -33,7 +33,7 @@ struct UniformBufferObject {
     alignas(16) glm::vec4 lightParams;
 };
 
-// Uniform buffer object for the global parameters (per scene)
+// GUBO: Variables equal for all objects in the scene (global parameters)
 struct GlobalUniformBufferObject {
 	alignas(16) glm::vec3 lightDir; // Direction of the light 
 	alignas(16) glm::vec4 lightColor; // Light color and intensity
@@ -43,12 +43,14 @@ struct GlobalUniformBufferObject {
 	alignas(16) glm::vec4 pointLightPos[MAX_POINT_LIGHTS]; // Position of the point light: x, y, z, w (w can be used for padding or other purposes)
 	alignas(16) glm::vec4 pointLightColor[MAX_POINT_LIGHTS]; // Color and intensity of the point light: r, g, b, intensity (and a = 1 if is light on, otherwise 0)
 	alignas(16) glm::vec4 fogColor; // Color of the fog (r, g, b, a); a = density = no fog if 0
+	alignas(16) glm::mat4 lightVP; // Light view-projection matrix for shadow mapping
 };
 
 // Vertex structure for vertex of the 3D model
 struct Vertex {
 	glm::vec3 pos; // Position 3D (x, y, z)
 	glm::vec2 UV; // Texture coordinates (u, v)
+	glm::vec3 normal; // Normal vector for the vertex
 };
 
 struct SkyBoxUniformBlock {
@@ -58,7 +60,7 @@ struct SkyBoxUniformBlock {
 	alignas(16) float dayFactor;        
 };
 
-class Skeleton26ReplaceName : public BaseProject {
+class CursedCastle : public BaseProject {
 	protected:
 	// Here you list all the Vulkan objects you need
 	
@@ -116,6 +118,13 @@ class Skeleton26ReplaceName : public BaseProject {
     float totalTime = 0.0f;
 	float victoryMenuTimer = -1.0f; // < 0 inside the castle
 
+	// ----------- SHADOW MAPPING OBJECTS ----------------
+	RenderPass RP_Shadow; // Render pass for shadow mapping
+	Pipeline P_Shadow; // Pipeline for shadow mapping
+	glm::mat4 LightVP; // Light's view-projection matrix for shadow mapping
+	const glm::vec3 sunDirection = glm::normalize(glm::vec3(-1.0f, -2.0f, -1.0f)); // Direction of the main directional light (sun)
+	TextureSampler TS_Shadow; // Sampler for the shadow map
+
 	// ----------- WINDOW CONFIGURATION AND CALLBACKS ----------------
 	// Initializes the window parameters (size, title, resizable)
 	void setWindowParameters() {
@@ -153,7 +162,7 @@ class Skeleton26ReplaceName : public BaseProject {
 	void localInit() {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		// Descriptor Layouts [what will be passed to the shaders]
-		// Initializes the local descriptor set layout (per object)
+		//------- Initializes the local descriptor set --------- 
 		DSLlocal.init(this, {
 					// this array contains the binding:
 					// first  element : the binding number
@@ -162,25 +171,28 @@ class Skeleton26ReplaceName : public BaseProject {
 					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(UniformBufferObject), 1},
 					{1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}
 		});
-		// Initializes the global descriptor layout (for the global parameters)
+		//-------- Initializes the global descriptor set ---------
 		DSLglobal.init(this, {
 					// this array contains the binding:
 					// first  element : the binding number
 					// second element : the type of element (buffer or texture)
 					// third  element : the pipeline stage where it will be used
-					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1}
+					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1},
+					{1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1} // binding 1 for shadow map
 		});
-		// Initialize the vertex descriptor (format of the vertices)
+		//-------- Initializes the vertex descriptor --------- 
 		VD.init(this, {
 				  {0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}
 				}, {
 				  {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos),
 				         sizeof(glm::vec3), POSITION},
 				  {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV),
-				         sizeof(glm::vec2), UV}
+				         sizeof(glm::vec2), UV},
+				  {0, 2, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal),
+				         sizeof(glm::vec3), NORMAL}
 		});
 		
-		// Descriptor layout per lo SkyBox: UBO (b0), TexNotte (b1), TexGiorno (b2)
+		
         // Descriptor layout per lo SkyBox: UBO (b0) e 1 Texture (b1)
         DSLsky.init(this, {
             {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(SkyBoxUniformBlock), 1},
@@ -197,7 +209,8 @@ class Skeleton26ReplaceName : public BaseProject {
 		// be used in this pipeline. The first element will be set 0, and so on..
 		// Initializes the pipeline with the vertex and fragment shaders, and the descriptor set layouts
 
-		//----------- Pipelines Initialization -----------
+		//----------- Pipelines Initialization ---------------------
+		// Here we have the connection with shaders
 		// Pipeline 0: Blinn-Phong
         P.init(this, &VD, "shaders/SimplePos.vert.spv",
                           "shaders/BlinnFromPos.frag.spv",
@@ -214,6 +227,80 @@ class Skeleton26ReplaceName : public BaseProject {
         P_SkyBox.polyModel = VK_POLYGON_MODE_FILL;
         P_SkyBox.CM = VK_CULL_MODE_NONE;
 
+		// ------------ Shadow Mapping ------------------------
+		// 1. Creation of rander pass only depth
+		// 2. Define the syncronization barriers between the write (shadow pass) and the read (final pass)
+		// 3. Create the shadow mapping pipeline and configure its properties
+		// 4. Calculation of the light's view-projection matrix for shadow mapping
+
+		// Get the standard attachment properties for a depth-only render pass
+		auto shadowProperties = *RenderPass::getStandardAttchmentsProperties(AT_DEPTH_ONLY, this); 
+		// Choose between D32_SFLOAT and D16_UNORM the format that GPU can support both as a depth-stencil attachment and as a sampled image
+		shadowProperties[0].format = findSupportedFormat(
+			{VK_FORMAT_D32_SFLOAT, VK_FORMAT_D16_UNORM}, 
+			VK_IMAGE_TILING_OPTIMAL,
+			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT
+		);
+
+		// Define the pipeline stages for depth testing (early and late fragment tests) 
+		const VkPipelineStageFlags depthStages = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		std::vector<VkSubpassDependency> shadowDependencies = {
+			{
+				VK_SUBPASS_EXTERNAL, 0,
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | depthStages,
+				depthStages,
+				VK_ACCESS_SHADER_READ_BIT |
+					VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+				VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+					VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+				0
+			},
+			{
+				0, VK_SUBPASS_EXTERNAL,
+				depthStages,
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+				VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+				VK_ACCESS_SHADER_READ_BIT,
+				0
+			}
+		};
+
+		// Create render pass and pipeline for shadow mapping
+		// Render pass offscreen at resolution 2048x2048, qith 1 sample using attachment and dependencies definied
+		RP_Shadow.init(this, 4096, 4096, 1, &shadowProperties, &shadowDependencies, false);
+
+		// Initialize the shadow map texture sampler
+		TS_Shadow.init(
+			this,
+			VK_FILTER_NEAREST, // magnification filter
+			VK_FILTER_NEAREST, // minification filter
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // U coordinate wrapping mode
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // V coordinate wrapping mode
+			VK_SAMPLER_MIPMAP_MODE_NEAREST, // mipmap filtering mode
+			VK_FALSE, // anisotropic filtering disabled
+			1.0f, // max anisotropy (not used since anisotropic filtering is disabled)
+			0.0f // mipmap LOD bias
+		);
+
+		P_Shadow.init(this, &VD, "shaders/ShadowDirectional.vert.spv", 
+								"shaders/ShadowDirectional.frag.spv", 
+								{&DSLglobal, &DSLlocal}, 
+								{{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
+		// Disable back-face culling for the shadow pass
+		P_Shadow.CM = VK_CULL_MODE_NONE;
+
+		// Define the light's view-projection matrix for shadow mapping
+		const glm::vec3 lightTarget(0.0f, 0.0f, 20.0f);
+		glm::mat4 lightProjection =
+			glm::ortho(-80.0f, 80.0f, -80.0f, 80.0f, 1.0f, 250.0f);
+		lightProjection[1][1] *= -1.0f;
+
+		LightVP = lightProjection * glm::lookAt(
+			lightTarget - sunDirection * 120.0f,
+			lightTarget,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+		
 		// Carica il modello glTF e la texture singola dello Skybox
         M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
         T_Sky.init(this, "assets/textures/Skybox_Puresky.png");
@@ -246,8 +333,7 @@ class Skeleton26ReplaceName : public BaseProject {
 
 		// Loads the scene from a JSON file, which contains the models, textures, and their configurations
 		if(scene.init(this, 1, VDRs, PRs, "assets/scenes/scene.json") != 0) {
-			std::cout << "ERROR LOADING THE SCENE\n";
-			exit(0);
+			throw std::runtime_error("Error loading assets/scenes/scene.json");
 		}
 
 		// Configure the sampler for the flat atlas texture --> for the grass tile texture
@@ -266,6 +352,8 @@ class Skeleton26ReplaceName : public BaseProject {
 		);
 		// Classify instances as outdoor or indoor
 		classifyInstances();
+		// Setup the material properties (metallic and roughness) for each instance in the scene
+		setupMaterials();
 
 		// Collect the positions of the torch lights in the scene
 		collectTorchLights();
@@ -291,16 +379,29 @@ class Skeleton26ReplaceName : public BaseProject {
 	void pipelinesAndDescriptorSetsInit() {
 		// Creates the render passes
 		RP.create();
+		RP_Shadow.create();
+		P_Shadow.create(&RP_Shadow);
 		
 		// This creates a new pipeline (with the current surface), using its shaders for the provided render pass
 		P.create(&RP);
 		P_CookTorrance.create(&RP);
 		P_SkyBox.create(&RP);
 		
-		// Initializes the global descriptor set 
-		DSglobal.init(this, &DSLglobal, {});
+		// Create a descriptor image info for the shadow map, which will be used in the global descriptor set
+		VkDescriptorImageInfo shadowInfo{
+			TS_Shadow.getSampler(),
+			RP_Shadow.attachments[0].getView(0),
+			RP_Shadow.properties[0].finalLayout
+		};
+		// Initializes the global descriptor set (with the shadow map information)
+		DSglobal.init(this, &DSLglobal, {shadowInfo});
 
-		
+		for (auto& technique : PRs) {
+			technique.PT[0].texDefs[0] = {
+				{false, 0, shadowInfo}
+			};
+		}
+
 		DSsky.init(this, &DSLsky, {
             T_Sky.getViewAndSampler()
         });
@@ -315,6 +416,8 @@ class Skeleton26ReplaceName : public BaseProject {
 
 	// Here you destroy your pipelines and Descriptor Sets!
 	void pipelinesAndDescriptorSetsCleanup() {
+		P_Shadow.cleanup();
+		RP_Shadow.cleanup();
 		P.cleanup();
 		P_CookTorrance.cleanup();
 		P_SkyBox.cleanup();
@@ -332,6 +435,9 @@ class Skeleton26ReplaceName : public BaseProject {
 	// Here you destroy all the Models, Texture and Desc. Set Layouts you created!
 	// You also have to destroy the pipelines
 	void localCleanup() {
+		P_Shadow.destroy();
+		RP_Shadow.destroy();
+		TS_Shadow.cleanup();
 		DSLlocal.cleanup();
 		DSLglobal.cleanup();
 		DSLsky.cleanup();
@@ -359,12 +465,49 @@ class Skeleton26ReplaceName : public BaseProject {
 	static void populateCommandBufferAccess(VkCommandBuffer commandBuffer, int currentImage, void *Params) {
 		// Simple trick to avoid having always 'T->'
 		// in che code that populates the command buffer!
-		Skeleton26ReplaceName *T = (Skeleton26ReplaceName *)Params;
+		CursedCastle *T = (CursedCastle *)Params;
 		T->populateCommandBuffer(commandBuffer, currentImage);
 	}
 
 	// Function that populates the command buffer with the rendering commands for the current frame.
 	void populateCommandBuffer(VkCommandBuffer commandBuffer, int currentImage) {
+		// -------- SHADOW PASS -------- 
+
+		// Register the shadow pass in the command buffer
+		RP_Shadow.begin(commandBuffer, 0);
+		// Bind the shadow pipeline
+		P_Shadow.bind(commandBuffer);
+
+		// Push the light view-projection matrix to the vertex shader as a push constant
+		vkCmdPushConstants(
+			commandBuffer,
+			P_Shadow.pipelineLayout,
+			VK_SHADER_STAGE_VERTEX_BIT,
+			0,
+			sizeof(glm::mat4),
+			&LightVP
+		);
+
+		// Render each instance of the scene for the shadow pass
+		for (int index = 0; index < scene.InstanceCount; ++index) {
+			// Retrieve the instance and model for the current index
+			Instance* instance = scene.I[index];
+			Model* model = scene.M[instance->Mid];
+			// Bind the local descriptor set for the shadow pass
+			instance->DS[0][1]->bind(
+				commandBuffer, P_Shadow, 1, currentImage
+			);
+			// Bind the model and issue the draw call for the shadow pass
+			model->bind(commandBuffer);
+			vkCmdDrawIndexed(
+				commandBuffer,
+				static_cast<uint32_t>(model->indices.size()),
+				1, 0, 0, 0
+			);
+		}
+		// End of shadow pass
+		RP_Shadow.end(commandBuffer);
+			
 		
 		// Offscreen pass - always required
 		// begin standard pass
@@ -402,19 +545,11 @@ class Skeleton26ReplaceName : public BaseProject {
             currentDayFactor = 0.0f;
         }
 		
-		// 2. Calculate the light rotation 
-		static float lightRotationAngle = 0.0f; // Static variable to keep track of rotation
-		lightRotationAngle += -0.5f * deltaT; // Increment rotation angle based on delta time
-
-		// Calculate the rotation matrix for the light direction based on the rotation angle
-		const glm::mat4 lightView = glm::rotate(glm::mat4(1), glm::radians(lightRotationAngle), glm::vec3(0.0f, 1.0f, 0.0f)) * 
-									glm::rotate(glm::mat4(1), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		const glm::vec3 lightDir =  glm::vec3(lightView * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
-
 		//--------- Populate the data structure of global uniforms (light and camera)) ---------
-		// 3. Popola GUBO (Luce direzionale sfumata con mix tra Notte e Giorno)
+		// 2. Popola GUBO (Luce direzionale sfumata con mix tra Notte e Giorno)
 		GlobalUniformBufferObject gubo{};
-		gubo.lightDir = lightDir; // Update the light direction based on the rotation
+		gubo.lightDir = sunDirection; // Update the light direction based on the rotation
+		gubo.lightVP = LightVP; // Update the light view-projection matrix for shadow mapping
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
 		// Colori luce: Notte (bluastra) vs Giorno (calda dorata)
@@ -434,7 +569,7 @@ class Skeleton26ReplaceName : public BaseProject {
         int nLights = std::min((int)torchPositions.size(), MAX_POINT_LIGHTS);
         for (int i = 0; i < nLights; i++) {
             float flicker = 0.85f + 0.15f * sinf(totalTime * 7.0f + (float)i * 2.3f);
-            gubo.pointLightPos[i] = glm::vec4(torchPositions[i], 5.0f); // w = falloff radius
+            gubo.pointLightPos[i] = glm::vec4(torchPositions[i], 2.5f); // w = falloff radius
             gubo.pointLightColor[i] = glm::vec4(3.0f, 1.8f, 0.9f, flicker);
         }
         for (int i = nLights; i < MAX_POINT_LIGHTS; i++) {
@@ -443,7 +578,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
 
-		// 4. Aggiorna Uniform Buffer per lo SkyBox (Matrice View senza traslazione + dayFactor)
+		// 3. Aggiorna Uniform Buffer per lo SkyBox (Matrice View senza traslazione + dayFactor)
         const float FOVy = glm::radians(45.0f);
 		const float nearPlane = 0.1f;
         const float farPlane = 400.f;
@@ -526,23 +661,50 @@ class Skeleton26ReplaceName : public BaseProject {
             bool outdoor = id.rfind("garden", 0) == 0 ||
                            id.rfind("Tree_", 0) == 0 ||
                            id.rfind("Hedge", 0) == 0;
-            bool torch = id.rfind("Torch_Holder", 0) == 0;
-            instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, torch ? 1.0f : 0.0f, 0.0f, 0.0f);
+            instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f);
         }
     }
+
+	// TODO: questa funzione sarà da spostare da qui probabilmente 
+	void setupMaterials() {
+		for (int index = 0; index < scene.InstanceCount; ++index) {
+			const std::string& id = *scene.I[index]->id;
+
+			float metallic = 0.0f;
+			float roughness = 0.8f;
+
+			if (id == "Cup" || id == "Golden_Key") {
+				metallic = 1.0f;
+				roughness = 0.3f;
+			} else if (id == "Sword") {
+				metallic = 1.0f;
+				roughness = 0.4f;
+			}
+
+			instanceParams[index].z = metallic;
+			instanceParams[index].w = roughness;
+		}
+	}
 
 	void collectTorchLights() {
-        torchPositions.clear();
-        for (int i = 0; i < scene.InstanceCount; i++) {
-            if (scene.I[i]->id->rfind("Torch_Holder", 0) != 0) continue;
+		torchPositions.clear();
 
-            const glm::mat4 &Wm = scene.I[i]->Wm;
-            glm::vec3 pos = glm::vec3(Wm[3]);
-            glm::vec3 forward = glm::normalize(glm::vec3(Wm * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f)));
-            torchPositions.push_back(pos + forward * 0.5f + glm::vec3(0.0f, 0.8f, 0.0f));
-        }
-        std::cout << "Torch lights found: " << torchPositions.size() << "\n";
-    }
+		const glm::vec3 flameCenterLocal(0.0f, 0.18f, 0.17f);
+
+		for (int index = 0; index < scene.InstanceCount; ++index) {
+			if (scene.I[index]->id->rfind("Torch_Holder", 0) != 0) {
+				continue;
+			}
+
+			const glm::mat4& worldMatrix = scene.I[index]->Wm;
+			torchPositions.push_back(glm::vec3(
+				worldMatrix * glm::vec4(flameCenterLocal, 1.0f)
+			));
+		}
+
+		std::cout << "Torch lights found: "
+				<< torchPositions.size() << "\n";
+	}
 
 	// ------------------ GAME LOGIC -------------------
 	float GameLogic() {
@@ -634,6 +796,7 @@ class Skeleton26ReplaceName : public BaseProject {
 		} else {
 			// If we are in the menu (not interacting with objects), show the cursor and remove any interaction texts
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			cam.resetMouseTracking();
 			txt.removeText(2);
 			txt.removeText(3);
 		}
@@ -658,7 +821,7 @@ class Skeleton26ReplaceName : public BaseProject {
 // This is the main: probably you do not need to touch this!
 // It creates the application object and runs it, handling any exceptions that may occur.
 int main() {
-    Skeleton26ReplaceName app; // Create an instance of the application class
+    CursedCastle app; // Create an instance of the application class
 
     try {
         app.run(false); // Run the application, passing 'false' to indicate that ray tracing is not included

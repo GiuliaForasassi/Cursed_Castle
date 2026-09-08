@@ -131,7 +131,11 @@ class Camera {
             updateOrientation(0.0f, 0.0f);
         }
 
-    // ------------------ Getters for camera parameters -------------------
+        void resetMouseTracking() {
+            firstMouse = true;
+        }
+
+        // ------------------ Getters for camera parameters -------------------
         const glm::vec3& getCameraPosition() const {
             return cameraPos;
         }
