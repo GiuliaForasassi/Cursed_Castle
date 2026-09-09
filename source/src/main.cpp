@@ -24,8 +24,10 @@
 #include "game_state.h"
 #include "vertex.h"
 #include "flame_mesh.h"
+#include "point_shadows.h"
 
-#define MAX_POINT_LIGHTS 16
+#define MAX_POINT_LIGHTS 20
+#define POINT_SHADOW_LIGHTS 20
 
 // UBO: Variables specific to each object (instance) in the scene (local parameters)
 struct UniformBufferObject {
@@ -46,6 +48,8 @@ struct GlobalUniformBufferObject {
 	alignas(16) glm::vec4 pointLightColor[MAX_POINT_LIGHTS]; // Color and intensity of the point light: r, g, b, intensity (and a = 1 if is light on, otherwise 0)
 	alignas(16) glm::vec4 fogColor; // Color of the fog (r, g, b, a); a = density = no fog if 0
 	alignas(16) glm::mat4 lightVP; // Light view-projection matrix for shadow mapping
+
+	alignas(16) glm::mat4 pointShadowVP[6 * POINT_SHADOW_LIGHTS]; // Transformation matrices for the six faces of the point light's shadow cube map
 };
 
 struct SkyBoxUniformBlock {
@@ -69,6 +73,9 @@ class CursedCastle : public BaseProject {
 
 	// Vertex formats, Pipelines [Shader couples] and Render passes
 	VertexDescriptor VD; // Vertex format for the scene
+	VertexDescriptor VDshadow;
+	VertexDescriptor VDflame;
+
 	RenderPass RP; // Render pass for the scene
 	Pipeline P; // Pipeline for the scene --> Blinn-Phong lighting model
 	Pipeline P_CookTorrance;
@@ -125,6 +132,13 @@ class CursedCastle : public BaseProject {
 	const glm::vec3 sunDirection = glm::normalize(glm::vec3(-1.0f, -2.0f, -1.0f)); // Direction of the main directional light (sun)
 	TextureSampler TS_Shadow; // Sampler for the shadow map
 
+	// ----------- POINT SHADOW MAPPING OBJECTS ----------------
+	std::array<glm::mat4, 6 * POINT_SHADOW_LIGHTS> PointLightShadowMatrices; // View-projection matrices for the point light's shadow cubemap faces
+	static constexpr int PointShadowFaceSize = 512; // Size of each face of the point light's shadow cubemap
+	RenderPass RP_PointShadow; // Render pass for the point light's shadow cubemap
+	std::array<Pipeline, 6 * POINT_SHADOW_LIGHTS> P_PointShadowFaces; // Pipelines for each face of the point light's shadow cubemap
+	std::vector<Collider> shadowModelBounds; // Bounding volumes for models used in shadow mapping --> optimization purposes
+
 	// ----------- FLAME MESH OBJECTS ----------------
 	Model M_Flame;
 	DescriptorSetLayout DSLflame;
@@ -162,7 +176,8 @@ class CursedCastle : public BaseProject {
         currentWindowWidth = w;
         currentWindowHeight = h;
     }
-	
+
+
 	// ------------------ INITIALIZATION OF RESOURCES -------------------
 	// Here you load and setup all your Vulkan Models and Textures.
 	// Here you also create your Descriptor set layouts and load the shaders for the pipelines
@@ -185,7 +200,8 @@ class CursedCastle : public BaseProject {
 					// second element : the type of element (buffer or texture)
 					// third  element : the pipeline stage where it will be used
 					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1},
-					{1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1} // binding 1 for shadow map
+					{1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1},
+					{2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1} // binding 2 for shadow map
 		});
 		//-------- Initializes the vertex descriptor --------- 
 		VD.init(this, {
@@ -199,6 +215,22 @@ class CursedCastle : public BaseProject {
 				         sizeof(glm::vec3), NORMAL}
 		});
 
+		VDshadow.init(this, {
+					{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}
+				}, {
+					{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos),
+						sizeof(glm::vec3), POSITION}
+		});
+
+		VDflame.init(this, {
+					{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}
+				}, {
+					{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos),
+						sizeof(glm::vec3), POSITION},
+					{0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV),
+						sizeof(glm::vec2), UV}
+		});
+
 		// ----------- Flame mesh creation ----------------
 		createFlameMesh(this, VD, M_Flame);
 		DSLflame.init(this, {
@@ -206,7 +238,7 @@ class CursedCastle : public BaseProject {
 		});
 
 		// Pipeline for the flame
-		P_Flame.init(this, &VD, "shaders/Flame.vert.spv", "shaders/Flame.frag.spv", {&DSLflame});
+		P_Flame.init(this, &VDflame, "shaders/Flame.vert.spv", "shaders/Flame.frag.spv", {&DSLflame});
 		P_Flame.CM = VK_CULL_MODE_NONE;
 		
         // Descriptor layout per lo SkyBox: UBO (b0) e 1 Texture (b1)
@@ -238,7 +270,8 @@ class CursedCastle : public BaseProject {
                                        {&DSLglobal, &DSLlocal});
 
 		// Pipeline 2: SkyBox
-        P_SkyBox.init(this, &VD, "shaders/SkyBox.vert.spv", "shaders/SkyBox.frag.spv", {&DSLsky});
+		// Using the shadow vertex descriptor for the SkyBox pipeline becuase I need only the position attribute
+        P_SkyBox.init(this, &VDshadow, "shaders/SkyBox.vert.spv", "shaders/SkyBox.frag.spv", {&DSLsky});
         P_SkyBox.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
         P_SkyBox.polyModel = VK_POLYGON_MODE_FILL;
         P_SkyBox.CM = VK_CULL_MODE_NONE;
@@ -284,6 +317,27 @@ class CursedCastle : public BaseProject {
 		// Create render pass and pipeline for shadow mapping
 		// Render pass offscreen at resolution 2048x2048, qith 1 sample using attachment and dependencies definied
 		RP_Shadow.init(this, 4096, 4096, 1, &shadowProperties, &shadowDependencies, false);
+		// Initialize the render pass for the point light's shadow cubemap
+		// Render pass at resolution 1536x1024 
+		RP_PointShadow.init(this, PointShadowFaceSize * 3, PointShadowFaceSize * 2 * POINT_SHADOW_LIGHTS, 1, &shadowProperties, &shadowDependencies, false);
+		// Initialize the pipelines for each face of the point light's shadow cubemap
+		for(size_t face = 0; face < P_PointShadowFaces.size(); ++face) {
+			auto& pipeline = P_PointShadowFaces[face];
+			pipeline.init(this, &VDshadow, "shaders/Shadow.vert.spv", 
+										"shaders/Shadow.frag.spv", 
+										{&DSLglobal, &DSLlocal}, 
+										{{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
+			// Disable back-face culling for the shadow pass
+			pipeline.CM = VK_CULL_MODE_NONE;
+
+			// Determine the position of each face in the atlas 2D
+			const int offsetX = static_cast<int>(face % 3) * PointShadowFaceSize;
+    		const int offsetY = static_cast<int>(face / 3) * PointShadowFaceSize;
+			// Define the transformation from the normalized space to pixel coordinates within the atlas
+			pipeline.setViewport({{static_cast<float>(offsetX), static_cast<float>(offsetY), static_cast<float>(PointShadowFaceSize), static_cast<float>(PointShadowFaceSize), 0.0f, 1.0f}});
+			// Specify the region of the atlas that this face will render to
+			pipeline.setScissor({{{offsetX, offsetY}, {PointShadowFaceSize, PointShadowFaceSize}}});
+		}
 
 		// Initialize the shadow map texture sampler
 		TS_Shadow.init(
@@ -298,8 +352,8 @@ class CursedCastle : public BaseProject {
 			0.0f // mipmap LOD bias
 		);
 
-		P_Shadow.init(this, &VD, "shaders/ShadowDirectional.vert.spv", 
-								"shaders/ShadowDirectional.frag.spv", 
+		P_Shadow.init(this, &VDshadow, "shaders/Shadow.vert.spv", 
+								"shaders/Shadow.frag.spv", 
 								{&DSLglobal, &DSLlocal}, 
 								{{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
 		// Disable back-face culling for the shadow pass
@@ -347,6 +401,12 @@ class CursedCastle : public BaseProject {
 			throw std::runtime_error("Error loading assets/scenes/scene.json");
 		}
 
+		// Compute the bounding volumes for each model in the scene to optimize shadow mapping
+		shadowModelBounds.resize(scene.ModelCount);
+		for (int modelIndex = 0; modelIndex < scene.ModelCount; ++modelIndex){
+			shadowModelBounds[modelIndex].fitAABB(scene.M[modelIndex]);
+		}
+
 		// Configure the sampler for the flat atlas texture --> for the grass tile texture
 		Texture* flatAtlas = scene.T[scene.TextureIds.at("Flat_Atlas")];
 		flatAtlas->sampler->cleanup();
@@ -372,7 +432,19 @@ class CursedCastle : public BaseProject {
 		DSflames.resize(flameCount);
 		DPSZs.uniformBlocksInPool += flameCount;
 		DPSZs.setsInPool += flameCount;
-	
+
+		// Generate the view-projection matrices for the point light's shadow cubemap faces
+		for (auto& matrix : PointLightShadowMatrices) {
+			matrix = glm::mat4(1.0f);
+		}
+		const int shadowLightCount = std::min(static_cast<int>(torchPositions.size()), POINT_SHADOW_LIGHTS);
+		for (int lightIndex = 0; lightIndex < shadowLightCount; ++lightIndex) {
+			auto matrices = makePointShadowMatrices(torchPositions[lightIndex], 0.05f, 7.5f);
+			for (size_t face = 0; face < matrices.size(); ++face) {
+				PointLightShadowMatrices[lightIndex * 6 + face] = matrices[face];
+			}
+		}
+			
 		// Setup the interactions for the interactable objects in the scene
 		setupInteractions();
 
@@ -395,6 +467,11 @@ class CursedCastle : public BaseProject {
 		RP.create();
 		RP_Shadow.create();
 		P_Shadow.create(&RP_Shadow);
+
+		RP_PointShadow.create();
+		for(auto& pipeline : P_PointShadowFaces){
+			pipeline.create(&RP_PointShadow);
+		}
 		
 		// This creates a new pipeline (with the current surface), using its shaders for the provided render pass
 		P.create(&RP);
@@ -412,12 +489,20 @@ class CursedCastle : public BaseProject {
 			RP_Shadow.attachments[0].getView(0),
 			RP_Shadow.properties[0].finalLayout
 		};
+
+		// Create a descriptor image info for the point light's shadow map, which will be used in the global descriptor set
+		VkDescriptorImageInfo pointShadowInfo{
+			TS_Shadow.getSampler(),
+			RP_PointShadow.attachments[0].getView(0),
+			RP_PointShadow.properties[0].finalLayout
+		};
 		// Initializes the global descriptor set (with the shadow map information)
-		DSglobal.init(this, &DSLglobal, {shadowInfo});
+		DSglobal.init(this, &DSLglobal, {shadowInfo, pointShadowInfo});
 
 		for (auto& technique : PRs) {
 			technique.PT[0].texDefs[0] = {
-				{false, 0, shadowInfo}
+				{false, 0, shadowInfo},
+				{false, 0, pointShadowInfo}
 			};
 		}
 
@@ -435,6 +520,12 @@ class CursedCastle : public BaseProject {
 
 	// Here you destroy your pipelines and Descriptor Sets!
 	void pipelinesAndDescriptorSetsCleanup() {
+
+		for(auto& pipeline : P_PointShadowFaces){
+			pipeline.cleanup();
+		}
+		RP_PointShadow.cleanup();
+
 		for (auto& descriptor : DSflames) {
     		descriptor.cleanup();
 		}
@@ -458,6 +549,12 @@ class CursedCastle : public BaseProject {
 	// Here you destroy all the Models, Texture and Desc. Set Layouts you created!
 	// You also have to destroy the pipelines
 	void localCleanup() {
+		clearCommandBuffers();
+    	txt.M = nullptr;
+		for(auto& pipeline : P_PointShadowFaces){
+			pipeline.destroy();
+		}
+		RP_PointShadow.destroy();
 		P_Flame.destroy();
 		DSLflame.cleanup();
 
@@ -498,6 +595,60 @@ class CursedCastle : public BaseProject {
 		T->populateCommandBuffer(commandBuffer, currentImage);
 	}
 
+	// test
+	bool canCastPointShadow(Instance* instance, size_t lightIndex) {
+		const std::string& id = *instance->id;
+		if (id.rfind("Door", 0) == 0 ||
+			id == "Book" || id == "Cup" || id == "Sword" ||
+			id == "Golden_Key" || id == "Key") {
+			return true;
+		}
+
+		Collider bounds = shadowModelBounds[instance->Mid];
+		bounds.setWorldMatrix(instance->Wm);
+		const AABBextents extents = bounds.getExtents();
+
+		const glm::vec3 minimum(extents.xMin, extents.yMin, extents.zMin);
+		const glm::vec3 maximum(extents.xMax, extents.yMax, extents.zMax);
+		const glm::vec3 lightPosition = torchPositions[lightIndex];
+		const glm::vec3 closest = glm::clamp(lightPosition, minimum, maximum);
+		const glm::vec3 difference = closest - lightPosition;
+		constexpr float cullingRadius = 7.6f;
+
+		return glm::dot(difference, difference) <= cullingRadius * cullingRadius;
+	}	
+
+	// Rendering function
+	void populatePointShadowPass(VkCommandBuffer commandBuffer, int currentImage) {
+		RP_PointShadow.begin(commandBuffer, 0);
+		if(!torchPositions.empty()) {
+			for(size_t face = 0; face < P_PointShadowFaces.size(); ++face){
+				if(face / 6 >= torchPositions.size()){
+					continue;
+				}
+				// Binding the face with the pipeline
+				auto& pipeline = P_PointShadowFaces[face];
+				pipeline.bind(commandBuffer);
+
+				// Send the view-projection matrix for that specific face as a constant push
+				vkCmdPushConstants(commandBuffer, pipeline.pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4),  &PointLightShadowMatrices[face]);
+				for(int index = 0; index < scene.InstanceCount; ++index){
+					Instance* instance = scene.I[index];
+					if(!canCastPointShadow(instance, face / 6))
+						continue;
+					Model* model = scene.M[instance->Mid];
+
+					// For each istance: bind the local descriptor set 
+					instance->DS[0][1]->bind(commandBuffer, pipeline, 1, currentImage);
+					model->bind(commandBuffer);
+
+					vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(model->indices.size()), 1, 0, 0, 0);
+				}
+			}
+		}
+		RP_PointShadow.end(commandBuffer);
+	}
+
 	// Function that populates the command buffer with the rendering commands for the current frame.
 	void populateCommandBuffer(VkCommandBuffer commandBuffer, int currentImage) {
 		// -------- SHADOW PASS -------- 
@@ -536,6 +687,7 @@ class CursedCastle : public BaseProject {
 		}
 		// End of shadow pass
 		RP_Shadow.end(commandBuffer);
+		populatePointShadowPass(commandBuffer, currentImage);
 			
 		
 		// Offscreen pass - always required
@@ -588,10 +740,14 @@ class CursedCastle : public BaseProject {
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = sunDirection; // Update the light direction based on the rotation
 		gubo.lightVP = LightVP; // Update the light view-projection matrix for shadow mapping
+		// Calculate the transformation matrices for the six faces of the point light's shadow cube map
+		for (size_t face = 0; face < PointLightShadowMatrices.size(); ++face) {
+			gubo.pointShadowVP[face] = PointLightShadowMatrices[face];
+		}
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
 		// Colori luce: Notte (bluastra) vs Giorno (calda dorata)
-        glm::vec4 nightLight = glm::vec4(0.2f, 0.3f, 0.6f, 1.0f) * 2.5f;
+        glm::vec4 nightLight = glm::vec4(0.5, 0.75, 1.5, 1.0f) * 2.5f;
         glm::vec4 dayLight   = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
         gubo.lightColor = glm::mix(nightLight, dayLight, currentDayFactor);
 		gubo.fogColor = glm::vec4(0.0f);
@@ -708,7 +864,10 @@ class CursedCastle : public BaseProject {
             const std::string &id = *scene.I[i]->id;
             bool outdoor = id.rfind("garden", 0) == 0 ||
                            id.rfind("Tree_", 0) == 0 ||
-                           id.rfind("Hedge", 0) == 0;
+                           id.rfind("Hedge", 0) == 0 ||
+						   id.rfind("Wall", 0) == 0 ||
+               			   id == "Door_main";
+
             instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f);
         }
     }
