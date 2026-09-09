@@ -121,12 +121,16 @@ float directionalVisibility(vec3 worldPosition, vec3 normal) {
         any(greaterThan(shadowUV, vec2(1.0)))) {
         return 0.0;
     }
-    // Bias to prevent shadow acne
+    // Bias to prevent shadow acne.
+    // Expressed in WORLD units, then converted to NDC depth units. The NDC
+    // depth range spans (far-near) world units (e.g. ~400), so a constant NDC
+    // bias like 0.002 scales to ~0.8 world units and punches shadows through
+    // thin geometry near ceiling corners (light leaking in bands).
     vec3 toLight = normalize(-gubo.lightDir);
-    float bias = max(
-        0.002 * (1.0 - max(dot(normal, toLight), 0.0)),
-        0.0007
-    );
+    const float biasWorld = max(
+        0.05 * (1.0 - max(dot(normal, toLight), 0.0)),
+        0.02); // world units
+    float bias = biasWorld / (400.0 - 1.0); // convert to NDC depth units (far-near of the light ortho)
 
     // Percentage-closer filtering (PCF) for soft shadows
     // 
