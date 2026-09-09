@@ -106,19 +106,36 @@ class Camera {
         }
 
         // ------------------ Collision detection -------------------
-        // Check if the player (sphere) collides with any object in the scene
-        // This function uses a sphere collision detection method
+        // Check if the player (vertical cylinder) collides with any object in
+        // the scene. A cylinder (circle in XZ + height interval in Y) matches
+        // low props (tables, chairs, barrels, chests): a sphere centered at
+        // eye height (y=2) floats above them and never collides.
+        // AABBextents from getExtents() are already in WORLD space (the 8
+        // corners are transformed by the collider's world matrix).
         bool collidesWithScene(glm::vec3 pos, float radius, Scene& scene) {
-            Collider playerCol; // Temporary collider that represents the player
-            playerCol.initSphere(0.0f, 0.0f, 0.0f, radius); // Initialize the player collider as a sphere with the given radius at the origin
-            playerCol.setWorldMatrix(glm::translate(glm::mat4(1.0f), pos)); // Set the world matrix for the player collider based on its position
+            // Cylinder spans from the ground up to (a bit above) eye height
+            const float cylBottom = pos.y - 1.7f;   // feet (y ≈ 0.3)
+            const float cylTop    = pos.y + 0.1f;   // just above the head
+            const glm::vec2 center(pos.x, pos.z);   // cylinder axis in XZ
 
             for (int i = 0; i < scene.InstanceCount; i++) { // Iterate through all instances in the scene
                 Collider *c = scene.I[i]->C; // Get the collider for the current instance
-                if (c == nullptr) 
+                if (c == nullptr)
                     continue; // Skip if the instance does not have a collider
-                if (playerCol.collidesWith(*c)) 
-                    return true; // Return true if a collision is detected between the player and the instance's collider
+
+                // World-space AABB of this instance's collider
+                AABBextents E = c->getExtents();
+
+                // Overlap in Y?
+                if (E.yMax < cylBottom || E.yMin > cylTop) continue;
+
+                // Closest point of the box (in XZ) to the cylinder axis
+                float cx = glm::clamp(center.x, E.xMin, E.xMax);
+                float cz = glm::clamp(center.y, E.zMin, E.zMax);
+                float dx = center.x - cx;
+                float dz = center.y - cz;
+                if (dx * dx + dz * dz <= radius * radius)
+                    return true; // Cylinder intersects this collider
             }
             return false;
         }

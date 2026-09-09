@@ -64,7 +64,10 @@
 			"id": "Pillar",
 			"VD": "VDposUV",
 			"model": "assets/models/Pillar.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Wooden_Table",
@@ -85,25 +88,37 @@
 			"id": "Grindstone",
 			"VD": "VDposUV",
 			"model": "assets/models/Grindstone.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Forge_Tong",
 			"VD": "VDposUV",
 			"model": "assets/models/Forge_Tong.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Forge_Hammer",
 			"VD": "VDposUV",
 			"model": "assets/models/Forge_Hammer.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Anvil",
 			"VD": "VDposUV",
 			"model": "assets/models/Anvil.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Swords_And_Shield",
@@ -115,19 +130,28 @@
 			"id": "Armor_Stand",
 			"VD": "VDposUV",
 			"model": "assets/models/Armor_Stand.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Forge_Furnace",
 			"VD": "VDposUV",
 			"model": "assets/models/Forge_Furnace.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Wooden_Barrel",
 			"VD": "VDposUV",
 			"model": "assets/models/Wooden_Barrel.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Sword",
@@ -139,31 +163,46 @@
 			"id": "Golden_Chest",
 			"VD": "VDposUV",
 			"model": "assets/models/Golden_Chest.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Metal_Chest",
 			"VD": "VDposUV",
 			"model": "assets/models/Metal_Chest.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Bunk_Bed",
 			"VD": "VDposUV",
 			"model": "assets/models/Bunk_Bed.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Stocks",
 			"VD": "VDposUV",
 			"model": "assets/models/Stocks.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Spin_Blade_Trap",
 			"VD": "VDposUV",
 			"model": "assets/models/Spin_Blade_Trap.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Jail_Round",
@@ -196,7 +235,10 @@
 			"id": "Torture_Machine",
 			"VD": "VDposUV",
 			"model": "assets/models/Torture_Machine.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Prison_Corner",
@@ -208,13 +250,19 @@
 			"id": "Bed",
 			"VD": "VDposUV",
 			"model": "assets/models/Bed.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Bed_Ruined",
 			"VD": "VDposUV",
 			"model": "assets/models/Bed_Ruined.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Door",
@@ -229,19 +277,28 @@
 			"id": "Bookshelf_2",
 			"VD": "VDposUV",
 			"model": "assets/models/Bookshelf_2.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Bookshelf_3",
 			"VD": "VDposUV",
 			"model": "assets/models/Bookshelf_3.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Wooden_Chair_2",
 			"VD": "VDposUV",
 			"model": "assets/models/Wooden_Chair_2.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Book_2",
@@ -265,7 +322,10 @@
 			"id": "Bookshelf_1",
 			"VD": "VDposUV",
 			"model": "assets/models/Bookshelf_1.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Quill",
@@ -304,25 +364,37 @@
 			"id": "Pot_Large",
 			"VD": "VDposUV",
 			"model": "assets/models/Pot_Large.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Pot_Small",
 			"VD": "VDposUV",
 			"model": "assets/models/Pot_Small.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Pot_Tall",
 			"VD": "VDposUV",
 			"model": "assets/models/Pot_Tall.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Pot_Tall_Large",
 			"VD": "VDposUV",
 			"model": "assets/models/Pot_Tall_Large.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Red_Potion",
@@ -346,13 +418,19 @@
 			"id": "Wooden_Chest",
 			"VD": "VDposUV",
 			"model": "assets/models/Wooden_Chest.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Wooden_Shelf",
 			"VD": "VDposUV",
 			"model": "assets/models/Wooden_Shelf.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Green_Potion",
@@ -364,7 +442,10 @@
 			"id": "Wooden_Chair",
 			"VD": "VDposUV",
 			"model": "assets/models/Wooden_Chair.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Cup_Golden_Large",
@@ -397,25 +478,41 @@
 			"id": "Tree_Elm_Red_flat",
 			"VD": "VDposUV",
 			"model": "assets/models/Tree_Elm_Red_flat.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB",
+				"params": [-0.8, 0.0, -0.8, 0.8, 5.0, 0.8]
+			}
 		},
 		{
 			"id": "Tree_Maple_flat",
 			"VD": "VDposUV",
 			"model": "assets/models/Tree_Maple_flat.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB",
+				"params": [-0.8, 0.0, -0.8, 0.8, 5.0, 0.8]
+			}
 		},
 		{
 			"id": "Tree_Park_S_Orange_flat",
 			"VD": "VDposUV",
 			"model": "assets/models/Tree_Park_S_Orange_flat.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB",
+				"params": [-0.8, 0.0, -0.8, 0.8, 5.0, 0.8]
+			}
 		},
 		{
 			"id": "Tree_Pine_S_flat",
 			"VD": "VDposUV",
 			"model": "assets/models/Tree_Pine_S_flat.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB",
+				"params": [-0.8, 0.0, -0.8, 0.8, 5.0, 0.8]
+			}
 		},
 		{
 			"id": "Golden_Key",
@@ -439,7 +536,10 @@
 			"id": "Forge_Bellow",
 			"VD": "VDposUV",
 			"model": "assets/models/Forge_Bellow.gltf",
-			"format": "GLTF"
+			"format": "GLTF",
+			"collider": {
+				"type": "OOBB"
+			}
 		},
 		{
 			"id": "Prison_Half_Wall",
@@ -5278,7 +5378,7 @@
 					"texture": [
 						"Flat_Atlas"
 					],
-					"transform": [0.45,0.0,0.0,2.0,0.0,0.45,0.0,-0.1,0.0,0.0,0.45,46.0,0.0,0.0,0.0,1.0]
+					"transform": [0.45,0.0,0.0,2.0,0.0,0.45,0.0,-0.1,0.0,0.0,0.45,48.0,0.0,0.0,0.0,1.0]
 				},
 				{
 					"id": "Tree_Maple_flat6",
@@ -5286,7 +5386,7 @@
 					"texture": [
 						"Flat_Atlas"
 					],
-					"transform": [0.45,0.0,0.0,-5.0,0.0,0.45,0.0,-0.1,0.0,0.0,0.45,46.0,0.0,0.0,0.0,1.0]
+					"transform": [0.45,0.0,0.0,-5.0,0.0,0.45,0.0,-0.1,0.0,0.0,0.45,48.0,0.0,0.0,0.0,1.0]
 				},
 				{
 					"id": "Wood_Plank",
