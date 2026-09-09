@@ -328,11 +328,15 @@ protected:
 		P_Shadow.CM = VK_CULL_MODE_NONE;
 
 		// Define the light's view-projection matrix for shadow mapping
-		const glm::vec3 lightTarget(0.0f, 0.0f, 20.0f);
-		glm::mat4 lightProjection = glm::ortho(-80.0f, 80.0f, -80.0f, 80.0f, 1.0f, 250.0f);
+		// The ortho box must cover the ENTIRE scene: any fragment projecting
+		// outside it is treated as fully sunlit (leaks light through roofs).
+		// Scene spans ~x[-75..80], z[-105..115]; the diagonal in light space
+		// needs ~140 units. Center on the scene middle.
+		const glm::vec3 lightTarget(3.0f, 0.0f, 5.0f);
+		glm::mat4 lightProjection = glm::ortho(-140.0f, 140.0f, -140.0f, 140.0f, 1.0f, 400.0f);
 		lightProjection[1][1] *= -1.0f;
 
-		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 120.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// Load the skybox glTF model and its single texture
 		M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
@@ -765,8 +769,8 @@ protected:
 		}
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
-		// Colori luce: Notte (bluastra) vs Giorno (calda dorata)
-		glm::vec4 nightLight = glm::vec4(0.5, 0.75, 1.5, 1.0f) * 2.5f;
+		// Colore luce: Notte (viola scuro, maledizione) vs Giorno (calda dorata)
+		glm::vec4 nightLight = glm::vec4(0.35f, 0.15f, 0.55f, 1.0f) * 2.5f;
 		glm::vec4 dayLight = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
 		gubo.lightColor = glm::mix(nightLight, dayLight, currentDayFactor);
 		gubo.fogColor = glm::vec4(0.0f);

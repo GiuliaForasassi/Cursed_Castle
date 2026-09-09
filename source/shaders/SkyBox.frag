@@ -28,10 +28,10 @@ void main() {
     // Campionamento del cielo
     vec3 baseColor = textureLod(skyMap, skyUV, 0.0).rgb;
 
-    // 1. Aspetto Cursed / Notturno (desaturato e tinto di blu/viola spettrale)
+    // 1. Aspetto Cursed / Notturno (molto scuro, desaturato e tinto di viola spettrale)
     float gray = dot(baseColor, vec3(0.299, 0.587, 0.114));
-    vec3 desaturated = mix(baseColor, vec3(gray), 0.65);
-    vec3 cursedColor = desaturated * vec3(0.35, 0.28, 0.55);
+    vec3 desaturated = mix(baseColor, vec3(gray), 0.8);
+    vec3 cursedColor = desaturated * vec3(0.12, 0.07, 0.22);
 
     // 2. Aspetto Giorno sereno (tint caldo naturale)
     vec3 dayColor = baseColor * vec3(1.02, 1.0, 0.98);
@@ -41,7 +41,7 @@ void main() {
     vec3 finalColor = mix(cursedColor, dayColor, t);
 
     // Il cielo è una sorgente: va portato in scala HDR come le luci prima del tone mapping
-    finalColor *= mix(1.5, 3.0, t);
+    finalColor *= mix(0.9, 3.0, t);
     finalColor = finalColor / (finalColor + vec3(1.0));
 
     outColor = vec4(finalColor, 1.0);

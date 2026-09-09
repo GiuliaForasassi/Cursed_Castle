@@ -113,11 +113,13 @@ float directionalVisibility(vec3 worldPosition, vec3 normal) {
     // Converts from NDC space to texture coordinates (UV: 0.0 to 1.0)
     vec2 shadowUV = lightNdc.xy * 0.5 + 0.5;
 
-    // If the fragment is outside the light's view frustum or outside the shadow map, consider it fully visible
+    // Outside the light's view frustum or shadow map: treat as shadowed.
+    // Returning 1.0 here makes the sun leak through roofs/walls of geometry
+    // that falls outside the ortho box.
     if (lightNdc.z < 0.0 || lightNdc.z > 1.0 ||
         any(lessThan(shadowUV, vec2(0.0))) ||
         any(greaterThan(shadowUV, vec2(1.0)))) {
-        return 1.0;
+        return 0.0;
     }
     // Bias to prevent shadow acne
     vec3 toLight = normalize(-gubo.lightDir);
