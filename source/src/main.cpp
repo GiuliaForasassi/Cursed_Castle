@@ -165,14 +165,6 @@ class CursedCastle : public BaseProject {
 
         std::cout << "Window resized to: " << w << " x " << h << "\n";
         Ar = (float)w / (float)h; // Update aspect ratio
-
-		// Update the render pass dimensions to match the new window size
-		RP.width = w;
-        RP.height = h;
-        
-        // Update the text rendering system for the new resolution
-        txt.resizeScreen(w, h);
-
         currentWindowWidth = w;
         currentWindowHeight = h;
     }
@@ -241,7 +233,7 @@ class CursedCastle : public BaseProject {
 		P_Flame.init(this, &VDflame, "shaders/Flame.vert.spv", "shaders/Flame.frag.spv", {&DSLflame});
 		P_Flame.CM = VK_CULL_MODE_NONE;
 		
-        // Descriptor layout per lo SkyBox: UBO (b0) e 1 Texture (b1)
+        // SkyBox descriptor layout: UBO (b0) and 1 texture (b1)
         DSLsky.init(this, {
             {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(SkyBoxUniformBlock), 1},
             {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}
@@ -366,7 +358,7 @@ class CursedCastle : public BaseProject {
 
 		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 120.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
 		
-		// Carica il modello glTF e la texture singola dello Skybox
+		// Load the skybox glTF model and its single texture
         M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
         T_Sky.init(this, "assets/textures/Skybox_Puresky.png");
 
@@ -462,7 +454,13 @@ class CursedCastle : public BaseProject {
 	// ------------------ PIPELINES AND DESCRIPTOR SETS MANAGEMENT -------------------
 	// Here you create your pipelines and Descriptor Sets!
 	// Effective creation of pipelines and resources allocation on GPU
+	// After a resize the framework recreates the swapchain before calling this;
+	// use its extent so render passes and text match the new framebuffers.
 	void pipelinesAndDescriptorSetsInit() {
+		RP.width = swapChainExtent.width;
+		RP.height = swapChainExtent.height;
+		txt.resizeScreen(swapChainExtent.width, swapChainExtent.height);
+
 		// Creates the render passes
 		RP.create();
 		RP_Shadow.create();
@@ -771,7 +769,7 @@ class CursedCastle : public BaseProject {
         }
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
-		// Aggiorna anche le trasformazioni delle fiamme
+		// Update flame transforms
 		for(size_t index = 0; index < DSflames.size(); index++) {
 			FlameUniformBlock flameUbo{};
 			// Calculate the Model-View-Projection matrix for the flame instance
@@ -782,14 +780,14 @@ class CursedCastle : public BaseProject {
 			DSflames[index].map(currentImage,&flameUbo, 0);
 		}
 
-		// 3. Aggiorna Uniform Buffer per lo SkyBox (Matrice View senza traslazione + dayFactor)
+		// 3. Update SkyBox uniform buffer (view matrix without translation + dayFactor)
         const float FOVy = glm::radians(45.0f);
 		const float nearPlane = 0.1f;
         const float farPlane = 400.f;
         glm::mat4 Prj = glm::perspective(FOVy, Ar, nearPlane, farPlane);
         Prj[1][1] *= -1;
 
-        glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(View)); // Solo rotazione, niente traslazione
+        glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(View)); // Rotation only, no translation
         SkyBoxUniformBlock skyUbo{};
         skyUbo.mvpMat = Prj * viewNoTranslation;
         skyUbo.dayFactor = currentDayFactor;
@@ -799,19 +797,19 @@ class CursedCastle : public BaseProject {
 		// Defines the local parameters for the uniforms (for each 3D object in the scene)
 		UniformBufferObject ubo{};		
 
-		// Metodo più pulito e diretto: itera su tutte le istanze della scena (scene.I)
+		// Iterate over all scene instances (scene.I)
         for (int i = 0; i < scene.InstanceCount; i++) {
             ubo.mMat = scene.I[i]->Wm;
             ubo.mvpMat = ViewPrj * ubo.mMat;
 			ubo.lightParams = instanceParams[i];
 
-            // Set 0: Global UBO (luci, camera, nebbia)
-            // Set 1: Local UBO (matrice MVP e Model)
+            // Set 0: global UBO (lights, camera, fog)
+            // Set 1: local UBO (MVP and Model matrices)
             scene.I[i]->DS[0][0]->map(currentImage, &gubo, 0);
             scene.I[i]->DS[0][1]->map(currentImage, &ubo, 0);
         }
 		
-		// 6. Aggiorna FPS e Text
+		// 6. Update FPS and text
 		// Calculates and updates on the screen the FPS (Frame Per Second)
 		static float elapsedT = 0.0f; // Accumulated time since the last FPS update
 		static int countedFrames = 0; // Number of frames counted since the last FPS update
@@ -872,7 +870,7 @@ class CursedCastle : public BaseProject {
         }
     }
 
-	// TODO: questa funzione sarà da spostare da qui probabilmente 
+	// TODO: this function should probably be moved elsewhere
 	void setupMaterials() {
 		for (int index = 0; index < scene.InstanceCount; ++index) {
 			const std::string& id = *scene.I[index]->id;
@@ -968,7 +966,7 @@ class CursedCastle : public BaseProject {
 			bool ePressedNow = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
 			interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam, gameManager); 
 
-			// TODO: rivedi come viene gestito il wrapping del testo informativo in base alla larghezza disponibile
+			// TODO: review info text wrapping based on available width
 			if(interactionManager.infoTextTimer > 0.0f){
 				interactionManager.infoTextTimer -= deltaT; // Decrease the timer for displaying info text
 				if(interactionManager.infoTextTimer > 0.0f){
