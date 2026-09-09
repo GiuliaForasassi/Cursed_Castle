@@ -6,7 +6,6 @@
 #include <cmath>
 #include <limits>
 #include <cstring>
-
 #include <json.hpp>
 
 #include "modules/Starter.hpp"
@@ -18,10 +17,13 @@
 #define SCENE_HPP_GUARD
 #include "modules/Scene.hpp"
 #endif
+
 #include "camera.h"
 #include "interactions.h"
 #include "utils.h"
 #include "game_state.h"
+#include "vertex.h"
+#include "flame_mesh.h"
 
 #define MAX_POINT_LIGHTS 16
 
@@ -46,18 +48,16 @@ struct GlobalUniformBufferObject {
 	alignas(16) glm::mat4 lightVP; // Light view-projection matrix for shadow mapping
 };
 
-// Vertex structure for vertex of the 3D model
-struct Vertex {
-	glm::vec3 pos; // Position 3D (x, y, z)
-	glm::vec2 UV; // Texture coordinates (u, v)
-	glm::vec3 normal; // Normal vector for the vertex
-};
-
 struct SkyBoxUniformBlock {
 	// Matrix model view-projection for the skybox
 	alignas(16) glm::mat4 mvpMat;  
 	// 0.0 = Night, 1.0 = Day     
 	alignas(16) float dayFactor;        
+};
+
+struct FlameUniformBlock {
+    alignas(16) glm::mat4 mvpMat;
+    alignas(16) glm::vec4 animation;
 };
 
 class CursedCastle : public BaseProject {
@@ -104,7 +104,7 @@ class CursedCastle : public BaseProject {
 	int currentWindowWidth = 800; // Current window width
 	int currentWindowHeight = 600; // Current window height
 
-	//------ Skybox objects ------------
+	// ------ Skybox objects ------------
 	DescriptorSetLayout DSLsky;
     DescriptorSet DSsky;
     Pipeline P_SkyBox;
@@ -124,6 +124,13 @@ class CursedCastle : public BaseProject {
 	glm::mat4 LightVP; // Light's view-projection matrix for shadow mapping
 	const glm::vec3 sunDirection = glm::normalize(glm::vec3(-1.0f, -2.0f, -1.0f)); // Direction of the main directional light (sun)
 	TextureSampler TS_Shadow; // Sampler for the shadow map
+
+	// ----------- FLAME MESH OBJECTS ----------------
+	Model M_Flame;
+	DescriptorSetLayout DSLflame;
+	Pipeline P_Flame;
+	std::vector<DescriptorSet> DSflames; // Descriptor sets for each flame/torch instance
+	std::vector<glm::mat4> flameTransforms; // Transformation matrices for each flame instance
 
 	// ----------- WINDOW CONFIGURATION AND CALLBACKS ----------------
 	// Initializes the window parameters (size, title, resizable)
@@ -191,7 +198,16 @@ class CursedCastle : public BaseProject {
 				  {0, 2, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal),
 				         sizeof(glm::vec3), NORMAL}
 		});
-		
+
+		// ----------- Flame mesh creation ----------------
+		createFlameMesh(this, VD, M_Flame);
+		DSLflame.init(this, {
+					{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(FlameUniformBlock), 1}
+		});
+
+		// Pipeline for the flame
+		P_Flame.init(this, &VD, "shaders/Flame.vert.spv", "shaders/Flame.frag.spv", {&DSLflame});
+		P_Flame.CM = VK_CULL_MODE_NONE;
 		
         // Descriptor layout per lo SkyBox: UBO (b0) e 1 Texture (b1)
         DSLsky.init(this, {
@@ -291,15 +307,10 @@ class CursedCastle : public BaseProject {
 
 		// Define the light's view-projection matrix for shadow mapping
 		const glm::vec3 lightTarget(0.0f, 0.0f, 20.0f);
-		glm::mat4 lightProjection =
-			glm::ortho(-80.0f, 80.0f, -80.0f, 80.0f, 1.0f, 250.0f);
+		glm::mat4 lightProjection = glm::ortho(-80.0f, 80.0f, -80.0f, 80.0f, 1.0f, 250.0f);
 		lightProjection[1][1] *= -1.0f;
 
-		LightVP = lightProjection * glm::lookAt(
-			lightTarget - sunDirection * 120.0f,
-			lightTarget,
-			glm::vec3(0.0f, 1.0f, 0.0f)
-		);
+		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 120.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
 		
 		// Carica il modello glTF e la texture singola dello Skybox
         M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
@@ -357,10 +368,13 @@ class CursedCastle : public BaseProject {
 
 		// Collect the positions of the torch lights in the scene
 		collectTorchLights();
-
+		const int flameCount = std::min(static_cast<int>(torchPositions.size()), MAX_POINT_LIGHTS);
+		DSflames.resize(flameCount);
+		DPSZs.uniformBlocksInPool += flameCount;
+		DPSZs.setsInPool += flameCount;
+	
 		// Setup the interactions for the interactable objects in the scene
 		setupInteractions();
-
 
 		// Initializes the textual output
 		txt.init(this, windowWidth, windowHeight);
@@ -386,6 +400,11 @@ class CursedCastle : public BaseProject {
 		P.create(&RP);
 		P_CookTorrance.create(&RP);
 		P_SkyBox.create(&RP);
+
+		P_Flame.create(&RP);
+		for(auto& descriptor : DSflames) {
+			descriptor.init(this, &DSLflame, {});
+		}
 		
 		// Create a descriptor image info for the shadow map, which will be used in the global descriptor set
 		VkDescriptorImageInfo shadowInfo{
@@ -416,6 +435,10 @@ class CursedCastle : public BaseProject {
 
 	// Here you destroy your pipelines and Descriptor Sets!
 	void pipelinesAndDescriptorSetsCleanup() {
+		for (auto& descriptor : DSflames) {
+    		descriptor.cleanup();
+		}
+		P_Flame.cleanup();
 		P_Shadow.cleanup();
 		RP_Shadow.cleanup();
 		P.cleanup();
@@ -435,11 +458,16 @@ class CursedCastle : public BaseProject {
 	// Here you destroy all the Models, Texture and Desc. Set Layouts you created!
 	// You also have to destroy the pipelines
 	void localCleanup() {
+		P_Flame.destroy();
+		DSLflame.cleanup();
+
 		P_Shadow.destroy();
 		RP_Shadow.destroy();
 		TS_Shadow.cleanup();
+
 		DSLlocal.cleanup();
 		DSLglobal.cleanup();
+
 		DSLsky.cleanup();
 
 		P.destroy();
@@ -447,6 +475,7 @@ class CursedCastle : public BaseProject {
 		P_SkyBox.destroy();
 
 		M_SkyBox.cleanup();
+		M_Flame.cleanup();
 		T_Sky.cleanup();
 
 		RP.destroy();
@@ -514,6 +543,15 @@ class CursedCastle : public BaseProject {
 		RP.begin(commandBuffer, currentImage); // Begin the render pass for the current frame
 
 		scene.populateCommandBuffer(commandBuffer, 0, currentImage); // Populate the command buffer with the rendering commands for the scene, using the first render pass (index 0)
+		
+		// Render the flame instances
+		P_Flame.bind(commandBuffer);
+		M_Flame.bind(commandBuffer);
+		for (auto& descriptor : DSflames) {
+			descriptor.bind(commandBuffer, P_Flame, 0, currentImage);
+			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(M_Flame.indices.size()), 1, 0, 0, 0);
+		}
+		
 		// Disegna lo SkyBox
         P_SkyBox.bind(commandBuffer);
         M_SkyBox.bind(commandBuffer);
@@ -564,7 +602,7 @@ class CursedCastle : public BaseProject {
 			gubo.fogColor = glm::vec4(0.02f, 0.02f, 0.05f, 0.06f);
 		}
 
-		//--------- One point light per torch holder ---------
+		//--------- One point light per torch holder with flame ---------
         totalTime += deltaT;
         int nLights = std::min((int)torchPositions.size(), MAX_POINT_LIGHTS);
         for (int i = 0; i < nLights; i++) {
@@ -577,6 +615,16 @@ class CursedCastle : public BaseProject {
         }
 		// Map the global uniform buffer object to the GPU memory for the current frame
 		DSglobal.map(currentImage, &gubo, 0);
+		// Aggiorna anche le trasformazioni delle fiamme
+		for(size_t index = 0; index < DSflames.size(); index++) {
+			FlameUniformBlock flameUbo{};
+			// Calculate the Model-View-Projection matrix for the flame instance
+			flameUbo.mvpMat = ViewPrj * flameTransforms[index];
+			// Set the animation parameters for the flame (time and index)
+			flameUbo.animation = glm::vec4(totalTime, static_cast<float>(index) * 2.3f, 0.0f, 0.0f);
+			// Map the flame's uniform buffer to the GPU memory for the current frame
+			DSflames[index].map(currentImage,&flameUbo, 0);
+		}
 
 		// 3. Aggiorna Uniform Buffer per lo SkyBox (Matrice View senza traslazione + dayFactor)
         const float FOVy = glm::radians(45.0f);
@@ -686,24 +734,29 @@ class CursedCastle : public BaseProject {
 		}
 	}
 
+	// Collects the positions and transformation matrices for all torch lights in the scene
 	void collectTorchLights() {
 		torchPositions.clear();
+		flameTransforms.clear();
 
-		const glm::vec3 flameCenterLocal(0.0f, 0.18f, 0.17f);
+		const glm::vec3 flameBaseLocal(0.0f, 0.12f, 0.15f); // Position in the local space of the torch holder model: where the flame should originate
+		const float flameScaleLocal = 0.25f; // Scale factor for the flame
 
+		// Iterate through all instances in the scene to find torch holders and calculate the world transformations for the flames attached to them
 		for (int index = 0; index < scene.InstanceCount; ++index) {
 			if (scene.I[index]->id->rfind("Torch_Holder", 0) != 0) {
 				continue;
 			}
-
-			const glm::mat4& worldMatrix = scene.I[index]->Wm;
-			torchPositions.push_back(glm::vec3(
-				worldMatrix * glm::vec4(flameCenterLocal, 1.0f)
-			));
+			// Translate the flame's base position from local space to world space using the torch holder's world matrix
+			glm::mat4 flameWorld = glm::translate(scene.I[index]->Wm, flameBaseLocal);
+			// Scale the flame according to the local scale factor
+			flameWorld = glm::scale(flameWorld, glm::vec3(flameScaleLocal));
+			// Store the world transformation for the flame and calculate its position in world space
+			flameTransforms.push_back(flameWorld);
+			torchPositions.push_back(glm::vec3(flameWorld * glm::vec4(0.0f, 0.24f, 0.0f, 1.0f)));
 		}
 
-		std::cout << "Torch lights found: "
-				<< torchPositions.size() << "\n";
+		std::cout << "Torch lights found: " << torchPositions.size() << "\n";
 	}
 
 	// ------------------ GAME LOGIC -------------------
