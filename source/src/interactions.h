@@ -217,7 +217,6 @@ class InteractionManager {
                 return;
             }
             if (door.state == AnimatedDoor::CLOSED || door.state == AnimatedDoor::CLOSING) {
-                scena.I[it->second]->C = nullptr;
                 door.state = AnimatedDoor::OPENING;
             }
         }
@@ -264,7 +263,6 @@ class InteractionManager {
                         if (door.currentAngle <= 0.0f) {
                             door.currentAngle = 0.0f;
                             door.state = AnimatedDoor::CLOSED;
-                            inst->C = door.originalCollider;
                         }
                         break;
                     }

@@ -20,7 +20,7 @@ class Camera {
 
 	// Parameters to control the camera movement and sensitivity
 	float moveSpeed   = 5.0f; // Speed of camera movement
-	float mouseSensitivity = 0.002f; // Sensitivity of mouse movement for camera rotation
+	float mouseSensitivity = 0.0012f; // Sensitivity of mouse movement for camera rotation
 
 	double lastMouseX = 0.0;
 	double lastMouseY = 0.0; // Last mouse positions for camera control
@@ -71,7 +71,7 @@ class Camera {
             lastMouseY = yPos;
 
             // Update the camera's orientation based on the mouse movement
-            updateOrientation(-(float)dx / 10.0f, -(float)dy / 10.0f);
+            updateOrientation(-static_cast<float>(dx), -static_cast<float>(dy));
         }
 
         // Update the camera position based on keyboard input (WASD keys) and collision detection with the scene
@@ -79,7 +79,7 @@ class Camera {
             // Calculate movement speed based on delta time to ensure consistent movement regardless of frame rate
             float movementSpeed = moveSpeed * deltaT;
             // Radius of the player for collision detection
-            const float playerRadius = 1.0f;
+            const float playerRadius = 0.65f;
 
             // Initialize movement vector: it accumulates the movement direction based on key presses
             glm::vec3 movement(0.0f);

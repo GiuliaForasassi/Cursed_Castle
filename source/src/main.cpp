@@ -593,8 +593,9 @@ class CursedCastle : public BaseProject {
 		T->populateCommandBuffer(commandBuffer, currentImage);
 	}
 
-	// test
-	bool canCastPointShadow(Instance* instance, size_t lightIndex) {
+	// OPTIMIZATION FUNCTION
+	bool canCastPointShadow(Instance* instance, size_t faceIndex) {
+		const size_t lightIndex = faceIndex / 6;
 		const std::string& id = *instance->id;
 		if (id.rfind("Door", 0) == 0 ||
 			id == "Book" || id == "Cup" || id == "Sword" ||
@@ -613,7 +614,37 @@ class CursedCastle : public BaseProject {
 		const glm::vec3 difference = closest - lightPosition;
 		constexpr float cullingRadius = 7.6f;
 
-		return glm::dot(difference, difference) <= cullingRadius * cullingRadius;
+		if (glm::dot(difference, difference) > cullingRadius * cullingRadius) {
+    return false;
+}
+
+	const glm::mat4 transposedVP =
+		glm::transpose(PointLightShadowMatrices[faceIndex]);
+
+	const std::array<glm::vec4, 6> planes = {{
+		transposedVP[3] + transposedVP[0],
+		transposedVP[3] - transposedVP[0],
+		transposedVP[3] + transposedVP[1],
+		transposedVP[3] - transposedVP[1],
+		transposedVP[2],
+		transposedVP[3] - transposedVP[2]
+	}};
+
+	const glm::vec3 center = (minimum + maximum) * 0.5f;
+	const glm::vec3 halfExtents = (maximum - minimum) * 0.5f;
+	constexpr float margin = 0.01f;
+
+	for (const glm::vec4& plane : planes) {
+		const glm::vec3 normal(plane);
+		const float signedDistance = glm::dot(normal, center) + plane.w;
+		const float projectedRadius = glm::dot(glm::abs(normal), halfExtents);
+
+		if (signedDistance + projectedRadius < -margin * glm::length(normal)) {
+			return false;
+		}
+	}
+
+	return true;
 	}	
 
 	// Rendering function
@@ -632,7 +663,7 @@ class CursedCastle : public BaseProject {
 				vkCmdPushConstants(commandBuffer, pipeline.pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4),  &PointLightShadowMatrices[face]);
 				for(int index = 0; index < scene.InstanceCount; ++index){
 					Instance* instance = scene.I[index];
-					if(!canCastPointShadow(instance, face / 6))
+					if(!canCastPointShadow(instance, face))
 						continue;
 					Model* model = scene.M[instance->Mid];
 
