@@ -272,6 +272,7 @@ void main() {
     
 
     // 2. Point Lights (Torches)
+    vec3 bounce = vec3(0.0); // Accumulator for the fake indirect bounce (torch light reflected by the walls)
     for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
         if (gubo.pointLightColor[i].a <= 0.01) 
             continue;
@@ -286,17 +287,38 @@ void main() {
         if (attenuation <= 0.0 || dot(N, Lp) <= 0.0)
             continue;
         vec3 radianceP = gubo.pointLightColor[i].rgb * (gubo.pointLightColor[i].a * attenuation);
+        bounce += gubo.pointLightColor[i].rgb * (gubo.pointLightColor[i].a * attenuation); // Accumulate (pre-shadow) for the fake indirect bounce fill
         if(i < POINT_SHADOW_LIGHTS)
             radianceP *= pointVisibility(fragPos, N, i);
 
         Lo += computeCookTorrance(N, V, Lp, radianceP, albedo, roughness, metallic, F0);
     }
 
-    // 3. Ambient Light
+    // 3. Ambient Light — hemisphere gradient: up-facing surfaces pick up the
+    // sky color, down-facing ones the warm ground bounce, so unlit areas are
+    // not a flat constant anymore.
     const float indoorAmbientStrength = 0.5;
-    vec3 ambient = mix(indoorAmbientStrength, 0.03, matParams.x) * albedo;
+    float hemi = 0.5 + 0.5 * N.y; // 1.0 = facing the sky, 0.0 = facing the ground
+
+    const vec3 skyTint = vec3(0.70, 0.80, 1.00); // cool bluish sky light
+    const vec3 groundTint = vec3(0.55, 0.45, 0.35); // warm bounce from the ground
+
+    const vec3 indoorUpColor = vec3(0.065, 0.062, 0.055); // cool-ish stone bounce
+    const vec3 indoorDownColor = vec3(0.032, 0.027, 0.022); // dark warm crevice color
+
+    // Sky visibility proxy (see BlinnFromPos): occluders from the sun also
+    // occlude the sky dome, so indoor faces of outdoor walls get no sky ambient.
+    float skyVisibility = directionalVisibility(fragPos, N);
+    vec3 indoorAmbient = mix(indoorDownColor, indoorUpColor, hemi) * albedo;
+    vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b))
+        * mix(groundTint, skyTint, hemi) * albedo * skyVisibility;
+    vec3 ambient = mix(indoorAmbient, skyAmbient, matParams.x); // x = 1.0 outdoor (same convention as BlinnFromPos)
     vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
-    vec3 color = ambient + Lo + emissive;
+    // Fake indirect illumination: unshadowed, NdotL-independent fill that
+    // approximates torch light bouncing off the surrounding surfaces,
+    // so shadowed areas keep a soft, warm, non-uniform glow.
+    vec3 bounceFill = bounce * albedo * 0.07;
+    vec3 color = ambient + Lo + emissive + bounceFill;
 
     // 4. Dynamic Fog
     if (gubo.fogColor.a > 0.0001) {

@@ -394,7 +394,7 @@ protected:
 		const int shadowLightCount = std::min(static_cast<int>(torchPositions.size()), POINT_SHADOW_LIGHTS);
 		for (int lightIndex = 0; lightIndex < shadowLightCount; ++lightIndex)
 		{
-			auto matrices = makePointShadowMatrices(torchPositions[lightIndex], 0.05f, 7.5f);
+			auto matrices = makePointShadowMatrices(torchPositions[lightIndex], 0.05f, 12.0f);
 			for (size_t face = 0; face < matrices.size(); ++face)
 			{
 				PointLightShadowMatrices[lightIndex * 6 + face] = matrices[face];
@@ -595,7 +595,7 @@ protected:
 		const glm::vec3 lightPosition = torchPositions[lightIndex];
 		const glm::vec3 closest = glm::clamp(lightPosition, minimum, maximum);
 		const glm::vec3 difference = closest - lightPosition;
-		constexpr float cullingRadius = 7.6f;
+		constexpr float cullingRadius = 11.5f;
 
 		if (glm::dot(difference, difference) > cullingRadius * cullingRadius)
 		{
@@ -847,7 +847,7 @@ protected:
 		{
 			// Calculate the flicker effect for the torch light
 			float flicker = 0.85f + 0.15f * sinf(totalTime * 7.0f + (float)i * 2.3f);
-			gubo.pointLightPos[i] = glm::vec4(torchPositions[i], 2.5f); // w = falloff radius
+			gubo.pointLightPos[i] = glm::vec4(torchPositions[i], 4.0f); // w = falloff radius
 			gubo.pointLightColor[i] = glm::vec4(3.0f, 1.8f, 0.9f, flicker);
 		}
 		// Set the remaining point lights to zero to avoid unintended lighting effects

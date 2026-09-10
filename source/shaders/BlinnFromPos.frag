@@ -210,6 +210,7 @@ void main() {
     Lo *= directionalVisibility(fragPos, N);
 
     //--------------- Point light calculations ---------------
+    vec3 bounce = vec3(0.0); // Accumulator for the fake indirect bounce (torch light reflected by the walls)
     for(int i = 0; i < MAX_POINT_LIGHTS; i++) {
         if(gubo.pointLightColor[i].a <= 0.01) // Alpha < 0.01: skip inactive point lights
             continue; 
@@ -225,6 +226,7 @@ void main() {
         if (attenuation <= 0.0 || dot(N, Lp) <= 0.0)
             continue;
         vec3 radiancePoint = gubo.pointLightColor[i].rgb * (gubo.pointLightColor[i].a * attenuation); // Radiance of the point light after attenuation
+        bounce += gubo.pointLightColor[i].rgb * (gubo.pointLightColor[i].a * attenuation); // Accumulate (pre-shadow) for the fake indirect bounce fill
         if(i < POINT_SHADOW_LIGHTS)
             radiancePoint *= pointVisibility(fragPos, N, i);
 
@@ -235,13 +237,40 @@ void main() {
     }
         
     //---------- Compute the ambient component of the lighting ------------
-    // 5. Apply a small ambient term (0.015) to simulate indirect lighting
+    // 5. Hemisphere ambient: the ambient term is no longer a flat constant,
+    // but a gradient between the sky color (for up-facing surfaces, N.y > 0)
+    // and a warm ground-bounce color (for down-facing surfaces, N.y < 0).
+    // This gives unlit walls/ceilings a non-uniform, more realistic shading.
     const float indoorAmbientStrength = 0.5;
-    vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b)) * albedo;
-    vec3 ambient = mix(0.035 * albedo, skyAmbient, matParams.x);
+    float hemi = 0.5 + 0.5 * N.y; // 1.0 = surface facing the sky, 0.0 = facing the ground
+
+    // Outdoor: cool sky tint from above, warm dirt-bounce tint from below
+    const vec3 skyTint = vec3(0.70, 0.80, 1.00); // cool bluish sky light
+    const vec3 groundTint = vec3(0.55, 0.45, 0.35); // warm bounce from the ground
+
+    // Indoor: dim ambient, slightly cooler on up-facing surfaces (light falling
+    // from the ceiling area) and warmer on down-facing ones (bounce from the floor)
+    const vec3 indoorUpColor = vec3(0.065, 0.062, 0.055); // cool-ish stone bounce
+    const vec3 indoorDownColor = vec3(0.032, 0.027, 0.022); // dark warm crevice color
+
+    // The sky ambient must only reach surfaces that actually "see" the sky.
+    // Walls are outdoor-classified (their exterior must be sunlit), but their
+    // interior faces are occluded from the sky: the directional shadow map is
+    // a cheap proxy for sky visibility (same occluders block sun and skydome),
+    // so interior faces fall back to the dark indoor ambient.
+    float skyVisibility = directionalVisibility(fragPos, N);
+    vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b))
+        * mix(groundTint, skyTint, hemi) * albedo * skyVisibility;
+    vec3 indoorAmbient = mix(indoorDownColor, indoorUpColor, hemi) * albedo;
+    vec3 ambient = mix(indoorAmbient, skyAmbient, matParams.x);
     // La fiamma della torcia si illumina da sola: non dipende dalle sorgenti
     vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
-    vec3 color = ambient + Lo + emissive;
+    // Fake indirect illumination: torch light bouncing off the surrounding
+    // surfaces reaches even shadowed areas. It is unshadowed and ignores
+    // NdotL (diffuse interreflection is roughly view/normal independent),
+    // so it fills the shadows with a soft, warm, non-uniform glow.
+    vec3 bounceFill = bounce * albedo * 0.07;
+    vec3 color = ambient + Lo + emissive + bounceFill;
 
     // 6. Apply exponential fog (enabled if fogColor.a > 0)
     if (gubo.fogColor.a > 0.0001) {
