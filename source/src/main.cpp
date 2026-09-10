@@ -282,7 +282,7 @@ protected:
 		P_Shadow.CM = VK_CULL_MODE_NONE;
 
 		const glm::vec3 lightTarget(3.0f, 0.0f, 5.0f);
-		glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 1.0f, 400.0f);
+		glm::mat4 lightProjection = glm::ortho(-60.0f, 60.0f, -60.0f, 60.0f, 1.0f, 400.0f);
 		lightProjection[1][1] *= -1.0f;
 
 		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -357,7 +357,7 @@ protected:
 		// Compute the bounding volumes for each model in the scene to optimize shadow mapping
 		shadowModelBounds.resize(scene.ModelCount);
 		for (int modelIndex = 0; modelIndex < scene.ModelCount; ++modelIndex)
-		{
+		{ // Fit the axis-aligned bounding box for the current model
 			shadowModelBounds[modelIndex].fitAABB(scene.M[modelIndex]);
 		}
 
@@ -886,7 +886,7 @@ protected:
 			bool outdoor = id.rfind("garden", 0) == 0 ||
 						   id.rfind("Tree_", 0) == 0 ||
 						   id.rfind("Hedge", 0) == 0 ||
-						   id.find("_ext") != std::string::npos ||
+						   id.rfind("Wall", 0) == 0 ||
 						   id == "Door_main";
 
 			instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f);
