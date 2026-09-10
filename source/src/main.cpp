@@ -958,19 +958,23 @@ protected:
 	void setupInteractions()
 	{
 		// Register relics interactions
+		// Objects interactions
 		interactionManager.addRelicInteraction("Book", "Press E to pick up Sacred Grimoire");
 		interactionManager.addRelicInteraction("Cup", "Press E to pick up Holy Chalice");
 		interactionManager.addRelicInteraction("Sword", "Press E to pick up Cursed Blade");
 		interactionManager.addAltarInteraction("Altar");
+		interactionManager.addLockedDoorInteraction("Door_locked", "Key", "Press E to unlock Door");
+		interactionManager.addKeyInteraction("Golden_Key", "Key", "Press E to pick up Key");
+		// Door interactions
 		interactionManager.addDoorInteraction("Door_main");
-		// + 0.1719 is the local Z-coordinate of the hinge relative to the door model's origin
-		interactionManager.setDoorHinge("Door_main", +0.1719f, +1.0f);
+		interactionManager.setDoorHinge("Door_main", +0.1719f, +1.0f); // + 0.1719 is the local Z-coordinate of the hinge relative to the door model's origin
 		interactionManager.addDoorInteraction("Door_L");
 		interactionManager.setDoorHinge("Door_L", +0.1719f, +1.0f);
 		interactionManager.addDoorInteraction("Door_R");
 		interactionManager.setDoorHinge("Door_R", +0.1719f, +1.0f);
-		interactionManager.addLockedDoorInteraction("Door_locked", "Key", "Press E to unlock Door");
-		interactionManager.addKeyInteraction("Golden_Key", "Key", "Press E to pick up Key");
+		// Statue interactions
+		interactionManager.addInfoInteraction("StatueL", "Press E to talk", "Guard: Hello explorer, welcome to the castle!");
+		interactionManager.addInfoInteraction("StatueR", "Press E to talk", "Long time ago, the duke of this castle made a pact with the devil to become immortal.");
 		interactionManager.saveInitialState(scene);
 	}
 
@@ -1010,6 +1014,23 @@ protected:
 			{
 				metallic = 1.0f;
 				roughness = 0.4f;
+			}
+			else if (id == "Metal_Chest" || id == "Iron_Bucket")
+			{
+				metallic = 1.0f;
+				roughness = 0.55f;
+			}
+			else if (id == "Forge_Tong" || id == "Anvil" ||
+					 id.rfind("Torch_Holder", 0) == 0)
+			{
+				metallic = 1.0f;
+				roughness = 0.65f;
+			}
+			else if (id.rfind("Jail_", 0) == 0 ||
+					 id.rfind("Prison_Wall", 0) == 0)
+			{
+				metallic = 1.0f;
+				roughness = 0.7f;
 			}
 
 			instanceParams[index].z = metallic;
@@ -1059,6 +1080,7 @@ protected:
 		bool fire = false;									// fire = action input
 		getSixAxis(deltaT, m, r, fire);						// Retrieve input from a six-axis controller
 
+		gameManager.updateTimer(deltaT, txt);
 		//------------------- 1. Handle Game State Input and UI -------------------
 		gameManager.handleInput(window, txt, currentWindowWidth, currentWindowHeight);
 		if (gameManager.restartRequested)
@@ -1086,6 +1108,12 @@ protected:
 
 			// --------- 3. Check for interactions with objects in the scene ---------
 			int nearestInteractableObjIndex = interactionManager.findNearestInteractable(scene, cam, 6.0f, 0.3f); // Find the nearest interactable object
+			if (nearestInteractableObjIndex < 0)
+			{
+				interactionManager.infoTextTimer = 0.0f;
+				interactionManager.currentInfoText.clear();
+				txt.removeText(3);
+			}
 			if (nearestInteractableObjIndex >= 0 && interactionManager.infoTextTimer <= 0.0f)
 			{
 				std::string promptText = interactionManager.getPrompt(nearestInteractableObjIndex, gameManager);
