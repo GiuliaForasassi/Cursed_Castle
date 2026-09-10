@@ -3613,7 +3613,7 @@
 					"transform": [4.0,0.0,0.0,23.616,0.0,5.6,0.0,0.0,0.0,0.0,4.0,24.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "StatueL_2",
+					"id": "StatueL_start",
 					"model": "Stone_Statue",
 					"texture": [
 						"Texture"
@@ -3621,7 +3621,7 @@
 					"transform": [4.0,0.0,0.0,-6.0,0.0,4.0,0.0,0.0,0.0,0.0,4.0,28.0,0.0,0.0,0.0,1.0]
 				},
 				{
-					"id": "StatueR_2",
+					"id": "StatueR_start",
 					"model": "Stone_Statue",
 					"texture": [
 						"Texture"
