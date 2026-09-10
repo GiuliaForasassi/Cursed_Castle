@@ -886,7 +886,7 @@ protected:
 			bool outdoor = id.rfind("garden", 0) == 0 ||
 						   id.rfind("Tree_", 0) == 0 ||
 						   id.rfind("Hedge", 0) == 0 ||
-						   id.rfind("Wall", 0) == 0 ||
+						   id.find("_ext") != std::string::npos ||
 						   id == "Door_main";
 
 			instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f);
