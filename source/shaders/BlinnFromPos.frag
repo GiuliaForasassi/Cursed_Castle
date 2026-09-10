@@ -21,7 +21,6 @@ layout(location = 0) out vec4 outColor; // Final color pixel
 layout(binding = 1, set = 1) uniform sampler2D albedoMap; // Texture containing the base color (albedo) of the object
 layout(set = 0, binding = 1) uniform sampler2D shadowMap; // Shadow map for shadow mapping
 layout(set = 0, binding = 2) uniform sampler2D pointShadowAtlas; // Shadow atlas for point light shadows
-layout(set = 0, binding = 3) uniform sampler2D shadowMapFar;
 
 //UNIFORM SET 0: Global parameters (directional light, camera position, point lights, fog)
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
@@ -38,7 +37,6 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
     mat4 lightVP; // Light view-projection matrix for shadow mapping
 
     mat4 pointShadowVP[6 * POINT_SHADOW_LIGHTS]; // View-projection matrices for the point light's shadow cubemap faces
-    mat4 lightVPFar;
 } gubo;
 
 const float PI = 3.14159265359;
@@ -46,8 +44,8 @@ const float PI = 3.14159265359;
 // --------------- Directional Light Shadow Visibility ---------------
 // Computes the visibility of a fragment with respect to the directional light, taking into account shadows. Returns 1.0 if fully visible, 0.0 if fully in shadow.
 // It takes a point on the scene and its normal, projects it into the light space and returns the percentage direct light that reaches it (1.0 = fully visible, 0.0 = fully in shadow)
-float sampleDirectionalShadow(vec3 worldPosition, mat4 lightMatrix, sampler2D depthMap) {
-    vec4 lightClip = lightMatrix * vec4(worldPosition, 1.0);
+float directionalVisibility(vec3 worldPosition, vec3 normal) {
+    vec4 lightClip = gubo.lightVP * vec4(worldPosition, 1.0);
     vec3 lightNdc = lightClip.xyz / lightClip.w;
     vec3 shadowPosition = vec3(lightNdc.xy * 0.5 + 0.5, lightNdc.z);
 
@@ -64,7 +62,7 @@ float sampleDirectionalShadow(vec3 worldPosition, mat4 lightMatrix, sampler2D de
         return 0.0;
     }
 
-    ivec2 mapSize = textureSize(depthMap, 0);
+    ivec2 mapSize = textureSize(shadowMap, 0);
     ivec2 centerPixel = ivec2(floor(shadowPosition.xy * vec2(mapSize)));
     float bias = 0.01 / (400.0 - 1.0);
     float visibility = 0.0;
@@ -81,31 +79,12 @@ float sampleDirectionalShadow(vec3 worldPosition, mat4 lightMatrix, sampler2D de
             vec2 sampleUV = (vec2(samplePixel) + vec2(0.5)) / vec2(mapSize);
             float receiverDepth = shadowPosition.z
                 + dot(depthGradient, sampleUV - shadowPosition.xy) - bias;
-            float storedDepth = texelFetch(depthMap, samplePixel, 0).r;
+            float storedDepth = texelFetch(shadowMap, samplePixel, 0).r;
             visibility += receiverDepth <= storedDepth ? 1.0 : 0.0;
         }
     }
     float sampleCount = float((2 * filterRadius + 1) * (2 * filterRadius + 1));
     return visibility / sampleCount;
-}
-
-float directionalVisibility(vec3 worldPosition, vec3 normal) {
-    float nearVisibility = sampleDirectionalShadow(
-        worldPosition, gubo.lightVP, shadowMap);
-    float farVisibility = sampleDirectionalShadow(
-        worldPosition, gubo.lightVPFar, shadowMapFar);
-
-    vec4 nearClip = gubo.lightVP * vec4(worldPosition, 1.0);
-    vec3 nearNdc = nearClip.xyz / nearClip.w;
-
-    float edgeDistance = max(abs(nearNdc.x), abs(nearNdc.y));
-    float farWeight = smoothstep(0.85, 0.95, edgeDistance);
-
-    if (nearNdc.z < 0.0 || nearNdc.z > 1.0) {
-        farWeight = 1.0;
-    }
-
-    return mix(nearVisibility, farVisibility, farWeight);
 }
 
 // ------------- Point Light Shadow Visibility -------------
