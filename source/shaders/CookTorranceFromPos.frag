@@ -293,7 +293,7 @@ void main() {
     }
 
     // 3. Ambient Light
-    const float indoorAmbientStrength = 0.08;
+    const float indoorAmbientStrength = 0.5;
     vec3 ambient = mix(indoorAmbientStrength, 0.03, matParams.x) * albedo;
     vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
     vec3 color = ambient + Lo + emissive;

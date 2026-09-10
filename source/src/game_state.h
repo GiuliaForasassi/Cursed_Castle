@@ -40,7 +40,7 @@ public:
 
     bool restartRequested = false;
 
-    static constexpr float TIME_LIMIT = 300.0f;
+    static constexpr float TIME_LIMIT = 300.0f; // Time limit for the game in seconds: 5 minutes
     float timeRemaining = TIME_LIMIT;
 
     // Method to reset the game state to its initial values
@@ -134,6 +134,7 @@ public:
         tabPressedPrev = tabPressed;
     }
 
+    // --------------------- UI --------------------------------
     void updateUI(TextMaker &txt, int windowWidth, int windowHeight)
     {
         float scale = getTextScale(windowWidth, windowHeight);

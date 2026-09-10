@@ -28,8 +28,8 @@ enum InteractionEffects
 // Structure to define an interactable object in the scene
 struct Interactable
 {
-    std::string instanceId;    // object you interact with
-    std::string targetId;      // object on which the effect will be applied (if empty, it matches the instanceId)
+    std::string instanceId;    // Object you interact with
+    std::string targetId;      // Object on which the effect will be applied (if empty, it matches the instanceId)
     InteractionEffects effect; // Effect to apply when interacted with
     std::string prompt;        // Prompt message to display when the player is near: "Press E for..."
     std::string infoText;      // Text to display when the player interacts with the object (if effect is EFFECT_INFO)
@@ -123,30 +123,34 @@ class InteractionManager
     // Function to hide an instance by moving it far below the ground and disabling its camera component
     void hideInstance(Scene &scena, const std::string &id)
     {
+        // Find the instance in the scene by its ID
         auto it = scena.InstanceIds.find(id);
         if (it != scena.InstanceIds.end())
         {
             Instance *instance = scena.I[it->second];
+            // Move the instance far below the ground and disable its camera component
             instance->Wm = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)) * instance->Wm;
-            instance->C = nullptr;
+            instance->C = nullptr; //
         }
     }
 
-    // Posiziona una reliquia sopra l'altare a una posizione specifica
-    // relX in [-1,1]: posizione laterale relativa alla semi-larghezza dell'altare
-    void placeOnAltar(Scene &scena, const std::string &id, float relX,
-                      float scale = 3.5f, const glm::mat4 &rot = glm::mat4(1.0f))
+    // Place a relic on the altar at a specific position relative to the altar's width
+    // relX in [-1,1]: lateral position relative to the half-width of the altar
+    void placeOnAltar(Scene &scena, const std::string &id, float relX, float scale = 3.5f, const glm::mat4 &rot = glm::mat4(1.0f))
     {
+        // 1. Find the altar and the relic instances in the scene by their IDs
         auto altarIt = scena.InstanceIds.find("Altar");
         auto relicIt = scena.InstanceIds.find(id);
         if (altarIt == scena.InstanceIds.end() || relicIt == scena.InstanceIds.end())
             return;
 
+        // 2. Retrieve the altar instance and its position in the world
         Instance *altar = scena.I[altarIt->second];
         glm::vec3 c = glm::vec3(altar->Wm[3]);
+        // Determine the top Y coordinate of the altar and its half-width for positioning the relic
         float topY = c.y, halfW = 0.5f;
         if (altar->C != nullptr)
-        {
+        { // 4. If the altar has a collision component, use its extents to determine the top Y coordinate and half-width
             AABBextents E = altar->C->getExtents();
             c.x = (E.xMin + E.xMax) * 0.5f;
             c.z = (E.zMin + E.zMax) * 0.5f;
@@ -154,8 +158,8 @@ class InteractionManager
             halfW = (E.xMax - E.xMin) * 0.5f;
         }
 
-        glm::mat4 m = glm::translate(glm::mat4(1.0f),
-                                     glm::vec3(c.x + relX * halfW * 0.6f, topY + 0.01f, c.z));
+        // 5. Compute the transformation matrix for placing the relic on the altar
+        glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(c.x + relX * halfW * 0.6f, topY + 0.01f, c.z));
         scena.I[relicIt->second]->Wm = m * rot * glm::scale(glm::mat4(1.0f), glm::vec3(scale));
     }
 
@@ -168,13 +172,16 @@ public:
     // Reset the interaction manager to its initial state, clearing inventory keys, info text, and reactivating all interactables
     void reset(Scene &scena)
     {
+        // 1. Clear inventory keys and collected relics, and reset info text and timer
         inventoryKeys.clear();
         collectedRelics.clear();
         currentInfoText = "";
         infoTextTimer = 0.0f;
+        // 2. Reactivate all interactable items
         for (auto &item : interactables)
             item.active = true;
 
+        // 3. Reset the initial pickups to their original state
         for (const auto &kv : initialPickups)
         {
             auto it = scena.InstanceIds.find(kv.first);
@@ -185,6 +192,7 @@ public:
             inst->C = kv.second.C;
         }
 
+        // 4. Reset all doors to their closed state and restore their original colliders
         for (auto &pair : doors)
         {
             AnimatedDoor &door = pair.second;
@@ -197,6 +205,7 @@ public:
         }
     }
 
+    // Get the prompt text for the interactable at the given index based on its effect and the game state
     std::string getPrompt(int index, const GameManager &gm) const
     {
         if (index < 0 || index >= (int)interactables.size())
@@ -207,7 +216,7 @@ public:
         {
             if (doors.count(item.instanceId) && doors.at(item.instanceId).state != AnimatedDoor::CLOSED)
             {
-                return ""; // Se la porta è già aperta, non mostrare alcun prompt
+                return ""; // If the door is already unlocked, do not show any prompt
             }
             if (inventoryKeys.count(item.requiredKey))
             {
@@ -223,7 +232,7 @@ public:
         {
             if (doors.count(item.instanceId) && doors.at(item.instanceId).state != AnimatedDoor::CLOSED)
             {
-                return ""; // Se la porta è già aperta, non mostrare prompt
+                return ""; // If the door is already open, do not show any prompt
             }
             return "Press E to open Door";
         }
@@ -243,6 +252,7 @@ public:
         return item.prompt;
     }
 
+    // Start opening the specified door if it is closed
     void startOpeningDoor(Scene &scena, const std::string &doorId)
     {
         auto d = doors.find(doorId);
@@ -265,16 +275,19 @@ public:
         }
     }
 
+    // Update the animations of all doors based on the elapsed time and the player's position
     void updateAnimations(Scene &scena, float deltaT, const glm::vec3 &playerPos)
     {
         for (auto &pair : doors)
         {
+            // Retrieve the door instance and its corresponding scene instance
             AnimatedDoor &door = pair.second;
             auto it = scena.InstanceIds.find(door.instanceId);
             if (it == scena.InstanceIds.end())
                 continue;
             Instance *inst = scena.I[it->second];
 
+            // Save the initial world matrix and collider of the door if not already saved
             if (!door.initialWmSaved)
             {
                 door.initialWm = inst->Wm;
@@ -282,10 +295,12 @@ public:
                 door.initialWmSaved = true;
             }
 
+            // Store the previous state, angle, and timer of the door for reference
             const auto previousState = door.state;
             const float previousAngle = door.currentAngle;
             const float previousTimer = door.openTimer;
 
+            // Update the door's state based on its current state and the elapsed time
             switch (door.state)
             {
             case AnimatedDoor::OPENING:
@@ -311,8 +326,7 @@ public:
             case AnimatedDoor::CLOSING:
             {
                 glm::vec3 doorPos = glm::vec3(door.initialWm[3]);
-                if (glm::distance(glm::vec2(playerPos.x, playerPos.z),
-                                  glm::vec2(doorPos.x, doorPos.z)) < 2.5f)
+                if (glm::distance(glm::vec2(playerPos.x, playerPos.z), glm::vec2(doorPos.x, doorPos.z)) < 2.5f)
                 {
                     door.state = AnimatedDoor::STAY_OPEN; // il giocatore è nel vano: rimanda la chiusura
                     door.openTimer = 1.0f;
@@ -352,19 +366,15 @@ public:
                     const float playerRadius = 0.65f;
                     const float playerBottom = playerPos.y - 1.7f;
                     const float playerTop = playerPos.y + 0.1f;
-                    const float closestX =
-                        glm::clamp(playerPos.x, bounds.xMin, bounds.xMax);
-                    const float closestZ =
-                        glm::clamp(playerPos.z, bounds.zMin, bounds.zMax);
+                    const float closestX = glm::clamp(playerPos.x, bounds.xMin, bounds.xMax);
+                    const float closestZ = glm::clamp(playerPos.z, bounds.zMin, bounds.zMax);
                     const float distanceX = playerPos.x - closestX;
                     const float distanceZ = playerPos.z - closestZ;
 
                     const bool overlapsHeight =
                         bounds.yMax >= playerBottom && bounds.yMin <= playerTop;
-                    const bool overlapsPlayer =
-                        overlapsHeight &&
-                        distanceX * distanceX + distanceZ * distanceZ <=
-                            playerRadius * playerRadius;
+                    const bool overlapsPlayer = overlapsHeight &&
+                                                distanceX * distanceX + distanceZ * distanceZ <= playerRadius * playerRadius;
 
                     if (overlapsPlayer)
                     {
@@ -381,6 +391,7 @@ public:
         }
     }
 
+    // Save the initial state of pickups in the scene
     void saveInitialState(Scene &scena)
     {
         initialPickups.clear();

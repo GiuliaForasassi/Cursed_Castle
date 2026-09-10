@@ -34,25 +34,27 @@ struct UniformBufferObject
 {
 	alignas(16) glm::mat4 mvpMat; // Matrix model view-projection
 	alignas(16) glm::mat4 mMat;	  // Matrix model (local transformation of the object in the world)
-								  // x = 1.0 outdoor (receives the directional light), 0.0 inside the castle
-	alignas(16) glm::vec4 lightParams;
+	alignas(16) glm::vec4 lightParams; // Light parameters for the object: x = 1.0 outdoor (receives the directional light), 0.0 inside the castle
 };
 
 // GUBO: Variables equal for all objects in the scene (global parameters)
 struct GlobalUniformBufferObject
 {
+	// Directional light parameters
 	alignas(16) glm::vec3 lightDir;	  // Direction of the light
 	alignas(16) glm::vec4 lightColor; // Light color and intensity
-	alignas(16) glm::vec3 eyePos;	  // Position of the camera
 
-	// Point lights
-	alignas(16) glm::vec4 pointLightPos[MAX_POINT_LIGHTS];	 // Position of the point light: x, y, z, w (w can be used for padding or other purposes)
-	alignas(16) glm::vec4 pointLightColor[MAX_POINT_LIGHTS]; // Color and intensity of the point light: r, g, b, intensity (and a = 1 if is light on, otherwise 0)
-	alignas(16) glm::vec4 fogColor;							 // Color of the fog (r, g, b, a); a = density = no fog if 0
-	alignas(16) glm::mat4 lightVP;							 // Light view-projection matrix for shadow mapping
+	// Camera parameters
+	alignas(16) glm::vec3 eyePos; // Position of the camera
 
+	// Point lights parameters
+	alignas(16) glm::vec4 pointLightPos[MAX_POINT_LIGHTS];		  // Position of the point light: x, y, z, w (w can be used for padding or other purposes)
+	alignas(16) glm::vec4 pointLightColor[MAX_POINT_LIGHTS];	  // Color and intensity of the point light: r, g, b, intensity (and a = 1 if is light on, otherwise 0)
+	alignas(16) glm::vec4 fogColor;								  // Color of the fog (r, g, b, a); a = density = no fog if 0
+	alignas(16) glm::mat4 lightVP;								  // Light view-projection matrix for shadow mapping
 	alignas(16) glm::mat4 pointShadowVP[6 * POINT_SHADOW_LIGHTS]; // Transformation matrices for the six faces of the point light's shadow cube map
-	alignas(16) glm::mat4 lightVPFar;
+
+	alignas(16) glm::mat4 lightVPFar; // Light view-projection matrix for the far plane of the directional light's shadow mapping
 };
 
 struct SkyBoxUniformBlock

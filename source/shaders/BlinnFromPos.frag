@@ -236,7 +236,7 @@ void main() {
         
     //---------- Compute the ambient component of the lighting ------------
     // 5. Apply a small ambient term (0.015) to simulate indirect lighting
-    const float indoorAmbientStrength = 0.08;
+    const float indoorAmbientStrength = 0.5;
     vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b)) * albedo;
     vec3 ambient = mix(0.035 * albedo, skyAmbient, matParams.x);
     // La fiamma della torcia si illumina da sola: non dipende dalle sorgenti
