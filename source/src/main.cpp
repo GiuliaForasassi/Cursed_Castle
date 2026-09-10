@@ -26,8 +26,8 @@
 #include "flame_mesh.h"
 #include "point_shadows.h"
 
-#define MAX_POINT_LIGHTS 20
-#define POINT_SHADOW_LIGHTS 20
+#define MAX_POINT_LIGHTS 22
+#define POINT_SHADOW_LIGHTS 22
 
 // UBO: Variables specific to each object (instance) in the scene (local parameters)
 struct UniformBufferObject

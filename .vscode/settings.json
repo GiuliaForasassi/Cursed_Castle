@@ -1,12 +1,5 @@
 {
     "better-comments.tags": [
-
-
-
-
-
-        
-        
         {
             "tag": "!",
             "color": "#B82B29",
@@ -51,7 +44,7 @@
             "backgroundColor": "transparent",
             "bold": false,
             "italic": false
-        }, 
+        },
         {
             "tag": "debug",
             "color": "#FDE74C",
@@ -70,7 +63,7 @@
             "bold": true,
             "italic": false
         }
-        
     ],
-    "better-comments.highlightPlainText": true
+    "better-comments.highlightPlainText": true,
+    "editor.formatOnSave": true
 }
