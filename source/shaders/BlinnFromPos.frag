@@ -206,8 +206,11 @@ void main() {
     // 4. Compute the dot products for the diffuse and specular components
     float NdotL = max(dot(N, L), 0.0);
     float HdotN = max(dot(H, N), 0.0);
+    // Computed once and reused for both the direct light and the sky ambient:
+    // the same occluders that block the sun also occlude the sky dome.
+    float sunVisibility = directionalVisibility(fragPos, N);
     vec3 Lo = (albedo + vec3(pow(HdotN, 128.0)) * 0.04) * NdotL * radianceDir * matParams.x;
-    Lo *= directionalVisibility(fragPos, N);
+    Lo *= sunVisibility;
 
     //--------------- Point light calculations ---------------
     vec3 bounce = vec3(0.0); // Accumulator for the fake indirect bounce (torch light reflected by the walls)
@@ -256,11 +259,11 @@ void main() {
     // The sky ambient must only reach surfaces that actually "see" the sky.
     // Walls are outdoor-classified (their exterior must be sunlit), but their
     // interior faces are occluded from the sky: the directional shadow map is
-    // a cheap proxy for sky visibility (same occluders block sun and skydome),
-    // so interior faces fall back to the dark indoor ambient.
-    float skyVisibility = directionalVisibility(fragPos, N);
+    // a cheap proxy for sky visibility, so interior faces fall back to the
+    // dark indoor ambient. Reuses sunVisibility computed above (no second
+    // shadow-map traversal).
     vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b))
-        * mix(groundTint, skyTint, hemi) * albedo * skyVisibility;
+        * mix(groundTint, skyTint, hemi) * albedo * sunVisibility;
     vec3 indoorAmbient = mix(indoorDownColor, indoorUpColor, hemi) * albedo;
     vec3 ambient = mix(indoorAmbient, skyAmbient, matParams.x);
     // La fiamma della torcia si illumina da sola: non dipende dalle sorgenti

@@ -267,8 +267,11 @@ void main() {
 
     // 1. Directional Light (Sun / Moon)
     vec3 L = normalize(-gubo.lightDir);
+    // Computed once and reused for both the direct light and the sky ambient:
+    // the same occluders that block the sun also occlude the sky dome.
+    float sunVisibility = directionalVisibility(fragPos, N);
     vec3 Lo = computeCookTorrance(N, V, L, gubo.lightColor.rgb, albedo, roughness, metallic, F0) * matParams.x;
-    Lo *= directionalVisibility(fragPos, N);
+    Lo *= sunVisibility;
     
 
     // 2. Point Lights (Torches)
@@ -306,12 +309,12 @@ void main() {
     const vec3 indoorUpColor = vec3(0.065, 0.062, 0.055); // cool-ish stone bounce
     const vec3 indoorDownColor = vec3(0.032, 0.027, 0.022); // dark warm crevice color
 
-    // Sky visibility proxy (see BlinnFromPos): occluders from the sun also
-    // occlude the sky dome, so indoor faces of outdoor walls get no sky ambient.
-    float skyVisibility = directionalVisibility(fragPos, N);
+    // Sky visibility proxy (see BlinnFromPos): reuses sunVisibility computed
+    // above (no second shadow-map traversal), so indoor faces of outdoor
+    // walls get no sky ambient.
     vec3 indoorAmbient = mix(indoorDownColor, indoorUpColor, hemi) * albedo;
     vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b))
-        * mix(groundTint, skyTint, hemi) * albedo * skyVisibility;
+        * mix(groundTint, skyTint, hemi) * albedo * sunVisibility;
     vec3 ambient = mix(indoorAmbient, skyAmbient, matParams.x); // x = 1.0 outdoor (same convention as BlinnFromPos)
     vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
     // Fake indirect illumination: unshadowed, NdotL-independent fill that
