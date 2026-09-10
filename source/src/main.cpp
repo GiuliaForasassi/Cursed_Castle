@@ -32,8 +32,8 @@
 // UBO: Variables specific to each object (instance) in the scene (local parameters)
 struct UniformBufferObject
 {
-	alignas(16) glm::mat4 mvpMat; // Matrix model view-projection
-	alignas(16) glm::mat4 mMat;	  // Matrix model (local transformation of the object in the world)
+	alignas(16) glm::mat4 mvpMat;	   // Matrix model view-projection
+	alignas(16) glm::mat4 mMat;		   // Matrix model (local transformation of the object in the world)
 	alignas(16) glm::vec4 lightParams; // Light parameters for the object: x = 1.0 outdoor (receives the directional light), 0.0 inside the castle
 };
 
@@ -57,102 +57,83 @@ struct GlobalUniformBufferObject
 	alignas(16) glm::mat4 lightVPFar; // Light view-projection matrix for the far plane of the directional light's shadow mapping
 };
 
+// Skybox uniform block containing the model view-projection matrix and the day-night factor
 struct SkyBoxUniformBlock
 {
-	// Matrix model view-projection for the skybox
-	alignas(16) glm::mat4 mvpMat;
-	// 0.0 = Night, 1.0 = Day
-	alignas(16) float dayFactor;
+	alignas(16) glm::mat4 mvpMat; // Matrix model view-projection for the skybox
+	alignas(16) float dayFactor;  // 0.0 = Night, 1.0 = Day
 };
 
+// Flame uniform block containing the model view-projection matrix and animation parameters
 struct FlameUniformBlock
 {
-	alignas(16) glm::mat4 mvpMat;
-	alignas(16) glm::vec4 animation;
+	alignas(16) glm::mat4 mvpMat;	 // Matrix model view-projection for the flame
+	alignas(16) glm::vec4 animation; // Animation parameters for the flame
 };
 
 class CursedCastle : public BaseProject
 {
 protected:
-	// Here you list all the Vulkan objects you need
-
-	// Descriptor Layouts [define the structure of data that will be passed to the shaders]
-	DescriptorSetLayout DSLlocal, DSLglobal;
-
-	// Vertex formats, Pipelines [Shader couples] and Render passes
-	VertexDescriptor VD; // Vertex format for the scene
-	VertexDescriptor VDshadow;
-	VertexDescriptor VDflame;
-
-	RenderPass RP; // Render pass for the scene
-	Pipeline P;	   // Pipeline for the scene --> Blinn-Phong lighting model
-	Pipeline P_CookTorrance;
-
-	// Models, textures and Descriptors (values assigned to the uniforms)
-	DescriptorSet DSglobal; // Descriptor set for global parameters
-
-	// To support loading assets from a scene.json file
-	Scene scene;
-	std::vector<VertexDescriptorRef> VDRs; // References to vertex descriptors
-	std::vector<TechniqueRef> PRs;		   // References to techniques (pipelines)
-
-	// to provide textual feedback
-	TextMaker txt; // Object for displaying text on the screen
-
-	// Other application parameters
-	float Ar; // Aspect ratio of the window (width/height)
-
-	// Matrices for the camera
+	// --------- Window and camera ------------------
+	int currentWindowWidth = 800;  // Current window width
+	int currentWindowHeight = 600; // Current window height
+	float Ar;					   // Aspect ratio of the window (width/height)
+	Camera cam;
 	glm::mat4 ViewPrj; // Combined view and projection matrix
 	glm::mat4 View;	   // View matrix for the camera
 
-	// Camera FPS instance
-	Camera cam;
-
-	// Interaction manager instance
+	// ------------- Game state and interface -----------------
 	InteractionManager interactionManager;
-
-	// Game state instance
 	GameManager gameManager;
+	TextMaker txt;
+	float totalTime = 0.0f;			// Total elapsed time since the start of the application
+	float victoryMenuTimer = -1.0f; // Timer for the victory menu, negative value indicates inside the castle
 
-	// Current window size
-	int currentWindowWidth = 800;  // Current window width
-	int currentWindowHeight = 600; // Current window height
+	// ------------ Scene and material parameters -----------------
+	Scene scene;
+	std::vector<VertexDescriptorRef> VDRs; // References to vertex descriptors
+	std::vector<TechniqueRef> PRs;		   // References to techniques (pipelines)
+	std::vector<glm::vec4> instanceParams; // x = outdoor, y = emissive
 
-	// ------ Skybox objects ------------
+	// ------------- Main rendering: Blinn Phong and Cook-Torrance ---------
+	VertexDescriptor VD; // Vertex format for the scene
+	DescriptorSetLayout DSLlocal, DSLglobal;
+	DescriptorSet DSglobal;	 // Descriptor set for global parameters
+	RenderPass RP;			 // Render pass for the scene
+	Pipeline P;				 // Pipeline for the scene --> Blinn-Phong lighting model
+	Pipeline P_CookTorrance; // Pipeline for the scene --> Cook-Torrance lighting model
+
+	// ------ Skybox ------------
 	DescriptorSetLayout DSLsky;
 	DescriptorSet DSsky;
 	Pipeline P_SkyBox;
 	Model M_SkyBox;
 	Texture T_Sky;
+	float currentDayFactor = 0.0f; // 0.0f = Notte, 1.0f = Giorno
 
-	float currentDayFactor = 0.0f;		   // 0.0f = Notte, 1.0f = Giorno
-	std::vector<glm::vec4> instanceParams; // x = outdoor, y = emissive
+	// -------------- Shared rendering resources --------------
+	VertexDescriptor VDshadow; // Vertex format for the shadow mapping pass
+	TextureSampler TS_Shadow;
 
-	std::vector<glm::vec3> torchPositions;
-	float totalTime = 0.0f;
-	float victoryMenuTimer = -1.0f; // < 0 inside the castle
-
-	// ----------- SHADOW MAPPING OBJECTS ----------------
-	RenderPass RP_Shadow; // Render pass for shadow mapping
-	Pipeline P_Shadow;	  // Pipeline for the main directional light's shadow mapping
-
-	RenderPass RP_ShadowFar;
+	// --------------- Directional light and shadow -------------
+	const glm::vec3 sunDirection = glm::normalize(glm::vec3(-1.0f, -2.0f, -1.0f)); // Direction of the main directional light (sun)
+	glm::mat4 LightVP;															   // Light view-projection matrix for the main directional light's shadow mapping
+	glm::mat4 LightVPFar;														   // Light view-projection matrix for the far cascade of the main directional light's shadow mapping
+	RenderPass RP_Shadow;														   // Render pass for shadow mapping
+	Pipeline P_Shadow;															   // Pipeline for the main directional light's shadow mapping
+	RenderPass RP_ShadowFar;													   // Render pass for the far cascade of the main directional light's shadow mapping
 	Pipeline P_ShadowFar;
 
-	glm::mat4 LightVP;
-	glm::mat4 LightVPFar;														   // Light's view-projection matrix for shadow mapping
-	const glm::vec3 sunDirection = glm::normalize(glm::vec3(-1.0f, -2.0f, -1.0f)); // Direction of the main directional light (sun)
-	TextureSampler TS_Shadow;													   // Sampler for the shadow map
-
-	// ----------- POINT SHADOW MAPPING OBJECTS ----------------
-	std::array<glm::mat4, 6 * POINT_SHADOW_LIGHTS> PointLightShadowMatrices; // View-projection matrices for the point light's shadow cubemap faces
+	// ----------- Point lights and shadows ----------------
 	static constexpr int PointShadowFaceSize = 512;							 // Size of each face of the point light's shadow cubemap
+	std::vector<glm::vec3> torchPositions;									 // Positions of the point light sources (torches)
+	std::array<glm::mat4, 6 * POINT_SHADOW_LIGHTS> PointLightShadowMatrices; // View-projection matrices for the point light's shadow cubemap faces
 	RenderPass RP_PointShadow;												 // Render pass for the point light's shadow cubemap
 	std::array<Pipeline, 6 * POINT_SHADOW_LIGHTS> P_PointShadowFaces;		 // Pipelines for each face of the point light's shadow cubemap
 	std::vector<Collider> shadowModelBounds;								 // Bounding volumes for models used in shadow mapping --> optimization purposes
 
-	// ----------- FLAME MESH OBJECTS ----------------
+	// ----------- Flame ----------------
+	VertexDescriptor VDflame; // Vertex format for the flame
 	Model M_Flame;
 	DescriptorSetLayout DSLflame;
 	Pipeline P_Flame;
@@ -191,55 +172,30 @@ protected:
 	void localInit()
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		//-------- Initializes the vertex descriptor ---------
+		VD.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}},
+				{{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}, {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV), sizeof(glm::vec2), UV}, {0, 2, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal), sizeof(glm::vec3), NORMAL}});
+
+		VDshadow.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}},
+					  {{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}});
+
+		VDflame.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}},
+					 {{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}, {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV), sizeof(glm::vec2), UV}});
+
 		// Descriptor Layouts [what will be passed to the shaders]
-		//------- Initializes the local descriptor set ---------
-		DSLlocal.init(this, {// this array contains the binding:
-							 // first  element : the binding number
-							 // second element : the type of element (buffer or texture)
-							 // third  element : the pipeline stage where it will be used
-							 {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(UniformBufferObject), 1},
+		//------- General setup ---------
+		DSLlocal.init(this, {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(UniformBufferObject), 1},
 							 {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}});
-		//-------- Initializes the global descriptor set ---------
-		DSLglobal.init(this, {// this array contains the binding:
-							  // first  element : the binding number
-							  // second element : the type of element (buffer or texture)
-							  // third  element : the pipeline stage where it will be used
-							  {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1},
+		DSLglobal.init(this, {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1},
 							  {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1},
 							  {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1}, // binding 2 for shadow map
 							  {3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 2, 1}});
-
-		//-------- Initializes the vertex descriptor ---------
-		VD.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}}, {{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}, {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV), sizeof(glm::vec2), UV}, {0, 2, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal), sizeof(glm::vec3), NORMAL}});
-
-		VDshadow.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}}, {{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}});
-
-		VDflame.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}}, {{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}, {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV), sizeof(glm::vec2), UV}});
-
-		// ----------- Flame mesh creation ----------------
-		createFlameMesh(this, VD, M_Flame);
-		DSLflame.init(this, {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(FlameUniformBlock), 1}});
-
-		// Pipeline for the flame
-		P_Flame.init(this, &VDflame, "shaders/Flame.vert.spv", "shaders/Flame.frag.spv", {&DSLflame});
-		P_Flame.CM = VK_CULL_MODE_NONE;
-
-		// SkyBox descriptor layout: UBO (b0) and 1 texture (b1)
-		DSLsky.init(this, {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(SkyBoxUniformBlock), 1},
-						   {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}});
 
 		// Initializes the render passes
 		RP.init(this);
 		// Sets the initial background color for the render pass: blue sky
 		RP.properties[0].clearValue = {0.0f, 0.9f, 1.0f, 1.0f};
 
-		// Pipelines [Shader couples]
-		// The last array, is a vector of pointer to the layouts of the sets that will
-		// be used in this pipeline. The first element will be set 0, and so on..
-		// Initializes the pipeline with the vertex and fragment shaders, and the descriptor set layouts
-
-		//----------- Pipelines Initialization ---------------------
-		// Here we have the connection with shaders
 		// Pipeline 0: Blinn-Phong
 		P.init(this, &VD, "shaders/SimplePos.vert.spv",
 			   "shaders/BlinnFromPos.frag.spv",
@@ -250,15 +206,32 @@ protected:
 							"shaders/CookTorranceFromPos.frag.spv",
 							{&DSLglobal, &DSLlocal});
 
+		// ----------- Flame mesh creation ----------------
+		createFlameMesh(this, VDflame, M_Flame);
+		DSLflame.init(this, {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(FlameUniformBlock), 1}});
+
+		// Pipeline for the flame
+		P_Flame.init(this, &VDflame, "shaders/Flame.vert.spv", "shaders/Flame.frag.spv", {&DSLflame});
+		P_Flame.CM = VK_CULL_MODE_NONE; // Disable back-face culling for the flame mesh
+
+		// --------------- SkyBox setup ---------------
+		// SkyBox descriptor layout: UBO (b0) and 1 texture (b1)
+		DSLsky.init(this, {{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(SkyBoxUniformBlock), 1},
+						   {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}});
+
 		// Pipeline 2: SkyBox
 		// Using the shadow vertex descriptor for the SkyBox pipeline becuase I need only the position attribute
 		P_SkyBox.init(this, &VDshadow, "shaders/SkyBox.vert.spv", "shaders/SkyBox.frag.spv", {&DSLsky});
-		P_SkyBox.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
-		P_SkyBox.polyModel = VK_POLYGON_MODE_FILL;
-		P_SkyBox.CM = VK_CULL_MODE_NONE;
+		P_SkyBox.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL; // Set the depth comparison operation for the SkyBox pipeline
+		P_SkyBox.polyModel = VK_POLYGON_MODE_FILL;		  // Set the polygon mode for the SkyBox pipeline
+		P_SkyBox.CM = VK_CULL_MODE_NONE;				  // Disable back-face culling for the SkyBox pipeline
+
+		// Load the skybox glTF model and its single texture
+		M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
+		T_Sky.init(this, "assets/textures/Skybox_Puresky.png");
 
 		// ------------ Shadow Mapping ------------------------
-		// 1. Creation of rander pass only depth
+		// 1. Creation of rander pass only depth (no color attachment)
 		// 2. Define the syncronization barriers between the write (shadow pass) and the read (final pass)
 		// 3. Create the shadow mapping pipeline and configure its properties
 		// 4. Calculation of the light's view-projection matrix for shadow mapping
@@ -274,6 +247,7 @@ protected:
 		// Define the pipeline stages for depth testing (early and late fragment tests)
 		const VkPipelineStageFlags depthStages = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
 		std::vector<VkSubpassDependency> shadowDependencies = {
+			// Avoid read/write hazards between the shadow pass and the final pass
 			{VK_SUBPASS_EXTERNAL, 0,
 			 VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | depthStages,
 			 depthStages,
@@ -289,12 +263,47 @@ protected:
 			 VK_ACCESS_SHADER_READ_BIT,
 			 0}};
 
+		// Initialize the shadow map texture sampler
+		TS_Shadow.init(
+			this,
+			VK_FILTER_NEAREST,					   // magnification filter
+			VK_FILTER_NEAREST,					   // minification filter
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // U coordinate wrapping mode
+			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // V coordinate wrapping mode
+			VK_SAMPLER_MIPMAP_MODE_NEAREST,		   // mipmap filtering mode
+			VK_FALSE,							   // anisotropic filtering disabled
+			1.0f,								   // max anisotropy (not used since anisotropic filtering is disabled)
+			0.0f								   // mipmap LOD bias
+		);
+
 		// Create render pass and pipeline for shadow mapping
 		// Render pass offscreen at resolution 2048x2048, qith 1 sample using attachment and dependencies definied
 		RP_Shadow.init(this, 4096, 4096, 1, &shadowProperties, &shadowDependencies, false);
 		RP_ShadowFar.init(this, 2048, 2048, 1, &shadowProperties, &shadowDependencies, false);
-		// Initialize the render pass for the point light's shadow cubemap
-		// Render pass at resolution 1536x1024
+		// Pipelines for shadow mapping
+		P_Shadow.init(this, &VDshadow,
+					  "shaders/ShadowNear.vert.spv",
+					  "shaders/Shadow.frag.spv",
+					  {&DSLglobal, &DSLlocal});
+		// Disable back-face culling for the shadow pass
+		P_Shadow.CM = VK_CULL_MODE_NONE;
+		P_ShadowFar.init(this, &VDshadow, "shaders/Shadow.vert.spv",
+						 "shaders/Shadow.frag.spv",
+						 {&DSLglobal, &DSLlocal},
+						 {{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
+		P_ShadowFar.CM = VK_CULL_MODE_NONE;
+
+		const glm::vec3 lightTarget(3.0f, 0.0f, 5.0f);
+		glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 1.0f, 400.0f);
+		lightProjection[1][1] *= -1.0f;
+
+		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 farLightProjection = glm::ortho(-140.0f, 140.0f, -140.0f, 140.0f, 1.0f, 400.0f);
+		farLightProjection[1][1] *= -1.0f;
+
+		LightVPFar = farLightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		// ------------------ Point Light Shadow Mapping ------------------
 		RP_PointShadow.init(this, PointShadowFaceSize * 3, PointShadowFaceSize * 2 * POINT_SHADOW_LIGHTS, 1, &shadowProperties, &shadowDependencies, false);
 		// Initialize the pipelines for each face of the point light's shadow cubemap
 		for (size_t face = 0; face < P_PointShadowFaces.size(); ++face)
@@ -316,50 +325,7 @@ protected:
 			pipeline.setScissor({{{offsetX, offsetY}, {PointShadowFaceSize, PointShadowFaceSize}}});
 		}
 
-		// Initialize the shadow map texture sampler
-		TS_Shadow.init(
-			this,
-			VK_FILTER_NEAREST,					   // magnification filter
-			VK_FILTER_NEAREST,					   // minification filter
-			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // U coordinate wrapping mode
-			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // V coordinate wrapping mode
-			VK_SAMPLER_MIPMAP_MODE_NEAREST,		   // mipmap filtering mode
-			VK_FALSE,							   // anisotropic filtering disabled
-			1.0f,								   // max anisotropy (not used since anisotropic filtering is disabled)
-			0.0f								   // mipmap LOD bias
-		);
-
-		P_Shadow.init(this, &VDshadow,
-					  "shaders/ShadowNear.vert.spv",
-					  "shaders/Shadow.frag.spv",
-					  {&DSLglobal, &DSLlocal});
-		// Disable back-face culling for the shadow pass
-		P_Shadow.CM = VK_CULL_MODE_NONE;
-		P_ShadowFar.init(this, &VDshadow, "shaders/Shadow.vert.spv",
-						 "shaders/Shadow.frag.spv",
-						 {&DSLglobal, &DSLlocal},
-						 {{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
-		P_ShadowFar.CM = VK_CULL_MODE_NONE;
-
-		// Define the light's view-projection matrix for shadow mapping
-		// The ortho box must cover the ENTIRE scene: any fragment projecting
-		// outside it is treated as fully sunlit (leaks light through roofs).
-		// Scene spans ~x[-75..80], z[-105..115]; the diagonal in light space
-		// needs ~140 units. Center on the scene middle.
-		const glm::vec3 lightTarget(3.0f, 0.0f, 5.0f);
-		glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 1.0f, 400.0f);
-		lightProjection[1][1] *= -1.0f;
-
-		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 farLightProjection = glm::ortho(-140.0f, 140.0f, -140.0f, 140.0f, 1.0f, 400.0f);
-		farLightProjection[1][1] *= -1.0f;
-
-		LightVPFar = farLightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		// Load the skybox glTF model and its single texture
-		M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
-		T_Sky.init(this, "assets/textures/Skybox_Puresky.png");
-
+		// ------------------- Scene setup -------------------
 		// Sets the size of the Descriptor Set Pool to allocate sufficient GPU space (it MUST be done before loading the scene)
 		DPSZs.uniformBlocksInPool = 10; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
 		DPSZs.texturesInPool = 11;		// 1 for each object (in this case, we have 2 objects)
@@ -368,7 +334,7 @@ protected:
 		// Configure the structures for automatic scene management
 		VDRs.resize(1);
 		VDRs[0].init("VDposUV", &VD);
-
+		// Pipeline setup for the scene rendering
 		PRs.resize(2);
 		// This is the technique that will be used for the scene. It is a Blinn-Phong shader that uses the position and UV coordinates of the vertices.
 		// Tecnica 0 -> BlinnPos
@@ -385,13 +351,7 @@ protected:
 			throw std::runtime_error("Error loading assets/scenes/scene.json");
 		}
 
-		// Compute the bounding volumes for each model in the scene to optimize shadow mapping
-		shadowModelBounds.resize(scene.ModelCount);
-		for (int modelIndex = 0; modelIndex < scene.ModelCount; ++modelIndex)
-		{
-			shadowModelBounds[modelIndex].fitAABB(scene.M[modelIndex]);
-		}
-
+		// ------------------- Flat atlas texture setup -------------------
 		// Configure the sampler for the flat atlas texture --> for the grass tile texture
 		Texture *flatAtlas = scene.T[scene.TextureIds.at("Flat_Atlas")];
 		flatAtlas->sampler->cleanup();
@@ -410,8 +370,17 @@ protected:
 		// Setup the material properties (metallic and roughness) for each instance in the scene
 		setupMaterials();
 
+		// Compute the bounding volumes for each model in the scene to optimize shadow mapping
+		shadowModelBounds.resize(scene.ModelCount);
+		for (int modelIndex = 0; modelIndex < scene.ModelCount; ++modelIndex)
+		{
+			shadowModelBounds[modelIndex].fitAABB(scene.M[modelIndex]);
+		}
+
+		// ------------------- Torch lights setup -------------------
 		// Collect the positions of the torch lights in the scene
 		collectTorchLights();
+		// Determine the number of active torch lights and resize the corresponding data structures accordingly
 		const int flameCount = std::min(static_cast<int>(torchPositions.size()), MAX_POINT_LIGHTS);
 		DSflames.resize(flameCount);
 		DPSZs.uniformBlocksInPool += flameCount;
@@ -432,6 +401,7 @@ protected:
 			}
 		}
 
+		// ------------------- Interactions and final setup -------------------
 		// Setup the interactions for the interactable objects in the scene
 		setupInteractions();
 
@@ -456,17 +426,16 @@ protected:
 		RP.height = swapChainExtent.height;
 		txt.resizeScreen(swapChainExtent.width, swapChainExtent.height);
 
-		// Creates the render passes
-		RP.create();
-		RP_Shadow.create();
-		P_Shadow.create(&RP_Shadow);
-		RP_ShadowFar.create();
-		P_ShadowFar.create(&RP_ShadowFar);
+		RP.create();					   // Create the main render pass
+		RP_Shadow.create();				   // Create the shadow render pass
+		P_Shadow.create(&RP_Shadow);	   // Create the shadow pipeline
+		RP_ShadowFar.create();			   // Create the far shadow render pass
+		P_ShadowFar.create(&RP_ShadowFar); // Create the far shadow pipeline
 
-		RP_PointShadow.create();
+		RP_PointShadow.create(); // Create the point shadow render pass
 		for (auto &pipeline : P_PointShadowFaces)
 		{
-			pipeline.create(&RP_PointShadow);
+			pipeline.create(&RP_PointShadow); // Create the point shadow pipeline
 		}
 
 		// This creates a new pipeline (with the current surface), using its shaders for the provided render pass
@@ -507,6 +476,7 @@ protected:
 				{false, 0, farShadowInfo}};
 		}
 
+		// Initialize the sky descriptor set with the sky texture
 		DSsky.init(this, &DSLsky, {T_Sky.getViewAndSampler()});
 
 		// Here you define the data set
@@ -661,10 +631,12 @@ protected:
 		return true;
 	}
 
-	// Rendering function
+	// Function that populates the point shadow pass in the command buffer
 	void populatePointShadowPass(VkCommandBuffer commandBuffer, int currentImage)
 	{
+		// Begin the point shadow render pass
 		RP_PointShadow.begin(commandBuffer, 0);
+		// Iterate over each point light face and render its shadow map
 		if (!torchPositions.empty())
 		{
 			for (size_t face = 0; face < P_PointShadowFaces.size(); ++face)
@@ -681,6 +653,7 @@ protected:
 				vkCmdPushConstants(commandBuffer, pipeline.pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &PointLightShadowMatrices[face]);
 				for (int index = 0; index < scene.InstanceCount; ++index)
 				{
+					// Retrieve the instance and check if it can cast a point shadow for the current face
 					Instance *instance = scene.I[index];
 					if (!canCastPointShadow(instance, face))
 						continue;
@@ -690,6 +663,7 @@ protected:
 					instance->DS[0][1]->bind(commandBuffer, pipeline, 1, currentImage);
 					model->bind(commandBuffer);
 
+					// Issue the draw call for the current instance
 					vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(model->indices.size()), 1, 0, 0, 0);
 				}
 			}
@@ -701,14 +675,14 @@ protected:
 	void populateCommandBuffer(VkCommandBuffer commandBuffer, int currentImage)
 	{
 		// -------- SHADOW PASS --------
-
 		// Register the shadow pass in the command buffer
 		RP_Shadow.begin(commandBuffer, 0);
 		// Bind the shadow pipeline
 		P_Shadow.bind(commandBuffer);
+		// Bind the global descriptor set for the shadow pass
 		DSglobal.bind(commandBuffer, P_Shadow, 0, currentImage);
 
-		// Render each instance of the scene for the shadow pass
+		// Render each instance of the scene for the shadow pass using the shadow pipeline and descriptor sets
 		for (int index = 0; index < scene.InstanceCount; ++index)
 		{
 			// Retrieve the instance and model for the current index
@@ -839,7 +813,7 @@ protected:
 			currentDayFactor = 0.0f;
 		}
 
-		//--------- Populate the data structure of global uniforms (light and camera)) ---------
+		//--------- Populate the data structure of gubo (light and camera)) ---------
 		// 2. Popola GUBO (Luce direzionale sfumata con mix tra Notte e Giorno)
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = sunDirection; // Update the light direction based on the rotation
@@ -852,7 +826,7 @@ protected:
 		}
 		gubo.eyePos = cam.getCameraPosition(); // Update the eye position based on camera movement
 
-		// Colore luce: Notte (viola scuro, maledizione) vs Giorno (calda dorata)
+		// Color light: Night (dark purple, curse) vs Day (warm golden)
 		glm::vec4 nightLight = glm::vec4(0.35f, 0.15f, 0.55f, 1.0f) * 2.5f;
 		glm::vec4 dayLight = glm::vec4(1.0f, 0.95f, 0.85f, 1.0f) * 5.0f;
 		gubo.lightColor = glm::mix(nightLight, dayLight, currentDayFactor);
@@ -868,12 +842,15 @@ protected:
 		//--------- One point light per torch holder with flame ---------
 		totalTime += deltaT;
 		int nLights = std::min((int)torchPositions.size(), MAX_POINT_LIGHTS);
+		// Iterate over each torch and calculate its light contribution
 		for (int i = 0; i < nLights; i++)
 		{
+			// Calculate the flicker effect for the torch light
 			float flicker = 0.85f + 0.15f * sinf(totalTime * 7.0f + (float)i * 2.3f);
 			gubo.pointLightPos[i] = glm::vec4(torchPositions[i], 2.5f); // w = falloff radius
 			gubo.pointLightColor[i] = glm::vec4(3.0f, 1.8f, 0.9f, flicker);
 		}
+		// Set the remaining point lights to zero to avoid unintended lighting effects
 		for (int i = nLights; i < MAX_POINT_LIGHTS; i++)
 		{
 			gubo.pointLightColor[i] = glm::vec4(0.0f);
@@ -892,7 +869,7 @@ protected:
 			DSflames[index].map(currentImage, &flameUbo, 0);
 		}
 
-		// 3. Update SkyBox uniform buffer (view matrix without translation + dayFactor)
+		//-------- Update SkyBox uniform buffer (view matrix without translation + dayFactor) --------
 		const float FOVy = glm::radians(45.0f);
 		const float nearPlane = 0.1f;
 		const float farPlane = 400.f;
@@ -905,7 +882,7 @@ protected:
 		skyUbo.dayFactor = currentDayFactor;
 		DSsky.map(currentImage, &skyUbo, 0);
 
-		//----------------------- Uniform BUffers --------------------
+		//----------------------- Uniform Buffers --------------------
 		// Defines the local parameters for the uniforms (for each 3D object in the scene)
 		UniformBufferObject ubo{};
 
@@ -922,7 +899,7 @@ protected:
 			scene.I[i]->DS[0][1]->map(currentImage, &ubo, 0);
 		}
 
-		// 6. Update FPS and text
+		//-------- Update FPS and text ---------
 		// Calculates and updates on the screen the FPS (Frame Per Second)
 		static float elapsedT = 0.0f; // Accumulated time since the last FPS update
 		static int countedFrames = 0; // Number of frames counted since the last FPS update
@@ -956,7 +933,6 @@ protected:
 
 	// ----------------- Setup Interactions Objects ------------------
 	// Setup the interactions for the scene by adding info and trigger interactions for specific objects
-	// TODO: You can add your own interactions here
 	void setupInteractions()
 	{
 		// Register relics interactions
@@ -996,8 +972,8 @@ protected:
 			instanceParams[i] = glm::vec4(outdoor ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f);
 		}
 	}
-
-	// TODO: this function should probably be moved elsewhere
+	// ----------------- Setup Materials ------------------
+	// Sets up the material properties (metallic and roughness) for each instance in the scene based on its ID
 	void setupMaterials()
 	{
 		for (int index = 0; index < scene.InstanceCount; ++index)
@@ -1073,8 +1049,8 @@ protected:
 	{
 		// Camera FOV-y, Near Plane and Far Plane
 		const float FOVy = glm::radians(45.0f); // Field of view in the y direction (in radians)
-		const float nearPlane = 0.1f;			//
-		const float farPlane = 400.f;			//
+		const float nearPlane = 0.1f;			// Near clipping plane distance
+		const float farPlane = 400.f;			// Far clipping plane distance
 
 		// Retrieve the system input and the current frame time delta to update the camera position and orientation
 		float deltaT;										// Time elapsed since the last frame (in seconds)
@@ -1082,7 +1058,9 @@ protected:
 		bool fire = false;									// fire = action input
 		getSixAxis(deltaT, m, r, fire);						// Retrieve input from a six-axis controller
 
+		// Update the game timer with the elapsed time since the last frame
 		gameManager.updateTimer(deltaT, txt);
+
 		//------------------- 1. Handle Game State Input and UI -------------------
 		gameManager.handleInput(window, txt, currentWindowWidth, currentWindowHeight);
 		if (gameManager.restartRequested)
@@ -1130,7 +1108,6 @@ protected:
 			bool ePressedNow = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
 			interactionManager.handleEKey(ePressedNow, nearestInteractableObjIndex, scene, cam, gameManager);
 
-			// TODO: review info text wrapping based on available width
 			if (interactionManager.infoTextTimer > 0.0f)
 			{
 				interactionManager.infoTextTimer -= deltaT; // Decrease the timer for displaying info text
