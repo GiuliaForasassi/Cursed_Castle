@@ -259,7 +259,7 @@ public:
             door.openTimer = door.openDuration; // ri-premendo E rinnovi il tempo
             return;
         }
-        if (door.state == AnimatedDoor::CLOSED || door.state == AnimatedDoor::CLOSING)
+        if (door.state == AnimatedDoor::CLOSED)
         {
             door.state = AnimatedDoor::OPENING;
         }
