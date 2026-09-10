@@ -130,7 +130,7 @@ float sampleDirectionalShadow(vec3 worldPosition, mat4 lightMatrix, sampler2D de
     float bias = 0.01 / (400.0 - 1.0);
     float visibility = 0.0;
 
-    const int filterRadius = 1;
+    const int filterRadius = 2;
 
     for (int offsetY = -filterRadius; offsetY <= filterRadius; ++offsetY) {
         for (int offsetX = -filterRadius; offsetX <= filterRadius; ++offsetX) {
@@ -312,9 +312,10 @@ void main() {
     // Sky visibility proxy (see BlinnFromPos): reuses sunVisibility computed
     // above (no second shadow-map traversal), so indoor faces of outdoor
     // walls get no sky ambient.
+    float skyOcclusion = mix(0.35, 1.0, sunVisibility);
     vec3 indoorAmbient = mix(indoorDownColor, indoorUpColor, hemi) * albedo;
     vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b))
-        * mix(groundTint, skyTint, hemi) * albedo * sunVisibility;
+        * mix(groundTint, skyTint, hemi) * albedo * skyOcclusion;
     vec3 ambient = mix(indoorAmbient, skyAmbient, matParams.x); // x = 1.0 outdoor (same convention as BlinnFromPos)
     vec3 emissive = matParams.y * albedo * vec3(2.0, 1.2, 0.5);
     // Fake indirect illumination: unshadowed, NdotL-independent fill that

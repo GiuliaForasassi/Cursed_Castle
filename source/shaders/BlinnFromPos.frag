@@ -69,7 +69,7 @@ float sampleDirectionalShadow(vec3 worldPosition, mat4 lightMatrix, sampler2D de
     float bias = 0.01 / (400.0 - 1.0);
     float visibility = 0.0;
 
-    const int filterRadius = 1;
+    const int filterRadius = 2;
 
     for (int offsetY = -filterRadius; offsetY <= filterRadius; ++offsetY) {
         for (int offsetX = -filterRadius; offsetX <= filterRadius; ++offsetX) {
@@ -262,8 +262,9 @@ void main() {
     // a cheap proxy for sky visibility, so interior faces fall back to the
     // dark indoor ambient. Reuses sunVisibility computed above (no second
     // shadow-map traversal).
+    float skyOcclusion = mix(0.35, 1.0, sunVisibility);
     vec3 skyAmbient = (indoorAmbientStrength + 0.015 * max(gubo.lightColor.r, gubo.lightColor.b))
-        * mix(groundTint, skyTint, hemi) * albedo * sunVisibility;
+        * mix(groundTint, skyTint, hemi) * albedo * skyOcclusion;
     vec3 indoorAmbient = mix(indoorDownColor, indoorUpColor, hemi) * albedo;
     vec3 ambient = mix(indoorAmbient, skyAmbient, matParams.x);
     // La fiamma della torcia si illumina da sola: non dipende dalle sorgenti
