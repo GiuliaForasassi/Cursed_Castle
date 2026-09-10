@@ -333,7 +333,7 @@ protected:
 		// Scene spans ~x[-75..80], z[-105..115]; the diagonal in light space
 		// needs ~140 units. Center on the scene middle.
 		const glm::vec3 lightTarget(3.0f, 0.0f, 5.0f);
-		glm::mat4 lightProjection = glm::ortho(-140.0f, 140.0f, -140.0f, 140.0f, 1.0f, 400.0f);
+		glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 1.0f, 400.0f);
 		lightProjection[1][1] *= -1.0f;
 
 		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));

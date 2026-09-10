@@ -45,57 +45,46 @@ const float PI = 3.14159265359;
 // Computes the visibility of a fragment with respect to the directional light, taking into account shadows. Returns 1.0 if fully visible, 0.0 if fully in shadow.
 // It takes a point on the scene and its normal, projects it into the light space and returns the percentage direct light that reaches it (1.0 = fully visible, 0.0 = fully in shadow)
 float directionalVisibility(vec3 worldPosition, vec3 normal) {
-
     vec4 lightClip = gubo.lightVP * vec4(worldPosition, 1.0);
-    // Transform into normalized device coordinates (NDC)
     vec3 lightNdc = lightClip.xyz / lightClip.w;
-    // Converts from NDC space to texture coordinates (UV: 0.0 to 1.0)
-    vec2 shadowUV = lightNdc.xy * 0.5 + 0.5;
+    vec3 shadowPosition = vec3(lightNdc.xy * 0.5 + 0.5, lightNdc.z);
 
-    // Outside the light's view frustum or shadow map: treat as shadowed.
-    // Returning 1.0 here makes the sun leak through roofs/walls of geometry
-    // that falls outside the ortho box.
-    if (lightNdc.z < 0.0 || lightNdc.z > 1.0 ||
-        any(lessThan(shadowUV, vec2(0.0))) ||
-        any(greaterThan(shadowUV, vec2(1.0)))) {
+    vec3 derivativeX = dFdx(shadowPosition);
+    vec3 derivativeY = dFdy(shadowPosition);
+    vec3 receiverPlane = cross(derivativeX, derivativeY);
+    vec2 depthGradient = vec2(0.0);
+    if (abs(receiverPlane.z) > 0.000001 * length(receiverPlane)) {
+        depthGradient = -receiverPlane.xy / receiverPlane.z;
+    }
+
+    if (any(lessThan(shadowPosition, vec3(0.0))) ||
+        any(greaterThan(shadowPosition, vec3(1.0)))) {
         return 0.0;
     }
-    // Bias to prevent shadow acne.
-    // Expressed in WORLD units, then converted to NDC depth units. The NDC
-    // depth range spans (far-near) world units (e.g. ~400), so a constant NDC
-    // bias like 0.002 scales to ~0.8 world units and punches shadows through
-    // thin geometry near ceiling corners (light leaking in bands).
-    vec3 toLight = normalize(-gubo.lightDir);
-    const float biasWorld = max(
-        0.05 * (1.0 - max(dot(normal, toLight), 0.0)),
-        0.02); // world units
-    float bias = biasWorld / (400.0 - 1.0); // convert to NDC depth units (far-near of the light ortho)
 
-    // Percentage-closer filtering (PCF) for soft shadows
-    // 
-    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
-    // Depth of the receiver fragment in light space, adjusted by bias
-    float receiverDepth = lightNdc.z - bias;
+    ivec2 mapSize = textureSize(shadowMap, 0);
+    ivec2 centerPixel = ivec2(floor(shadowPosition.xy * vec2(mapSize)));
+    float bias = 0.01 / (400.0 - 1.0);
     float visibility = 0.0;
 
-    // Iterate over the 3x3 neighborhood of the shadow map to perform PCF
-    for (int offsetY = -1; offsetY <= 1; ++offsetY) {
-        for (int offsetX = -1; offsetX <= 1; ++offsetX) {
-            vec2 sampleUV = shadowUV +
-                vec2(float(offsetX), float(offsetY)) * texelSize;
+    const int filterRadius = 1;
 
-            if (any(lessThan(sampleUV, vec2(0.0))) ||
-                any(greaterThan(sampleUV, vec2(1.0)))) {
-                visibility += 1.0;
-            } else {
-                float closestDepth =
-                    textureLod(shadowMap, sampleUV, 0.0).r;
-                visibility += receiverDepth <= closestDepth ? 1.0 : 0.0;
+    for (int offsetY = -filterRadius; offsetY <= filterRadius; ++offsetY) {
+        for (int offsetX = -filterRadius; offsetX <= filterRadius; ++offsetX) {
+            ivec2 samplePixel = centerPixel + ivec2(offsetX, offsetY);
+            if (any(lessThan(samplePixel, ivec2(0))) ||
+                any(greaterThanEqual(samplePixel, mapSize))) {
+                continue;
             }
+            vec2 sampleUV = (vec2(samplePixel) + vec2(0.5)) / vec2(mapSize);
+            float receiverDepth = shadowPosition.z
+                + dot(depthGradient, sampleUV - shadowPosition.xy) - bias;
+            float storedDepth = texelFetch(shadowMap, samplePixel, 0).r;
+            visibility += receiverDepth <= storedDepth ? 1.0 : 0.0;
         }
     }
-
-return visibility / 9.0;
+    float sampleCount = float((2 * filterRadius + 1) * (2 * filterRadius + 1));
+    return visibility / sampleCount;
 }
 
 // ------------- Point Light Shadow Visibility -------------
@@ -197,9 +186,7 @@ void main() {
     float NdotL = max(dot(N, L), 0.0);
     float HdotN = max(dot(H, N), 0.0);
     vec3 Lo = (albedo + vec3(pow(HdotN, 128.0)) * 0.04) * NdotL * radianceDir * matParams.x;
-    // Internal obj have matPar = 0, so it not necessary to do shadow mapping
-    if (matParams.x > 0.0)
-        Lo *= directionalVisibility(fragPos, N);
+    Lo *= directionalVisibility(fragPos, N);
 
     //--------------- Point light calculations ---------------
     for(int i = 0; i < MAX_POINT_LIGHTS; i++) {
