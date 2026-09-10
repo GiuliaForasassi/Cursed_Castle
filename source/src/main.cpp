@@ -52,6 +52,7 @@ struct GlobalUniformBufferObject
 	alignas(16) glm::mat4 lightVP;							 // Light view-projection matrix for shadow mapping
 
 	alignas(16) glm::mat4 pointShadowVP[6 * POINT_SHADOW_LIGHTS]; // Transformation matrices for the six faces of the point light's shadow cube map
+	alignas(16) glm::mat4 lightVPFar;
 };
 
 struct SkyBoxUniformBlock
@@ -131,9 +132,14 @@ protected:
 	float victoryMenuTimer = -1.0f; // < 0 inside the castle
 
 	// ----------- SHADOW MAPPING OBJECTS ----------------
-	RenderPass RP_Shadow;														   // Render pass for shadow mapping
-	Pipeline P_Shadow;															   // Pipeline for shadow mapping
-	glm::mat4 LightVP;															   // Light's view-projection matrix for shadow mapping
+	RenderPass RP_Shadow; // Render pass for shadow mapping
+	Pipeline P_Shadow;	  // Pipeline for the main directional light's shadow mapping
+
+	RenderPass RP_ShadowFar;
+	Pipeline P_ShadowFar;
+
+	glm::mat4 LightVP;
+	glm::mat4 LightVPFar;														   // Light's view-projection matrix for shadow mapping
 	const glm::vec3 sunDirection = glm::normalize(glm::vec3(-1.0f, -2.0f, -1.0f)); // Direction of the main directional light (sun)
 	TextureSampler TS_Shadow;													   // Sampler for the shadow map
 
@@ -192,15 +198,15 @@ protected:
 							 {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, sizeof(UniformBufferObject), 1},
 							 {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1}});
 		//-------- Initializes the global descriptor set ---------
-		DSLglobal.init(this, {
-								 // this array contains the binding:
-								 // first  element : the binding number
-								 // second element : the type of element (buffer or texture)
-								 // third  element : the pipeline stage where it will be used
-								 {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1},
-								 {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1},
-								 {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1} // binding 2 for shadow map
-							 });
+		DSLglobal.init(this, {// this array contains the binding:
+							  // first  element : the binding number
+							  // second element : the type of element (buffer or texture)
+							  // third  element : the pipeline stage where it will be used
+							  {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS, sizeof(GlobalUniformBufferObject), 1},
+							  {1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1},
+							  {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1}, // binding 2 for shadow map
+							  {3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 2, 1}});
+
 		//-------- Initializes the vertex descriptor ---------
 		VD.init(this, {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}}, {{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, pos), sizeof(glm::vec3), POSITION}, {0, 1, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, UV), sizeof(glm::vec2), UV}, {0, 2, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal), sizeof(glm::vec3), NORMAL}});
 
@@ -284,6 +290,7 @@ protected:
 		// Create render pass and pipeline for shadow mapping
 		// Render pass offscreen at resolution 2048x2048, qith 1 sample using attachment and dependencies definied
 		RP_Shadow.init(this, 4096, 4096, 1, &shadowProperties, &shadowDependencies, false);
+		RP_ShadowFar.init(this, 2048, 2048, 1, &shadowProperties, &shadowDependencies, false);
 		// Initialize the render pass for the point light's shadow cubemap
 		// Render pass at resolution 1536x1024
 		RP_PointShadow.init(this, PointShadowFaceSize * 3, PointShadowFaceSize * 2 * POINT_SHADOW_LIGHTS, 1, &shadowProperties, &shadowDependencies, false);
@@ -320,12 +327,17 @@ protected:
 			0.0f								   // mipmap LOD bias
 		);
 
-		P_Shadow.init(this, &VDshadow, "shaders/Shadow.vert.spv",
+		P_Shadow.init(this, &VDshadow,
+					  "shaders/ShadowNear.vert.spv",
 					  "shaders/Shadow.frag.spv",
-					  {&DSLglobal, &DSLlocal},
-					  {{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
+					  {&DSLglobal, &DSLlocal});
 		// Disable back-face culling for the shadow pass
 		P_Shadow.CM = VK_CULL_MODE_NONE;
+		P_ShadowFar.init(this, &VDshadow, "shaders/Shadow.vert.spv",
+						 "shaders/Shadow.frag.spv",
+						 {&DSLglobal, &DSLlocal},
+						 {{VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4)}});
+		P_ShadowFar.CM = VK_CULL_MODE_NONE;
 
 		// Define the light's view-projection matrix for shadow mapping
 		// The ortho box must cover the ENTIRE scene: any fragment projecting
@@ -337,6 +349,10 @@ protected:
 		lightProjection[1][1] *= -1.0f;
 
 		LightVP = lightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 farLightProjection = glm::ortho(-140.0f, 140.0f, -140.0f, 140.0f, 1.0f, 400.0f);
+		farLightProjection[1][1] *= -1.0f;
+
+		LightVPFar = farLightProjection * glm::lookAt(lightTarget - sunDirection * 200.0f, lightTarget, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// Load the skybox glTF model and its single texture
 		M_SkyBox.init(this, &VD, "assets/models/skybox.gltf", GLTF);
@@ -344,7 +360,7 @@ protected:
 
 		// Sets the size of the Descriptor Set Pool to allocate sufficient GPU space (it MUST be done before loading the scene)
 		DPSZs.uniformBlocksInPool = 10; // 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
-		DPSZs.texturesInPool = 10;		// 1 for each object (in this case, we have 2 objects)
+		DPSZs.texturesInPool = 11;		// 1 for each object (in this case, we have 2 objects)
 		DPSZs.setsInPool = 10;			// 1 for the global parameters, 1 for each object (in this case, we have 2 objects)
 
 		// Configure the structures for automatic scene management
@@ -442,6 +458,8 @@ protected:
 		RP.create();
 		RP_Shadow.create();
 		P_Shadow.create(&RP_Shadow);
+		RP_ShadowFar.create();
+		P_ShadowFar.create(&RP_ShadowFar);
 
 		RP_PointShadow.create();
 		for (auto &pipeline : P_PointShadowFaces)
@@ -471,14 +489,20 @@ protected:
 			TS_Shadow.getSampler(),
 			RP_PointShadow.attachments[0].getView(0),
 			RP_PointShadow.properties[0].finalLayout};
+
+		VkDescriptorImageInfo farShadowInfo{
+			TS_Shadow.getSampler(),
+			RP_ShadowFar.attachments[0].getView(0),
+			RP_ShadowFar.properties[0].finalLayout};
 		// Initializes the global descriptor set (with the shadow map information)
-		DSglobal.init(this, &DSLglobal, {shadowInfo, pointShadowInfo});
+		DSglobal.init(this, &DSLglobal, {shadowInfo, pointShadowInfo, farShadowInfo});
 
 		for (auto &technique : PRs)
 		{
 			technique.PT[0].texDefs[0] = {
 				{false, 0, shadowInfo},
-				{false, 0, pointShadowInfo}};
+				{false, 0, pointShadowInfo},
+				{false, 0, farShadowInfo}};
 		}
 
 		DSsky.init(this, &DSLsky, {T_Sky.getViewAndSampler()});
@@ -506,6 +530,8 @@ protected:
 			descriptor.cleanup();
 		}
 		P_Flame.cleanup();
+		P_ShadowFar.cleanup();
+		RP_ShadowFar.cleanup();
 		P_Shadow.cleanup();
 		RP_Shadow.cleanup();
 		P.cleanup();
@@ -536,6 +562,8 @@ protected:
 		P_Flame.destroy();
 		DSLflame.cleanup();
 
+		P_ShadowFar.destroy();
+		RP_ShadowFar.destroy();
 		P_Shadow.destroy();
 		RP_Shadow.destroy();
 		TS_Shadow.cleanup();
@@ -676,15 +704,7 @@ protected:
 		RP_Shadow.begin(commandBuffer, 0);
 		// Bind the shadow pipeline
 		P_Shadow.bind(commandBuffer);
-
-		// Push the light view-projection matrix to the vertex shader as a push constant
-		vkCmdPushConstants(
-			commandBuffer,
-			P_Shadow.pipelineLayout,
-			VK_SHADER_STAGE_VERTEX_BIT,
-			0,
-			sizeof(glm::mat4),
-			&LightVP);
+		DSglobal.bind(commandBuffer, P_Shadow, 0, currentImage);
 
 		// Render each instance of the scene for the shadow pass
 		for (int index = 0; index < scene.InstanceCount; ++index)
@@ -704,6 +724,35 @@ protected:
 		}
 		// End of shadow pass
 		RP_Shadow.end(commandBuffer);
+
+		RP_ShadowFar.begin(commandBuffer, 0);
+		P_ShadowFar.bind(commandBuffer);
+
+		vkCmdPushConstants(
+			commandBuffer,
+			P_ShadowFar.pipelineLayout,
+			VK_SHADER_STAGE_VERTEX_BIT,
+			0,
+			sizeof(glm::mat4),
+			&LightVPFar);
+
+		for (int index = 0; index < scene.InstanceCount; ++index)
+		{
+			Instance *instance = scene.I[index];
+			Model *model = scene.M[instance->Mid];
+
+			instance->DS[0][1]->bind(
+				commandBuffer, P_ShadowFar, 1, currentImage);
+			model->bind(commandBuffer);
+
+			vkCmdDrawIndexed(
+				commandBuffer,
+				static_cast<uint32_t>(model->indices.size()),
+				1, 0, 0, 0);
+		}
+
+		RP_ShadowFar.end(commandBuffer);
+
 		populatePointShadowPass(commandBuffer, currentImage);
 
 		// Offscreen pass - always required
@@ -729,6 +778,36 @@ protected:
 		RP.end(commandBuffer); // End the render pass for the current frame
 	}
 
+	void updateNearShadowMatrix()
+	{
+		constexpr float halfExtent = 20.0f;
+		const float worldUnitsPerTexel =
+			(2.0f * halfExtent) / static_cast<float>(RP_Shadow.width);
+
+		const glm::vec3 sceneCenter(3.0f, 0.0f, 5.0f);
+		const glm::mat4 lightView = glm::lookAt(
+			sceneCenter - sunDirection * 200.0f,
+			sceneCenter,
+			glm::vec3(0.0f, 1.0f, 0.0f));
+
+		const glm::vec3 cameraLightPosition = glm::vec3(
+			lightView * glm::vec4(cam.getCameraPosition(), 1.0f));
+
+		const float centerX =
+			std::round(cameraLightPosition.x / worldUnitsPerTexel) * worldUnitsPerTexel;
+		const float centerY =
+			std::round(cameraLightPosition.y / worldUnitsPerTexel) * worldUnitsPerTexel;
+
+		glm::mat4 lightProjection = glm::ortho(
+			centerX - halfExtent, centerX + halfExtent,
+			centerY - halfExtent, centerY + halfExtent,
+			1.0f, 400.0f);
+		lightProjection[1][1] *= -1.0f;
+		lightProjection[3][1] *= -1.0f;
+
+		LightVP = lightProjection * lightView;
+	}
+
 	// ------------------ UNIFORM BUFFER MANAGEMENT -------------------
 	// Recalcolate matrices and update data in the GPU memory at each frame
 	// Here is where you update the uniforms.
@@ -746,6 +825,7 @@ protected:
 
 		// Calculate the game logic and return the delta time since the last frame. This is used to update the scene and camera movement.
 		float deltaT = GameLogic();
+		updateNearShadowMatrix();
 
 		// 1. Calcolo transizione graduale Notte -> Giorno (da 0.0 a 1.0 in ~3 secondi)
 		if (gameManager.curseBroken)
@@ -762,6 +842,7 @@ protected:
 		GlobalUniformBufferObject gubo{};
 		gubo.lightDir = sunDirection; // Update the light direction based on the rotation
 		gubo.lightVP = LightVP;		  // Update the light view-projection matrix for shadow mapping
+		gubo.lightVPFar = LightVPFar;
 		// Calculate the transformation matrices for the six faces of the point light's shadow cube map
 		for (size_t face = 0; face < PointLightShadowMatrices.size(); ++face)
 		{
