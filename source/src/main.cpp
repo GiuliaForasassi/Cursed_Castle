@@ -871,8 +871,12 @@ protected:
 		interactionManager.addDoorInteraction("Door_R");
 		interactionManager.setDoorHinge("Door_R", +0.1719f, +1.0f);
 		// Statue interactions
-		interactionManager.addInfoInteraction("StatueL", "Press E to talk", "Guard: Hello explorer, welcome to the castle!");
-		interactionManager.addInfoInteraction("StatueR", "Press E to talk", "Long time ago, the duke of this castle made a pact with the devil to become immortal.");
+		interactionManager.addInfoInteraction("StatueL_start", "Press E to talk", "Explore the castle and try to break the curse!");
+		interactionManager.addInfoInteraction("StatueR_start", "Press E to talk", "Long time ago, the duke of this castle made a pact with the devil to become immortal.");
+		interactionManager.addInfoInteraction("StatueL", "Press E to talk", "The Duke’s soul was shattered, and this has cursed the castle");
+		interactionManager.addInfoInteraction("StatueR", "Press E to talk", "It is said that the duke was never separated from the objects he had been using that evening...");
+		interactionManager.addInfoInteraction("StatueW1", "Press E to talk", "The altar is a key part of this castle");
+		interactionManager.addInfoInteraction("StatueE1", "Press E to talk", "Explore the other room, you might find something important.");
 		interactionManager.saveInitialState(scene);
 	}
 

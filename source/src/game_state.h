@@ -198,9 +198,9 @@ public:
 
             std::string story = "A dark curse plagues the ancient castle,\n"
                                 "trapping the land in eternal shadow.\n\n"
-                                "Find the 3 sacred relics hidden within,\n"
-                                "place them upon the altar, and break the curse\n"
-                                "before escaping to see the dawn!";
+                                "Find the relics and break the curse before time runs out.\n"
+                                "If you want to know more, ask to the stone statues:\n"
+                                "they hold the secrets of the castle.";
 
             txt.print(0.0f, 0.0f, story, 11, "CO", false, false, true,
                       TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 0.95f, scale * 0.95f);

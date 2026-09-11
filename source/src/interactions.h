@@ -79,7 +79,7 @@ struct AnimatedKey
 // Structure to define the state of a pickup item (e.g., a relic or key) in the scene
 struct PickupState
 {
-    glm ::mat4 Wm;
+    glm::mat4 Wm;
     Collider *C;
 };
 
@@ -247,7 +247,7 @@ public:
             {
                 return "Press E to place Relic on Altar (" + std::to_string(gm.relicsCollected - gm.relicsPlaced) + " in bag)";
             }
-            return "Sacred Altar (Find relics in the castle first)";
+            return "Sacred Altar";
         }
         return item.prompt;
     }
@@ -653,7 +653,7 @@ public:
                 if (gm.relicsPlaced >= gm.TOTAL_RELICS)
                 {
                     gm.curseBroken = true;
-                    currentInfoText = "THE CURSE IS BROKEN!\nGo outside and see the sky!";
+                    currentInfoText = "THE CURSE IS BROKEN!\nGo outside and enjoy the new day!";
                     infoTextTimer = 7.0f;
                 }
                 else
