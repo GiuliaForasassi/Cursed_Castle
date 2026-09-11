@@ -24,7 +24,7 @@ Here the links:
 - https://mlobo.itch.io/low-poly-dungeon-asset-pack
 - https://hooray4brains.itch.io/low-poly-forest-nature-pack
 
-## Topics implemented 
+## Implemented topics 
 - Basic and advanced transformations
 - 3D Projections
 - Basic vertex and fragment shaders
@@ -38,5 +38,5 @@ Here the links:
 - Godot
 
 ## Demo
-[Guarda il gameplay completo](https://youtu.be/qu1Ags5s2N4)
+[Look the complete gameplay!](https://youtu.be/qu1Ags5s2N4)
 
