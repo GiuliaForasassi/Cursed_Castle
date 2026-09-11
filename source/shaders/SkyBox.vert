@@ -17,5 +17,6 @@ void main() {
 
     // Trick z = w (.xyww): force the NDC depth to 1.0 (the farthest possible plane)
     vec4 pos = ubo.mvpMat * vec4(inPosition, 1.0);
+    // Clipping: avoid cubo che taglia la mappa
     gl_Position = vec4(pos.xy, pos.w, pos.w);
 }

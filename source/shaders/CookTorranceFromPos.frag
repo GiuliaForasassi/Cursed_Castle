@@ -36,11 +36,12 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 
 const float PI = 3.14159265359;
 
-// 1. Distribuzione delle microfaccette (Normal Distribution Function: GGX / Trowbridge-Reitz)
+// ---------------- Helper functions used to define the specular component ---------------
+// 1. Distribution microfaccette
 float DistributionGGX(vec3 N, vec3 H, float roughness) {
     float a = roughness * roughness;
     float a2 = a * a;
-    float NdotH = max(dot(N, H), 0.0);
+    float NdotH = max(dot(N, H), 0.0); // co
     float NdotH2 = NdotH * NdotH;
 
     float num = a2;
@@ -62,6 +63,7 @@ float GeometrySchlickGGX(float NdotV, float roughness) {
 }
 
 // Smith Geometry Function (combines view and light geometry)
+// Model the auto-shadow
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
     float NdotV = max(dot(N, V), 0.0);
     float NdotL = max(dot(N, L), 0.0);
@@ -72,6 +74,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 }
 
 // 3. Fresnel Equation (Fresnel-Schlick)
+// How tha light is reflected based on observation angle
 vec3 fresnelSchlick(float cosTheta, vec3 F0) {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }

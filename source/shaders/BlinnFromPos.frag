@@ -1,12 +1,9 @@
-//---------- SHADER FOR ROCKS, WALLS, WOOD AND GROUND -------
 
 #version 450 // GLSL version 4.5
 #extension GL_ARB_separate_shader_objects : enable // Enable separate shader objects for modular shader programming
 
 #define MAX_POINT_LIGHTS 22 // Number of point lights
 #define POINT_SHADOW_LIGHTS 22 // Number of point light shadow-casting lights
-
-// Fragment shader for Blinn-Phong lighting model with support for directional and point lights
 
 //--------------- Inputs: attributes of the fragment (from vertex shader) ---------------
 layout(location = 0) in vec3 fragPos; // Fragment position (world space)

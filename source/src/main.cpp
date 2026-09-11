@@ -128,7 +128,7 @@ protected:
 	std::vector<Collider> shadowModelBounds;								 // Bounding volumes for models used in shadow mapping --> optimization purposes
 
 	// ----------- Flame ----------------
-	VertexDescriptor VDflame; // Vertex format for the flame
+	VertexDescriptor VDflame;
 	Model M_Flame;
 	DescriptorSetLayout DSLflame;
 	Pipeline P_Flame;
@@ -190,7 +190,7 @@ protected:
 		// Sets the initial background color for the render pass: blue sky
 		RP.properties[0].clearValue = {0.0f, 0.9f, 1.0f, 1.0f};
 
-		// Pipeline 0: Blinn-Phong
+		// Pipeline 0: Blinn
 		P.init(this, &VD, "shaders/SimplePos.vert.spv",
 			   "shaders/BlinnFromPos.frag.spv",
 			   {&DSLglobal, &DSLlocal});
@@ -862,6 +862,7 @@ protected:
 		interactionManager.addRelicInteraction("Sword", "Press E to pick up Cursed Blade");
 		interactionManager.addAltarInteraction("Altar");
 		interactionManager.addLockedDoorInteraction("Door_locked", "Key", "Press E to unlock Door");
+		interactionManager.setDoorHinge("Door_locked", +0.1719f, +1.0f);
 		interactionManager.addKeyInteraction("Golden_Key", "Key", "Press E to pick up Key");
 		// Door interactions
 		interactionManager.addDoorInteraction("Door_main");
