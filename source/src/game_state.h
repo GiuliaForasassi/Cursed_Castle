@@ -172,41 +172,62 @@ public:
             glm::vec4 deepShadow = {0.02f, 0.01f, 0.01f, 0.85f}; // Ombra profonda
 
             // 1. The main title centered on the screen (x = 0.0f, y = -0.30f)
-            txt.print(0.0f, -0.30f, "CURSED CASTLE", 10, "CO", false, true, false,
+            txt.print(0.0f, -0.30f, "CURSED CASTLE", 10,
+                      "CO", false, true, false,
                       TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
-                      goldBright, darkBorder, deepShadow,
-                      scale * 1.8f, scale * 1.8f);
+                      goldBright,
+                      glm::vec4(0.02f, 0.02f, 0.02f, 1.0f),
+                      noShadow,
+                      scale * 1.4f, scale * 1.4f);
 
             // 2. Subtitle spaced vertically below the main title (y = -0.05f)
             std::string subtitle = "Try to break the curse";
             txt.print(0.0f, -0.05f, subtitle, 11, "CO", false, false, false,
                       TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
-                      goldSub, darkBorder, deepShadow,
+                      goldSub, darkBorder, noShadow,
                       scale * 0.90f, scale * 0.90f);
 
             // 3. Prompt near the bottom of the screen (y = 0.75f)
             txt.print(0.0f, 0.75f, "PRESS [ENTER] TO CONTINUE", 12, "CO", false, true, false,
                       TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
-                      goldBright, darkBorder, deepShadow,
+                      goldBright, darkBorder, noShadow,
                       scale * 0.85f, scale * 0.85f);
             break;
         }
         case GameState::STORY:
         {
-            txt.print(0.0f, -0.65f, "HAUNTED CASTLE", 10, "CO", false, false, true,
-                      TAL_CENTER, TRH_CENTER, TRV_MIDDLE, goldFill, darkStroke, noShadow, scale * 1.3f, scale * 1.3f);
+            float titleScale = scale * 0.85f;
+            float bodyScale = scale * 0.55f;
+            float promptScale = scale * 0.50f;
+            glm::vec4 outline = {0.02f, 0.02f, 0.02f, 1.0f};
 
-            std::string story = "A dark curse plagues the ancient castle,\n"
-                                "trapping the land in eternal shadow.\n\n"
-                                "Find the relics and break the curse before time runs out.\n"
-                                "If you want to know more, ask to the stone statues:\n"
-                                "they hold the secrets of the castle.";
+            txt.print(0.0f, -0.65f, "CURSED CASTLE", 10,
+                      "CO", false, true, false,
+                      TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
+                      goldFill, outline, noShadow,
+                      titleScale, titleScale);
 
-            txt.print(0.0f, 0.0f, story, 11, "CO", false, false, true,
-                      TAL_CENTER, TRH_CENTER, TRV_MIDDLE, whiteFill, darkStroke, noShadow, scale * 0.95f, scale * 0.95f);
+            std::string story =
+                "A dark curse plagues the ancient castle,\n"
+                "trapping the land in eternal shadow.\n\n"
+                "Find the relics and break the curse before time runs out.\n\n"
+                "To learn more, ask the stone statues:\n"
+                "they hold the secrets of the castle.";
 
-            txt.print(0.0f, 0.80f, "PRESS ENTER TO CONTINUE", 12, "CO", false, false, true,
-                      TAL_CENTER, TRH_CENTER, TRV_BOTTOM, goldFill, darkStroke, noShadow, scale * 0.85f, scale * 0.85f);
+            story = wrapTextToWidth(
+                txt, story, 0, windowWidth * 0.84f / bodyScale);
+
+            txt.print(0.0f, 0.0f, story, 11,
+                      "CO", false, false, false,
+                      TAL_CENTER, TRH_CENTER, TRV_MIDDLE,
+                      whiteFill, outline, noShadow,
+                      bodyScale, bodyScale);
+
+            txt.print(0.0f, 0.80f, "PRESS ENTER TO CONTINUE", 12,
+                      "CO", false, true, false,
+                      TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
+                      goldFill, outline, noShadow,
+                      promptScale, promptScale);
             break;
         }
         case GameState::CONTROLS:
