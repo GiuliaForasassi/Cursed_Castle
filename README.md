@@ -6,7 +6,7 @@ Cursed Castle is a first-person 3D game developed in C++ and Vulkan for the Comp
 The project combines exploration, environmental interactions and real-time rendering in a low-poly fantasy setting.
 
 <p align="center">
-  <img src="/home/giulis13/Scrivania/CG/Final project/castle_project/source/assets/textures/screen.png" width="400" alt="Descrizione">
+  <img src="source/assets/textures/screen.png" width="400" alt="Descrizione">
 </p>
 
 ## Gameplay 
