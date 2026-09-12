@@ -5,6 +5,10 @@ A cursed castle, three relics and five minutes to break the spell.
 Cursed Castle is a first-person 3D game developed in C++ and Vulkan for the Computer Graphics course at the Politecnico di Milano, academic year 2025/2026. 
 The project combines exploration, environmental interactions and real-time rendering in a low-poly fantasy setting.
 
+<p align="center">
+  <img src="/home/giulis13/Scrivania/CG/Final project/castle_project/source/assets/textures/screen.png" width="400" alt="Descrizione">
+</p>
+
 ## Gameplay 
 An ancient pact has cast a curse upon the castle. Explore its chambers, listen to the clues given by the statues, and recover three relics: the Sacred Grimoire, the Holy Chalice and the Cursed Blade.
 
